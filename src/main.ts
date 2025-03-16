@@ -42,14 +42,25 @@ export default class MyPlugin extends Plugin {
 
 	onunload() {}
 
-	// El problema de esta función es q me crea un icono a la derecha q al clickarlo me genera la vista a la derecha, y quiero q aparezca directamente.
 	async activateView(): Promise<void> {
-		if (this.app.workspace.getLeavesOfType(VIEW_TYPE_VIRTUAL_PET).length) {
+		const { workspace } = this.app;
+
+		// Check if view is already open
+		const existingLeaves = workspace.getLeavesOfType(VIEW_TYPE_VIRTUAL_PET);
+		if (existingLeaves.length > 0) {
+			workspace.revealLeaf(existingLeaves[0]);
 			return;
 		}
-		await this.app.workspace
-			.getRightLeaf(false)
-			.setViewState({ type: VIEW_TYPE_VIRTUAL_PET });
+
+		// Open the view in a new leaf
+		const leaf = workspace.getRightLeaf(false);
+		if (leaf) {
+			await leaf.setViewState({
+				type: VIEW_TYPE_VIRTUAL_PET,
+				active: true,
+			});
+			workspace.revealLeaf(leaf);
+		}
 	}
 
 	async loadSettings() {
