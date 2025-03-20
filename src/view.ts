@@ -3,7 +3,8 @@ import { ItemView, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
-import { PetView } from "./PetView";
+import { PetView } from "./view/PetView";
+import StatsHandler from "./stats/StatsHandler";
 
 export default class VirualPetView extends ItemView {
 	private reactRoot: Root | null = null;
@@ -32,11 +33,19 @@ export default class VirualPetView extends ItemView {
 		const reactContainer = container.createEl("div");
 		reactContainer.addClass("react-root");
 
+		const statsHandler = new StatsHandler(
+			this.app.vault,
+			this.app.workspace
+		);
+
+		const userStats = statsHandler.getAllUserStats();
+
 		this.reactRoot = createRoot(reactContainer);
 		this.reactRoot.render(
 			React.createElement(PetView, {
 				app: this.app,
 				view: this,
+				stats: userStats,
 			})
 		);
 	}
