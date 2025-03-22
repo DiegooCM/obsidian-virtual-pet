@@ -16,14 +16,6 @@ export default class VirtualPet extends Plugin {
 			//   this.app.workspace.on("layout-ready", this.activateView.bind(this))
 			// );
 		}
-
-		// For when a user makes a change recalcs the stats, is in process:
-		// this.registerEvent(
-		// 	// editor-change (for when the user writes something)
-		// 	this.app.workspace.on("active-leaf-change", () => {
-		// 		// console.log("Change");
-		// 	})
-		// );
 	}
 
 	onunload() {}
