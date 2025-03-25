@@ -1,6 +1,6 @@
 import { TFile, Vault, Workspace } from "obsidian";
 import { countWords } from "../utils/statsUtils";
-import { UserStats } from "./Stats";
+import { UserStats } from "../types";
 
 export default class StatsHandler {
 	private vault: Vault;
@@ -10,16 +10,12 @@ export default class StatsHandler {
 	constructor(vault: Vault, workspace: Workspace) {
 		this.vault = vault;
 		this.workspace = workspace;
-
-		this.vault.on("delete", () => {
-			console.log("deleted vault");
-		});
 	}
 
 	async calcUserStats() {
 		const filePath = this.workspace.getActiveFile();
 
-		await this.getFilesCount();
+		this.getFilesCount();
 
 		if (filePath) {
 			this.getActualFileWordsCount(filePath);
@@ -40,7 +36,8 @@ export default class StatsHandler {
 
 	getAllUserStats() {
 		this.calcUserStats();
+		const userStats = JSON.parse(JSON.stringify(this.userStats)); // TODO: change this method for copying this.userStats?
 
-		return this.userStats;
+		return userStats;
 	}
 }

@@ -1,18 +1,23 @@
 // https://docs.obsidian.md/Plugins/User+interface/Views
-import { ItemView, WorkspaceLeaf } from "obsidian";
+import { ItemView, Plugin, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
 import { PetView } from "./view/PetView";
 import StatsHandler from "./stats/StatsHandler";
+import { UserStats } from "./types";
 
 export default class VirualPetView extends ItemView {
 	private reactRoot: Root | null = null;
 	private petComponent: React.RefObject<PetView>;
 	public statsHandler: StatsHandler;
+	private plugin: Plugin;
+	private initialUserStats: UserStats;
 
-	constructor(leaf: WorkspaceLeaf) {
+	constructor(leaf: WorkspaceLeaf, plugin: Plugin) {
 		super(leaf);
+
+		this.plugin = plugin;
 
 		this.petComponent = React.createRef();
 	}
@@ -39,6 +44,9 @@ export default class VirualPetView extends ItemView {
 			this.app.workspace
 		);
 
+		// Calc initial userStats
+		this.initialUserStats = this.statsHandler.getAllUserStats();
+
 		// Pet View
 		const reactContainer = container.createEl("div");
 		reactContainer.addClass("react-root");
@@ -48,6 +56,7 @@ export default class VirualPetView extends ItemView {
 			React.createElement(PetView, {
 				view: this,
 				ref: this.petComponent,
+				initialUserStats: this.initialUserStats,
 			})
 		);
 		this.registerEvent(
@@ -57,6 +66,12 @@ export default class VirualPetView extends ItemView {
 				);
 			})
 		);
+
+		this.registerEvent(
+			this.app.vault.on("delete", () => {
+				console.log("deleted vault");
+			})
+		);
 	}
 
 	async onClose(): Promise<void> {
@@ -64,6 +79,8 @@ export default class VirualPetView extends ItemView {
 			this.reactRoot.unmount();
 			this.reactRoot = null;
 		}
+
+		// ??? this.plugin.saveUserInfo();
 	}
 
 	getUserStats() {

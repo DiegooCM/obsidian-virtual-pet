@@ -1,12 +1,13 @@
 import { Plugin, WorkspaceLeaf } from "obsidian";
 import VirualPetView from "src/view";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
+import { UserInfo } from "./types";
 
 export default class VirtualPet extends Plugin {
 	async onload() {
 		this.registerView(
 			VIEW_TYPE_VIRTUAL_PET,
-			(leaf: WorkspaceLeaf) => new VirualPetView(leaf)
+			(leaf: WorkspaceLeaf) => new VirualPetView(leaf, this)
 		);
 
 		if (this.app.workspace.layoutReady) {
@@ -39,5 +40,9 @@ export default class VirtualPet extends Plugin {
 			});
 			workspace.revealLeaf(leaf);
 		}
+	}
+
+	async saveUserInfo(data: UserInfo) {
+		await this.saveData(data);
 	}
 }
