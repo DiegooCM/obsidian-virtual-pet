@@ -5,7 +5,7 @@ import { UserStats } from "../types";
 export default class StatsHandler {
 	private vault: Vault;
 	private workspace: Workspace;
-	public userStats: UserStats = { filesCount: 0, actualFileWordCount: 0 };
+	public userStats: UserStats = { filesCount: -1, actualFileWordCount: -1 };
 
 	constructor(vault: Vault, workspace: Workspace) {
 		this.vault = vault;
@@ -18,7 +18,9 @@ export default class StatsHandler {
 		this.getFilesCount();
 
 		if (filePath) {
-			this.getActualFileWordsCount(filePath);
+			await this.getActualFileWordsCount(filePath);
+		} else {
+			console.error("File path not finded");
 		}
 	}
 
@@ -28,16 +30,15 @@ export default class StatsHandler {
 	}
 
 	async getActualFileWordsCount(filePath: TFile) {
-		const textWords = await this.vault
+		const fileWords = await this.vault
 			.cachedRead(filePath)
 			.then((text) => countWords(text));
-		this.userStats.actualFileWordCount = textWords;
+		this.userStats.actualFileWordCount = fileWords;
 	}
 
-	getAllUserStats() {
-		this.calcUserStats();
-		const userStats = JSON.parse(JSON.stringify(this.userStats)); // TODO: change this method for copying this.userStats?
+	async getAllUserStats(): Promise<UserStats> {
+		await this.calcUserStats();
 
-		return userStats;
+		return { ...this.userStats };
 	}
 }

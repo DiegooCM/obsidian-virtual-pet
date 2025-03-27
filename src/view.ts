@@ -45,7 +45,9 @@ export default class VirualPetView extends ItemView {
 		);
 
 		// Calc initial userStats
-		this.initialUserStats = this.statsHandler.getAllUserStats();
+		await this.statsHandler
+			.getAllUserStats()
+			.then((userStats) => (this.initialUserStats = userStats));
 
 		// Pet View
 		const reactContainer = container.createEl("div");
@@ -61,9 +63,11 @@ export default class VirualPetView extends ItemView {
 		);
 		this.registerEvent(
 			this.app.workspace.on("editor-change", () => {
-				this.petComponent.current?.setUserStats(
-					this.statsHandler.getAllUserStats()
-				);
+				this.statsHandler
+					.getAllUserStats()
+					.then((userStats) =>
+						this.petComponent.current?.setUserStats(userStats)
+					);
 			})
 		);
 
