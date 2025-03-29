@@ -1,7 +1,7 @@
 import { View } from "obsidian";
 import * as React from "react";
 // import { useEffect } from "react";
-import { UserStats } from "src/types";
+import { UserData } from "src/types";
 import StatsHandler from "src/stats/StatsHandler";
 
 interface Props {
@@ -9,8 +9,8 @@ interface Props {
 }
 
 interface State {
-	initialUserStats: UserStats;
-	userStats: UserStats;
+	initialUserData: UserData;
+	userData: UserData;
 }
 
 export class PetView extends React.Component<Props, State> {
@@ -18,11 +18,11 @@ export class PetView extends React.Component<Props, State> {
 		super(props);
 
 		this.state = {
-			initialUserStats: {
+			initialUserData: {
 				filesCount: -1,
 				actualFileWordCount: -1,
 			},
-			userStats: {
+			userData: {
 				filesCount: -1,
 				actualFileWordCount: -1,
 			},
@@ -31,16 +31,16 @@ export class PetView extends React.Component<Props, State> {
 
 	componentDidMount(): void {}
 
-	setUserStats(newUserStats: UserStats) {
+	setUserData(newUserData: UserData) {
 		this.setState({
-			userStats: newUserStats,
+			userData: newUserData,
 		});
 	}
 
-	setInitialUserStats(newUserStats: UserStats) {
+	setInitialUserData(newUserData: UserData) {
 		this.setState({
-			initialUserStats: newUserStats,
-			userStats: newUserStats,
+			initialUserData: newUserData,
+			userData: newUserData,
 		});
 	}
 
@@ -49,19 +49,19 @@ export class PetView extends React.Component<Props, State> {
 			<>
 				<div className="intial-stats">
 					<h1> Initial Stats</h1>
-					<p>Files Count: {this.state.initialUserStats.filesCount}</p>
+					<p>Files Count: {this.state.initialUserData.filesCount}</p>
 					<p>
 						Actual File Word Count:
-						{this.state.initialUserStats.actualFileWordCount}
+						{this.state.initialUserData.actualFileWordCount}
 					</p>
 				</div>
 				<div className="actual-stats">
 					<h1> Actual Stats</h1>
 
-					<p>Files Count: {this.state.userStats.filesCount}</p>
+					<p>Files Count: {this.state.userData.filesCount}</p>
 					<p>
 						Actual File Word Count:{" "}
-						{this.state.userStats.actualFileWordCount}
+						{this.state.userData.actualFileWordCount}
 					</p>
 				</div>
 			</>

@@ -1,11 +1,11 @@
 import { TFile, Vault, Workspace } from "obsidian";
-import { countWords } from "../utils/statsUtils";
-import { UserStats } from "../types";
+import { countWords } from "../utils/StatsUtils";
+import { UserData } from "../types";
 
 export default class StatsHandler {
 	private vault: Vault;
 	private workspace: Workspace;
-	public userStats: UserStats = {
+	public userData: UserData = {
 		filesCount: -1,
 		actualFileWordCount: -1,
 	};
@@ -15,7 +15,7 @@ export default class StatsHandler {
 		this.workspace = workspace;
 	}
 
-	async calcUserStats() {
+	async calcUserData() {
 		const filePath = this.workspace.getActiveFile();
 
 		this.getFilesCount();
@@ -27,19 +27,19 @@ export default class StatsHandler {
 
 	getFilesCount() {
 		const filesCount = this.vault.getMarkdownFiles().length;
-		this.userStats.filesCount = filesCount;
+		this.userData.filesCount = filesCount;
 	}
 
 	async getActualFileWordsCount(filePath: TFile) {
 		const fileWords = await this.vault
 			.cachedRead(filePath)
 			.then((text) => countWords(text));
-		this.userStats.actualFileWordCount = fileWords;
+		this.userData.actualFileWordCount = fileWords;
 	}
 
-	async getAllUserStats(): Promise<UserStats> {
-		await this.calcUserStats();
+	async getAllUserData(): Promise<UserData> {
+		await this.calcUserData();
 
-		return { ...this.userStats };
+		return { ...this.userData };
 	}
 }

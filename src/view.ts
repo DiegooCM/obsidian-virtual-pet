@@ -57,22 +57,20 @@ export default class VirualPetView extends ItemView {
 		this.registerEvent(
 			this.app.workspace.on("file-open", () => {
 				this.statsHandler
-					.getAllUserStats()
-					.then((userStats) =>
-						this.petComponent.current?.setInitialUserStats(
-							userStats
-						)
+					.getAllUserData()
+					.then((userData) =>
+						this.petComponent.current?.setInitialUserData(userData)
 					);
-				// this.saveUserInfo()
+				// this.saveUserStats();
 			})
 		);
 
 		this.registerEvent(
 			this.app.workspace.on("editor-change", () => {
 				this.statsHandler
-					.getAllUserStats()
-					.then((userStats) =>
-						this.petComponent.current?.setUserStats(userStats)
+					.getAllUserData()
+					.then((userData) =>
+						this.petComponent.current?.setUserData(userData)
 					);
 			})
 		);
@@ -91,7 +89,9 @@ export default class VirualPetView extends ItemView {
 		}
 	}
 
-	getUserStats() {
-		return this.statsHandler.userStats;
+	getUserData() {
+		return this.statsHandler.userData;
 	}
+
+	saveUserStats(): void {}
 }
