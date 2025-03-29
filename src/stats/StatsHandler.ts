@@ -5,7 +5,10 @@ import { UserStats } from "../types";
 export default class StatsHandler {
 	private vault: Vault;
 	private workspace: Workspace;
-	public userStats: UserStats = { filesCount: -1, actualFileWordCount: -1 };
+	public userStats: UserStats = {
+		filesCount: -1,
+		actualFileWordCount: -1,
+	};
 
 	constructor(vault: Vault, workspace: Workspace) {
 		this.vault = vault;
@@ -19,8 +22,6 @@ export default class StatsHandler {
 
 		if (filePath) {
 			await this.getActualFileWordsCount(filePath);
-		} else {
-			console.error("File path not finded");
 		}
 	}
 

@@ -6,10 +6,10 @@ import StatsHandler from "src/stats/StatsHandler";
 
 interface Props {
 	view: View & { statsHandler: StatsHandler };
-	initialUserStats: UserStats;
 }
 
 interface State {
+	initialUserStats: UserStats;
 	userStats: UserStats;
 }
 
@@ -18,18 +18,28 @@ export class PetView extends React.Component<Props, State> {
 		super(props);
 
 		this.state = {
-			userStats: { filesCount: 0, actualFileWordCount: 0 },
+			initialUserStats: {
+				filesCount: -1,
+				actualFileWordCount: -1,
+			},
+			userStats: {
+				filesCount: -1,
+				actualFileWordCount: -1,
+			},
 		};
 	}
 
-	componentDidMount(): void {
-		this.setState({
-			userStats: this.props.initialUserStats,
-		});
-	}
+	componentDidMount(): void {}
 
 	setUserStats(newUserStats: UserStats) {
 		this.setState({
+			userStats: newUserStats,
+		});
+	}
+
+	setInitialUserStats(newUserStats: UserStats) {
+		this.setState({
+			initialUserStats: newUserStats,
 			userStats: newUserStats,
 		});
 	}
@@ -39,10 +49,10 @@ export class PetView extends React.Component<Props, State> {
 			<>
 				<div className="intial-stats">
 					<h1> Initial Stats</h1>
-					<p>Files Count: {this.props.initialUserStats.filesCount}</p>
+					<p>Files Count: {this.state.initialUserStats.filesCount}</p>
 					<p>
 						Actual File Word Count:
-						{this.props.initialUserStats.actualFileWordCount}
+						{this.state.initialUserStats.actualFileWordCount}
 					</p>
 				</div>
 				<div className="actual-stats">
