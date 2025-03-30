@@ -56,12 +56,13 @@ export default class VirualPetView extends ItemView {
 
 		this.registerEvent(
 			this.app.workspace.on("file-open", () => {
+				this.saveUserStats(); // Save the state userStats in the data.json
+				this.getUserStats(); // Gets the userStats from the data.json and save them in the state
 				this.statsHandler
 					.getAllUserData()
 					.then((userData) =>
 						this.petComponent.current?.setInitialUserData(userData)
 					);
-				// this.saveUserStats();
 			})
 		);
 
@@ -89,9 +90,20 @@ export default class VirualPetView extends ItemView {
 		}
 	}
 
-	getUserData() {
-		return this.statsHandler.userData;
+	getUserStats(): void {
+		this.plugin.loadData().then((data) => {
+			this.petComponent.current?.setState({
+				userStats: data.userStats,
+			});
+		});
 	}
 
-	saveUserStats(): void {}
+	saveUserStats(): void {
+		if (this.petComponent.current?.state.userStats.level !== 0) {
+			// Checks that the userStats isn't default
+			this.plugin.saveData({
+				userStats: this.petComponent.current?.state.userStats,
+			});
+		}
+	}
 }

@@ -1,7 +1,7 @@
 import { View } from "obsidian";
 import * as React from "react";
 // import { useEffect } from "react";
-import { UserData } from "src/types";
+import { UserData, UserStats } from "src/types";
 import StatsHandler from "src/stats/StatsHandler";
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
 interface State {
 	initialUserData: UserData;
 	userData: UserData;
+	userStats: UserStats;
 }
 
 export class PetView extends React.Component<Props, State> {
@@ -26,43 +27,83 @@ export class PetView extends React.Component<Props, State> {
 				filesCount: -1,
 				actualFileWordCount: -1,
 			},
+			userStats: {
+				exp: 0,
+				expGoal: 10,
+				level: 0,
+			},
 		};
 	}
 
-	componentDidMount(): void {}
+	// Cambiar el nombre a handleChange o algo del estilo
+	setUserData(updatedUserData: UserData) {
+		const updatedUserStats = this.setUserStats(updatedUserData);
 
-	setUserData(newUserData: UserData) {
 		this.setState({
-			userData: newUserData,
+			userData: updatedUserData,
+			userStats: updatedUserStats,
 		});
 	}
 
-	setInitialUserData(newUserData: UserData) {
+	setInitialUserData(updatedUserData: UserData) {
 		this.setState({
-			initialUserData: newUserData,
-			userData: newUserData,
+			initialUserData: updatedUserData,
+			userData: updatedUserData,
 		});
+	}
+
+	// Lo meto en el statsHandler?
+	setUserStats(updatedUserData: UserData): UserStats {
+		// Experience calculation
+		const filesDif =
+			updatedUserData.filesCount - this.state.initialUserData.filesCount;
+		const fileWordsDif =
+			updatedUserData.actualFileWordCount -
+			this.state.initialUserData.actualFileWordCount;
+
+		const newExp = filesDif * 50 + fileWordsDif;
+
+		// Checks if the user reach the exp goal
+		if (newExp > this.state.userStats.expGoal) {
+			const newExpGoal = Math.floor(this.state.userStats.expGoal * 1.5);
+			const newLevel = this.state.userStats.level + 1;
+			return {
+				exp: newExp - this.state.userStats.expGoal,
+				expGoal: newExpGoal,
+				level: newLevel,
+			};
+		}
+
+		return {
+			...this.state.userStats,
+			exp: newExp < 0 ? 0 : newExp, // The exp cannot be lower than 0
+		};
 	}
 
 	render() {
 		return (
 			<>
-				<div className="intial-stats">
-					<h1> Initial Stats</h1>
+				<div className="intial-data">
+					<h1> Initial Data</h1>
 					<p>Files Count: {this.state.initialUserData.filesCount}</p>
 					<p>
 						Actual File Word Count:
 						{this.state.initialUserData.actualFileWordCount}
 					</p>
 				</div>
-				<div className="actual-stats">
-					<h1> Actual Stats</h1>
-
+				<div className="actual-Data">
+					<h1> Actual Data</h1>
 					<p>Files Count: {this.state.userData.filesCount}</p>
 					<p>
 						Actual File Word Count:{" "}
 						{this.state.userData.actualFileWordCount}
 					</p>
+				</div>
+				<div className="user-stats">
+					<h1> User Stats</h1>
+					<p>Exp: {this.state.userStats.exp}</p>
+					<p>Exp Goal: {this.state.userStats.expGoal}</p>
+					<p>Level: {this.state.userStats.level}</p>
 				</div>
 			</>
 		);
