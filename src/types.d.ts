@@ -1,3 +1,6 @@
+import { View } from "obsidian";
+import StatsHandler from "./stats/StatsHandler";
+
 export interface UserData {
 	actualFileWordCount: number;
 	filesCount: number;
@@ -12,3 +15,5 @@ export interface UserStats {
 export interface UserInfo {
 	exp: number;
 }
+
+export type PetViewT = View & { statsHandler: StatsHandler };

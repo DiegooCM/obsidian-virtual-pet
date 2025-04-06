@@ -1,11 +1,9 @@
-import { View } from "obsidian";
 import * as React from "react";
-// import { useEffect } from "react";
-import { UserData, UserStats } from "src/types";
-import StatsHandler from "src/stats/StatsHandler";
+import { PetViewT, UserData, UserStats } from "src/types";
+import { Pet } from "./Pet";
 
 interface Props {
-	view: View & { statsHandler: StatsHandler };
+	view: PetViewT;
 }
 
 interface State {
@@ -83,6 +81,8 @@ export class PetView extends React.Component<Props, State> {
 	render() {
 		return (
 			<>
+				<Pet view={this.props.view} />
+
 				<div className="intial-data">
 					<h1> Initial Data</h1>
 					<p>Files Count: {this.state.initialUserData.filesCount}</p>

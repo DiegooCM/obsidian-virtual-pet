@@ -1,0 +1,16 @@
+#pet-container {
+  display: flex;    
+  align-items: center;
+  border: 2px solid #40a1da;
+  height: 15rem;
+}
+
+#pet {
+  position: relative;
+  left: 0;
+  transform: scaleX(-1);
+}
+#animation {
+  position: absolute;
+  z-index: 1;
+}
