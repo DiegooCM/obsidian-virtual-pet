@@ -7,11 +7,11 @@
 
 #pet {
   position: relative;
-  left: 0;
   transform: scaleX(-1);
 }
+
 #animation {
-  position: absolute;
+  position: relative;
   z-index: 1;
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { PetViewT } from "src/types";
 
 interface PetProps {
@@ -16,7 +16,7 @@ export const Pet: React.FC<PetProps> = (props) => {
 		"./.obsidian/plugins/obsidian-virtual-pet/images/hearts.gif"
 	);
 
-	const [isStand, setIsStand] = useState(false);
+	let isStand = false;
 
 	const petRef = useRef<HTMLImageElement>(null);
 	const animationRef = useRef<HTMLImageElement>(null);
@@ -34,7 +34,6 @@ export const Pet: React.FC<PetProps> = (props) => {
 				(pageWidth && elWidth !== undefined ? pageWidth - elWidth : 180)
 			) {
 				position += speed;
-
 				if (petRef.current) petRef.current.style.left = position + "px";
 
 				handleState("right");
@@ -50,7 +49,6 @@ export const Pet: React.FC<PetProps> = (props) => {
 			if (position !== 0) {
 				position -= speed;
 				if (petRef.current) petRef.current.style.left = position + "px";
-
 				handleState("left");
 			} else {
 				if (petRef.current)
@@ -61,19 +59,15 @@ export const Pet: React.FC<PetProps> = (props) => {
 		}
 
 		async function handleState(side: string) {
-			// console.log(isStand);
-			// console.log(petRef.current);
-			// console.log(animationRef.current);
 			if (isStand && petRef.current && animationRef.current) {
-				console.log("standing");
 				petRef.current.src = standingPath;
 				animationRef.current.src = heartsPath;
-				animationRef.current.style.left = position + "px";
+				animationRef.current.style.left = position - 64 + "px";
 
 				await wait(3000);
 				petRef.current.src = walkingPath;
 				animationRef.current.removeAttribute("src");
-				setIsStand(false);
+				isStand = false;
 			}
 
 			setTimeout(
@@ -108,7 +102,7 @@ export const Pet: React.FC<PetProps> = (props) => {
 				ref={petRef}
 				id="pet"
 				src={walkingPath}
-				onClick={() => setIsStand(true)}
+				onClick={() => (isStand = true)}
 			/>
 			<img ref={animationRef} id="animation" />
 		</div>
