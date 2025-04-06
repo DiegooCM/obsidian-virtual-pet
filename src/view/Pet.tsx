@@ -9,12 +9,17 @@ export const Pet: React.FC<PetProps> = (props) => {
 	const walkingPath = props.view.app.vault.adapter.getResourcePath(
 		"./.obsidian/plugins/obsidian-virtual-pet/images/walking.gif"
 	);
-	// const standingPath = props.view.app.vault.adapter.getResourcePath(
-	// 	"./.obsidian/plugins/obsidian-virtual-pet/images/standing.gif"
-	// );
-	// const [isStand, setIsStand] = useState(false);
+	const standingPath = props.view.app.vault.adapter.getResourcePath(
+		"./.obsidian/plugins/obsidian-virtual-pet/images/standing.gif"
+	);
+	const heartsPath = props.view.app.vault.adapter.getResourcePath(
+		"./.obsidian/plugins/obsidian-virtual-pet/images/hearts.gif"
+	);
+
+	const [isStand, setIsStand] = useState(false);
 
 	const petRef = useRef<HTMLImageElement>(null);
+	const animationRef = useRef<HTMLImageElement>(null);
 	const petContainerRef = useRef<HTMLDivElement>(null);
 
 	async function sideWalks() {
@@ -30,14 +35,13 @@ export const Pet: React.FC<PetProps> = (props) => {
 			) {
 				position += speed;
 
-				if (petRef.current) {
-					petRef.current.style.left = position + "px";
-				}
+				if (petRef.current) petRef.current.style.left = position + "px";
+
 				handleState("right");
 			} else {
-				if (petRef.current) {
+				if (petRef.current)
 					petRef.current.style.transform = "scaleX(1)";
-				}
+
 				moveLeft();
 			}
 		}
@@ -45,19 +49,33 @@ export const Pet: React.FC<PetProps> = (props) => {
 		function moveLeft() {
 			if (position !== 0) {
 				position -= speed;
-				if (petRef.current) {
-					petRef.current.style.left = position + "px";
-				}
+				if (petRef.current) petRef.current.style.left = position + "px";
+
 				handleState("left");
 			} else {
-				if (petRef.current) {
+				if (petRef.current)
 					petRef.current.style.transform = "scaleX(-1)";
-				}
+
 				moveRight();
 			}
 		}
 
-		function handleState(side: string) {
+		async function handleState(side: string) {
+			// console.log(isStand);
+			// console.log(petRef.current);
+			// console.log(animationRef.current);
+			if (isStand && petRef.current && animationRef.current) {
+				console.log("standing");
+				petRef.current.src = standingPath;
+				animationRef.current.src = heartsPath;
+				animationRef.current.style.left = position + "px";
+
+				await wait(3000);
+				petRef.current.src = walkingPath;
+				animationRef.current.removeAttribute("src");
+				setIsStand(false);
+			}
+
 			setTimeout(
 				() =>
 					requestAnimationFrame(
@@ -86,7 +104,13 @@ export const Pet: React.FC<PetProps> = (props) => {
 
 	return (
 		<div ref={petContainerRef} id="pet-container">
-			<img ref={petRef} id="pet" src={walkingPath}></img>
+			<img
+				ref={petRef}
+				id="pet"
+				src={walkingPath}
+				onClick={() => setIsStand(true)}
+			/>
+			<img ref={animationRef} id="animation" />
 		</div>
 	);
 };

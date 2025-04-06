@@ -14,3 +14,17 @@
   position: absolute;
   z-index: 1;
 }
+
+#exp-bar-container {
+  margin-top: 5px;
+}
+
+#exp-bar-border {
+  overflow:hidden;
+  border: 2px solid #000000 ;
+}
+
+#exp-bar {
+  position: relative;
+  height: 32px;
+}
