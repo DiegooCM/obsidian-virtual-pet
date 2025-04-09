@@ -79,8 +79,12 @@ export class PetView extends React.Component<Props, State> {
 	}
 
 	ExpBar = () => {
-		const bgPath = this.props.view.app.vault.adapter.getResourcePath(
-			"./.obsidian/plugins/obsidian-virtual-pet/images/exp-bar-bg.png"
+		const bgPath = React.useMemo(
+			() =>
+				this.props.view.app.vault.adapter.getResourcePath(
+					"./.obsidian/plugins/obsidian-virtual-pet/images/exp-bar-bg.png"
+				),
+			[]
 		);
 		const [expPercentage, setExpPercentage] = React.useState(0);
 
@@ -108,12 +112,9 @@ export class PetView extends React.Component<Props, State> {
 		);
 	};
 
-	render() {
+	userDataNStats = () => {
 		return (
 			<>
-				<Pet view={this.props.view} />
-				<this.ExpBar />
-
 				<div className="intial-data">
 					<h1> Initial Data</h1>
 					<p>Files Count: {this.state.initialUserData.filesCount}</p>
@@ -136,6 +137,16 @@ export class PetView extends React.Component<Props, State> {
 					<p>Exp Goal: {this.state.userStats.expGoal}</p>
 					<p>Level: {this.state.userStats.level}</p>
 				</div>
+			</>
+		);
+	};
+
+	render() {
+		return (
+			<>
+				<Pet view={this.props.view} />
+				<this.ExpBar />
+				<this.userDataNStats />
 			</>
 		);
 	}

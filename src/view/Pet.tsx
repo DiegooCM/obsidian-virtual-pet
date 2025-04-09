@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { PetViewT } from "src/types";
 
 interface PetProps {
@@ -6,14 +6,34 @@ interface PetProps {
 }
 
 export const Pet: React.FC<PetProps> = (props) => {
-	const walkingPath = props.view.app.vault.adapter.getResourcePath(
-		"./.obsidian/plugins/obsidian-virtual-pet/images/walking.gif"
+	const walkingPath = useMemo(
+		() =>
+			props.view.app.vault.adapter.getResourcePath(
+				"./.obsidian/plugins/obsidian-virtual-pet/images/walking.gif"
+			),
+		[]
 	);
-	const standingPath = props.view.app.vault.adapter.getResourcePath(
-		"./.obsidian/plugins/obsidian-virtual-pet/images/standing.gif"
+	const standingPath = useMemo(
+		() =>
+			props.view.app.vault.adapter.getResourcePath(
+				"./.obsidian/plugins/obsidian-virtual-pet/images/standing.gif"
+			),
+		[]
 	);
-	const heartsPath = props.view.app.vault.adapter.getResourcePath(
-		"./.obsidian/plugins/obsidian-virtual-pet/images/hearts.gif"
+
+	const heartsPath = useMemo(
+		() =>
+			props.view.app.vault.adapter.getResourcePath(
+				"./.obsidian/plugins/obsidian-virtual-pet/images/hearts.gif"
+			),
+		[]
+	);
+	const backgroundPath = useMemo(
+		() =>
+			props.view.app.vault.adapter.getResourcePath(
+				"./.obsidian/plugins/obsidian-virtual-pet/images/background.png"
+			),
+		[]
 	);
 
 	let isStand = false;
@@ -97,7 +117,14 @@ export const Pet: React.FC<PetProps> = (props) => {
 	}, []);
 
 	return (
-		<div ref={petContainerRef} id="pet-container">
+		<div
+			ref={petContainerRef}
+			id="pet-container"
+			style={{
+				backgroundImage: `url(${backgroundPath})`,
+				backgroundPosition: "center",
+			}}
+		>
 			<img
 				ref={petRef}
 				id="pet"
