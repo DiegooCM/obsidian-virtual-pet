@@ -5,6 +5,7 @@ import { Root, createRoot } from "react-dom/client";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
 import { PetView } from "./view/PetView";
 import StatsHandler from "./stats/StatsHandler";
+import { getUserStats, saveUserStats } from "./hooks/useData";
 
 export default class VirualPetView extends ItemView {
 	private reactRoot: Root | null = null;
@@ -54,10 +55,30 @@ export default class VirualPetView extends ItemView {
 			})
 		);
 
+		await getUserStats(this.plugin).then((loadedUserStats) => {
+			if (loadedUserStats) {
+				this.petComponent.current?.setState({
+					userStats: loadedUserStats,
+				});
+			}
+		}); // Gets the userStats from the data.json and save them in the state
+
 		this.registerEvent(
+			this.app.workspace.on("quit", () => {
+				saveUserStats(
+					this.plugin,
+					this.petComponent.current?.state.userStats
+				); // Save the state userStats in the data.json
+			})
+		);
+
+		this.registerEvent(
+			// When a file is open
 			this.app.workspace.on("file-open", () => {
-				this.saveUserStats(); // Save the state userStats in the data.json
-				this.getUserStats(); // Gets the userStats from the data.json and save them in the state
+				saveUserStats(
+					this.plugin,
+					this.petComponent.current?.state.userStats
+				); // Save the state userStats in the data.json
 				this.statsHandler
 					.getAllUserData()
 					.then((userData) =>
@@ -67,6 +88,7 @@ export default class VirualPetView extends ItemView {
 		);
 
 		this.registerEvent(
+			// When the user types
 			this.app.workspace.on("editor-change", () => {
 				this.statsHandler
 					.getAllUserData()
@@ -75,35 +97,13 @@ export default class VirualPetView extends ItemView {
 					);
 			})
 		);
-
-		this.registerEvent(
-			this.app.vault.on("delete", () => {
-				console.log("deleted vault");
-			})
-		);
 	}
 
 	async onClose(): Promise<void> {
+		saveUserStats(this.plugin, this.petComponent.current?.state.userStats);
 		if (this.reactRoot) {
 			this.reactRoot.unmount();
 			this.reactRoot = null;
-		}
-	}
-
-	getUserStats(): void {
-		this.plugin.loadData().then((data) => {
-			this.petComponent.current?.setState({
-				userStats: data.userStats,
-			});
-		});
-	}
-
-	saveUserStats(): void {
-		if (this.petComponent.current?.state.userStats.level !== 0) {
-			// Checks that the userStats isn't default
-			this.plugin.saveData({
-				userStats: this.petComponent.current?.state.userStats,
-			});
 		}
 	}
 }

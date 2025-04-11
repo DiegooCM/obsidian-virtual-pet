@@ -12,10 +12,6 @@ export default class VirtualPet extends Plugin {
 
 		if (this.app.workspace.layoutReady) {
 			this.activateView();
-		} else {
-			// this.registerEvent(
-			//   this.app.workspace.on("layout-ready", this.activateView.bind(this))
-			// );
 		}
 	}
 

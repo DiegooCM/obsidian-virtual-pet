@@ -35,7 +35,7 @@ export class PetView extends React.Component<Props, State> {
 
 	// Cambiar el nombre a handleChange o algo del estilo
 	setUserData(updatedUserData: UserData) {
-		const updatedUserStats = this.setUserStats(updatedUserData);
+		const updatedUserStats = this.calcUserStats(updatedUserData);
 
 		this.setState({
 			userData: updatedUserData,
@@ -50,8 +50,8 @@ export class PetView extends React.Component<Props, State> {
 		});
 	}
 
-	// Lo meto en el statsHandler?
-	setUserStats(updatedUserData: UserData): UserStats {
+	// In statsHandler?
+	calcUserStats(updatedUserData: UserData): UserStats {
 		// Experience calculation
 		const filesDif =
 			updatedUserData.filesCount - this.state.initialUserData.filesCount;
