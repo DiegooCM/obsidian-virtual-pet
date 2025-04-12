@@ -7,7 +7,6 @@ interface Props {
 }
 
 interface State {
-	initialUserData: UserData;
 	userData: UserData;
 	userStats: UserStats;
 }
@@ -17,10 +16,6 @@ export class PetView extends React.Component<Props, State> {
 		super(props);
 
 		this.state = {
-			initialUserData: {
-				filesCount: -1,
-				actualFileWordCount: -1,
-			},
 			userData: {
 				filesCount: -1,
 				actualFileWordCount: -1,
@@ -43,30 +38,33 @@ export class PetView extends React.Component<Props, State> {
 		});
 	}
 
-	setInitialUserData(updatedUserData: UserData) {
-		this.setState({
-			initialUserData: updatedUserData,
-			userData: updatedUserData,
-		});
-	}
-
 	// In statsHandler?
 	calcUserStats(updatedUserData: UserData): UserStats {
+		if (
+			Object.values(updatedUserData).includes(-1) ||
+			Object.values(this.state.userData).includes(-1)
+		) {
+			return this.state.userStats;
+		}
+
 		// Experience calculation
 		const filesDif =
-			updatedUserData.filesCount - this.state.initialUserData.filesCount;
+			updatedUserData.filesCount - this.state.userData.filesCount;
 		const fileWordsDif =
 			updatedUserData.actualFileWordCount -
-			this.state.initialUserData.actualFileWordCount;
+			this.state.userData.actualFileWordCount;
 
-		const newExp = filesDif * 50 + fileWordsDif;
+		const newExp = filesDif * 50 + fileWordsDif + this.state.userStats.exp;
+
+		// console.log("newExp: ", newExp);
+		// console.log("filesWordDif: ", fileWordsDif);
 
 		// Checks if the user reach the exp goal
-		if (newExp > this.state.userStats.expGoal) {
+		if (newExp >= this.state.userStats.expGoal) {
 			const newExpGoal = Math.floor(this.state.userStats.expGoal * 1.5);
 			const newLevel = this.state.userStats.level + 1;
 			return {
-				exp: newExp - this.state.userStats.expGoal,
+				exp: 0,
 				expGoal: newExpGoal,
 				level: newLevel,
 			};
@@ -115,14 +113,6 @@ export class PetView extends React.Component<Props, State> {
 	userDataNStats = () => {
 		return (
 			<>
-				<div className="intial-data">
-					<h1> Initial Data</h1>
-					<p>Files Count: {this.state.initialUserData.filesCount}</p>
-					<p>
-						Actual File Word Count:
-						{this.state.initialUserData.actualFileWordCount}
-					</p>
-				</div>
 				<div className="actual-Data">
 					<h1> Actual Data</h1>
 					<p>Files Count: {this.state.userData.filesCount}</p>

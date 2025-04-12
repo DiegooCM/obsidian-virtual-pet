@@ -55,17 +55,18 @@ export default class VirualPetView extends ItemView {
 			})
 		);
 
-		await getUserStats(this.plugin).then((loadedUserStats) => {
+		// Gets the userStats from the data.json and save them in the state
+		getUserStats(this.plugin).then((loadedUserStats) => {
 			if (loadedUserStats) {
 				this.petComponent.current?.setState({
 					userStats: loadedUserStats,
 				});
 			}
-		}); // Gets the userStats from the data.json and save them in the state
+		});
 
 		this.registerEvent(
-			this.app.workspace.on("quit", () => {
-				saveUserStats(
+			this.app.workspace.on("quit", async () => {
+				await saveUserStats(
 					this.plugin,
 					this.petComponent.current?.state.userStats
 				); // Save the state userStats in the data.json
@@ -82,7 +83,7 @@ export default class VirualPetView extends ItemView {
 				this.statsHandler
 					.getAllUserData()
 					.then((userData) =>
-						this.petComponent.current?.setInitialUserData(userData)
+						this.petComponent.current?.setUserData(userData)
 					);
 			})
 		);
