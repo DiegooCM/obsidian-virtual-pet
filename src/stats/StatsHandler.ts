@@ -1,5 +1,5 @@
 import { TFile, Vault, Workspace } from "obsidian";
-import { countWords } from "../utils/StatsUtils";
+import { countWords } from "../utils/statsUtils";
 import { UserData } from "../types";
 
 export default class StatsHandler {

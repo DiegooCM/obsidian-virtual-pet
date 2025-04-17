@@ -1,6 +1,7 @@
 import * as React from "react";
 import { PetViewT, UserData, UserStats } from "src/types";
 import { Pet } from "./Pet";
+import { AnimationsHandler } from "src/hooks/animationsHandler";
 
 interface Props {
 	view: PetViewT;
@@ -12,6 +13,7 @@ interface State {
 }
 
 export class PetView extends React.Component<Props, State> {
+	private animationsHandler: AnimationsHandler;
 	constructor(props: Props) {
 		super(props);
 
@@ -56,13 +58,11 @@ export class PetView extends React.Component<Props, State> {
 
 		const newExp = filesDif * 50 + fileWordsDif + this.state.userStats.exp;
 
-		// console.log("newExp: ", newExp);
-		// console.log("filesWordDif: ", fileWordsDif);
-
 		// Checks if the user reach the exp goal
 		if (newExp >= this.state.userStats.expGoal) {
 			const newExpGoal = Math.floor(this.state.userStats.expGoal * 1.5);
 			const newLevel = this.state.userStats.level + 1;
+			this.animationsHandler.handleAnimation("code", 3000); // TODO: change the animation type when created
 			return {
 				exp: 0,
 				expGoal: newExpGoal,
@@ -131,10 +131,14 @@ export class PetView extends React.Component<Props, State> {
 		);
 	};
 
+	handlePetReady = (animationsHandler: AnimationsHandler) => {
+		this.animationsHandler = animationsHandler;
+	};
+
 	render() {
 		return (
 			<>
-				<Pet view={this.props.view} />
+				<Pet view={this.props.view} onReady={this.handlePetReady} />
 				<this.ExpBar />
 				<this.userDataNStats />
 			</>
