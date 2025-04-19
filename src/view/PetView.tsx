@@ -30,9 +30,10 @@ export class PetView extends React.Component<Props, State> {
 		};
 	}
 
-	// Cambiar el nombre a handleChange o algo del estilo
 	setUserData(updatedUserData: UserData) {
 		const updatedUserStats = this.calcUserStats(updatedUserData);
+
+		this.animationsHandler.handleSleeping();
 
 		this.setState({
 			userData: updatedUserData,
@@ -62,7 +63,7 @@ export class PetView extends React.Component<Props, State> {
 		if (newExp >= this.state.userStats.expGoal) {
 			const newExpGoal = Math.floor(this.state.userStats.expGoal * 1.5);
 			const newLevel = this.state.userStats.level + 1;
-			this.animationsHandler.handleAnimation("code", 3000); // TODO: change the animation type when created
+			this.animationsHandler.handleAnimation("celebrate", 2150);
 			return {
 				exp: 0,
 				expGoal: newExpGoal,
@@ -133,6 +134,7 @@ export class PetView extends React.Component<Props, State> {
 
 	handlePetReady = (animationsHandler: AnimationsHandler) => {
 		this.animationsHandler = animationsHandler;
+		animationsHandler.handleSleeping();
 	};
 
 	render() {

@@ -1,156 +1,207 @@
 import { RefObject, useMemo } from "react";
 import { PetViewT } from "src/types";
 
-type Animations = "default" | "walk" | "sit" | "code";
+type Animations = "default" | "walk" | "sit" | "code" | "celebrate";
 
 interface Props {
-  petContainerRef: RefObject<HTMLDivElement | null>;
-  petRef: RefObject<HTMLImageElement | null>;
-  animationRef: RefObject<HTMLImageElement | null>;
-  view: PetViewT;
+	petContainerRef: RefObject<HTMLDivElement | null>;
+	petRef: RefObject<HTMLImageElement | null>;
+	animationRef: RefObject<HTMLImageElement | null>;
+	view: PetViewT;
 }
 
 export class AnimationsHandler {
-  private petContainerRef;
-  private petRef;
-  private animationRef;
-  private isInProcess: boolean;
-  private isFinished: boolean;
-  private setTimeoutId: number;
-  // Assets
-  private walkingPath: string;
-  private standingPath: string;
-  private codingPath: string;
-  private backgroundPath: string;
+	// Refs
+	private petContainerRef;
+	private petRef;
+	private animationRef;
+	// Animations states
+	private isInProcess: boolean;
+	private isFinished: boolean;
+	// Timeouts Ids
+	private mainTimeoutId: number;
+	private sleepTimeoutId: number;
+	// Assets
+	private walkingPath: string;
+	private standingPath: string;
+	private codingPath: string;
+	private celebratingPath: string;
+	private sleepingPath: string;
+	private backgroundPath: string;
 
-  constructor(props: Props) {
-    this.walkingPath = useMemo(
-        () =>
-          props.view.app.vault.adapter.getResourcePath(
-            "./.obsidian/plugins/obsidian-virtual-pet/images/walking.gif"
-          ),
-        []
-      );
-      this.standingPath = useMemo(
-        () =>
-          props.view.app.vault.adapter.getResourcePath(
-            "./.obsidian/plugins/obsidian-virtual-pet/images/standing.gif"
-          ),
-        []
-      );
-    
-      this.codingPath = useMemo(
-        () =>
-          props.view.app.vault.adapter.getResourcePath(
-            "./.obsidian/plugins/obsidian-virtual-pet/images/coding.gif"
-          ),
-        []
-      );
-      
+	constructor(props: Props) {
+		this.walkingPath = useMemo(
+			() =>
+				props.view.app.vault.adapter.getResourcePath(
+					"./.obsidian/plugins/obsidian-virtual-pet/images/walking.gif"
+				),
+			[]
+		);
+		this.standingPath = useMemo(
+			() =>
+				props.view.app.vault.adapter.getResourcePath(
+					"./.obsidian/plugins/obsidian-virtual-pet/images/standing.gif"
+				),
+			[]
+		);
 
+		this.codingPath = useMemo(
+			() =>
+				props.view.app.vault.adapter.getResourcePath(
+					"./.obsidian/plugins/obsidian-virtual-pet/images/coding.gif"
+				),
+			[]
+		);
+		this.celebratingPath = useMemo(
+			() =>
+				props.view.app.vault.adapter.getResourcePath(
+					"./.obsidian/plugins/obsidian-virtual-pet/images/celebrating.gif"
+				),
+			[]
+		);
+		this.sleepingPath = useMemo(
+			() =>
+				props.view.app.vault.adapter.getResourcePath(
+					"./.obsidian/plugins/obsidian-virtual-pet/images/sleeping.gif"
+				),
+			[]
+		);
 
-    this.petContainerRef = props.petContainerRef;
-    this.petRef = props.petRef;
-    this.animationRef = props.animationRef;
-    this.isInProcess = false;
-    this.isFinished = false;
-    this.setTimeoutId = 0;
-  }
+		this.petContainerRef = props.petContainerRef;
+		this.petRef = props.petRef;
+		this.animationRef = props.animationRef;
+		this.isInProcess = false;
+		this.isFinished = false;
+		this.mainTimeoutId = 0;
+		this.sleepTimeoutId = 0;
+	}
 
-  handleAnimation = (animation: Animations, time: number) => {
-    if (this.isInProcess) {
-      clearTimeout(this.setTimeoutId);
-      this.isFinished = true;
-    }
+	// Checks if the user hasn't written for a while, and if so it sets the pet to the sleeps animation
+	handleSleeping = () => {
+		if (this.sleepTimeoutId !== 0) clearTimeout(this.sleepTimeoutId);
+		if (this.petRef.current?.src === this.sleepingPath)
+			this.petRef.current.src = this.standingPath;
 
-    const setAnimation = () => {
-      if (animation === "walk") {
-        this.sideWalks(time);
-      } else if (animation === "code") {
-        this.codes(time);
-      }
-    };
-    setAnimation();
-  };
+		this.sleepTimeoutId = window.setTimeout(() => {
+			if (this.petRef.current)
+				this.petRef.current.src = this.sleepingPath;
+			this.sleepTimeoutId = 0;
+		}, 30000); // 30secs
+	};
 
-  private handleFinishAnimation = () => {
-    this.isFinished = false;
-    this.isInProcess = false;
+	// I could make a function of the check is in process and ommit this function
+	handleAnimation = (animation: Animations, time: number) => {
+		if (this.isInProcess) {
+			clearTimeout(this.mainTimeoutId);
+			this.isFinished = true;
+		}
 
-    if (this.petRef.current) this.petRef.current.src = this.standingPath;
-  };
+		const setAnimation = () => {
+			if (animation === "walk") {
+				this.sideWalks(time);
+			} else if (animation === "code") {
+				this.codes(time);
+			} else if (animation === "celebrate") {
+				this.celebrates(time);
+			}
+		};
+		setAnimation();
+	};
 
-  private sideWalks(time: number) {
-    this.isInProcess = true;
-    let position = 0;
-    if (this.petRef.current) {
-      const leftValueString = window.getComputedStyle(this.petRef.current)[
-        "left"
-      ];
-      position = parseFloat(leftValueString);
-    }
+	private handleFinishAnimation = () => {
+		this.isFinished = false;
+		this.isInProcess = false;
 
-    let reqId = 0;
-    const speed = 6; //3
+		if (this.petRef.current) this.petRef.current.src = this.standingPath;
+	};
 
-    if (this.petRef.current) this.petRef.current.src = this.walkingPath;
+	private sideWalks(time: number) {
+		this.isInProcess = true;
+		let position = 0;
+		if (this.petRef.current) {
+			const leftValueString = window.getComputedStyle(
+				this.petRef.current
+			)["left"];
+			position = parseFloat(leftValueString);
+		}
 
-    // Moves the pet to the left, cheking if he reaches the limit (petContainer width)
-    const moveRight = () => {
-      const pageWidth = this.petContainerRef?.current?.offsetWidth;
-      const elWidth = this.petRef?.current?.offsetWidth; // 64?
-      if (
-        position <
-        (pageWidth && elWidth !== undefined ? pageWidth - elWidth : 180)
-      ) {
-        position += speed;
-        if (this.petRef?.current)
-          this.petRef.current.style.left = position + "px";
+		let reqId = 0;
+		const speed = 6; //3
 
-        handleState("right");
-      } else {
-        if (this.petRef?.current)
-          this.petRef.current.style.transform = "scaleX(1)";
+		if (this.petRef.current) this.petRef.current.src = this.walkingPath;
 
-        moveLeft();
-      }
-    };
+		// Moves the pet to the left, cheking if he reaches the limit (petContainer width)
+		const moveRight = () => {
+			const pageWidth = this.petContainerRef?.current?.offsetWidth;
+			const elWidth = this.petRef?.current?.offsetWidth; // 64?
+			if (
+				position <
+				(pageWidth && elWidth !== undefined ? pageWidth - elWidth : 180)
+			) {
+				position += speed;
+				if (this.petRef?.current)
+					this.petRef.current.style.left = position + "px";
 
-    // Moves the pet to the left, cheking if he reaches the limit (0)
-    const moveLeft = () => {
-      if (position !== 0) {
-        position -= speed;
-        if (this.petRef?.current)
-          this.petRef.current.style.left = position + "px";
-        handleState("left");
-      } else {
-        if (this.petRef?.current)
-          this.petRef.current.style.transform = "scaleX(-1)";
+				handleState("right");
+			} else {
+				if (this.petRef?.current)
+					this.petRef.current.style.transform = "scaleX(1)";
 
-        moveRight();
-      }
-    };
+				moveLeft();
+			}
+		};
 
-    const handleState = (side: string) => {
-      setTimeout(() => {
-        cancelAnimationFrame(reqId);
+		// Moves the pet to the left, cheking if he reaches the limit (0)
+		const moveLeft = () => {
+			if (position !== 0) {
+				position -= speed;
+				if (this.petRef?.current)
+					this.petRef.current.style.left = position + "px";
+				handleState("left");
+			} else {
+				if (this.petRef?.current)
+					this.petRef.current.style.transform = "scaleX(-1)";
 
-        if (!this.isFinished)
-          reqId = requestAnimationFrame(
-            side === "right" ? moveRight : moveLeft
-          );
-        else this.handleFinishAnimation();
-      }, 220);
-    };
+				moveRight();
+			}
+		};
 
-    moveRight(); // TODO: Make something to see if the pet has to go to de right or to the left
-    this.setTimeoutId = window.setTimeout(() => (this.isFinished = true), time); // Make a function?
-  }
+		const handleState = (side: string) => {
+			setTimeout(() => {
+				cancelAnimationFrame(reqId);
 
-  private codes(time: number) {
-    this.isInProcess = true;
-    if (this.petRef.current) this.petRef.current.src = this.codingPath;
+				if (!this.isFinished)
+					reqId = requestAnimationFrame(
+						side === "right" ? moveRight : moveLeft
+					);
+				else this.handleFinishAnimation();
+			}, 220);
+		};
 
-    this.setTimeoutId = window.setTimeout(() => this.handleFinishAnimation(), time);
-  }
+		moveRight(); // TODO: Make something to see if the pet has to go to de right or to the left
+		this.mainTimeoutId = window.setTimeout(
+			() => (this.isFinished = true),
+			time
+		); // Make a function?
+	}
+
+	private codes(time: number) {
+		this.isInProcess = true;
+		if (this.petRef.current) this.petRef.current.src = this.codingPath;
+
+		this.mainTimeoutId = window.setTimeout(
+			() => this.handleFinishAnimation(),
+			time
+		);
+	}
+
+	private celebrates(time: number) {
+		this.isInProcess = true;
+		if (this.petRef.current) this.petRef.current.src = this.celebratingPath;
+
+		this.mainTimeoutId = window.setTimeout(
+			() => this.handleFinishAnimation(),
+			time
+		);
+	}
 }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { AnimationsHandler } from "src/hooks/animationsHandler";
 import { PetViewT } from "src/types";
 
