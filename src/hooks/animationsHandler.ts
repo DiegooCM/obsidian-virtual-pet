@@ -27,7 +27,6 @@ export class AnimationsHandler {
 	private codingPath: string;
 	private celebratingPath: string;
 	private sleepingPath: string;
-	private backgroundPath: string;
 
 	constructor(props: Props) {
 		this.walkingPath = useMemo(
@@ -90,22 +89,20 @@ export class AnimationsHandler {
 	};
 
 	// I could make a function of the check is in process and ommit this function
-	handleAnimation = (animation: Animations, time: number) => {
+	handleAnimation = async (animation: Animations, time: number) => {
 		if (this.isInProcess) {
+			this.handleFinishAnimation();
 			clearTimeout(this.mainTimeoutId);
-			this.isFinished = true;
 		}
 
-		const setAnimation = () => {
-			if (animation === "walk") {
-				this.sideWalks(time);
-			} else if (animation === "code") {
-				this.codes(time);
-			} else if (animation === "celebrate") {
-				this.celebrates(time);
-			}
-		};
-		setAnimation();
+		this.isInProcess = true;
+		if (animation === "walk") {
+			this.sideWalks(time);
+		} else if (animation === "code") {
+			this.codes(time);
+		} else if (animation === "celebrate") {
+			this.celebrates(time);
+		}
 	};
 
 	private handleFinishAnimation = () => {
@@ -116,7 +113,7 @@ export class AnimationsHandler {
 	};
 
 	private sideWalks(time: number) {
-		this.isInProcess = true;
+		this.isFinished = false;
 		let position = 0;
 		if (this.petRef.current) {
 			const leftValueString = window.getComputedStyle(
@@ -133,7 +130,7 @@ export class AnimationsHandler {
 		// Moves the pet to the left, cheking if he reaches the limit (petContainer width)
 		const moveRight = () => {
 			const pageWidth = this.petContainerRef?.current?.offsetWidth;
-			const elWidth = this.petRef?.current?.offsetWidth; // 64?
+			const elWidth = this.petRef?.current?.offsetWidth;
 			if (
 				position <
 				(pageWidth && elWidth !== undefined ? pageWidth - elWidth : 180)
@@ -174,15 +171,16 @@ export class AnimationsHandler {
 					reqId = requestAnimationFrame(
 						side === "right" ? moveRight : moveLeft
 					);
-				else this.handleFinishAnimation();
 			}, 220);
 		};
 
-		moveRight(); // TODO: Make something to see if the pet has to go to de right or to the left
-		this.mainTimeoutId = window.setTimeout(
-			() => (this.isFinished = true),
-			time
-		); // Make a function?
+		if (this.petRef.current?.style.transform === "scaleX(1)") moveLeft();
+		else moveRight();
+
+		this.mainTimeoutId = window.setTimeout(() => {
+			this.isFinished = true;
+			this.handleFinishAnimation();
+		}, time);
 	}
 
 	private codes(time: number) {
