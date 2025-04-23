@@ -1,15 +1,22 @@
-#pet-container {
-  height: 15rem;
-  background-size: contain;
-  display: flex;    
-  align-items: center;
+.react-root { /* Cambiar esto pq es probable q afecte a otros plugins */
+  height: auto;
+  width: 100%;
 }
+
+#pet-container {
+  aspect-ratio: 1 / 1;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  width: 100%;
+}
+
 #pet {
   height: 82px;
   width: 82px;
   position: relative;
   left: 50%;
-  top: 25%;
+  top: 70%;
   transform: scaleX(-1);
 }
 
@@ -29,5 +36,6 @@
 
 #exp-bar {
   position: relative;
+  background-color: var(--color-accent);
   height: 16px;
 }

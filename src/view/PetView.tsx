@@ -78,13 +78,6 @@ export class PetView extends React.Component<Props, State> {
 	}
 
 	ExpBar = () => {
-		const bgPath = React.useMemo(
-			() =>
-				this.props.view.app.vault.adapter.getResourcePath(
-					"./.obsidian/plugins/obsidian-virtual-pet/images/exp-bar-bg.png"
-				),
-			[]
-		);
 		const [expPercentage, setExpPercentage] = React.useState(0);
 
 		React.useEffect(() => {
@@ -102,7 +95,6 @@ export class PetView extends React.Component<Props, State> {
 					<div
 						id="exp-bar"
 						style={{
-							backgroundImage: `url(${bgPath})`,
 							right: `${expPercentage}%`,
 						}}
 					/>

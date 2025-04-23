@@ -11,7 +11,7 @@ export const Pet: React.FC<PetProps> = (props) => {
 	const backgroundPath = useMemo(
 		() =>
 			props.view.app.vault.adapter.getResourcePath(
-				"./.obsidian/plugins/obsidian-virtual-pet/images/backgroundGpt.png"
+				"./.obsidian/plugins/obsidian-virtual-pet/images/background2.png"
 			),
 		[]
 	);
@@ -42,7 +42,6 @@ export const Pet: React.FC<PetProps> = (props) => {
 			id="pet-container"
 			style={{
 				backgroundImage: `url(${backgroundPath})`,
-				backgroundPosition: "center",
 			}}
 		>
 			<img ref={petRef} id="pet" src={standingPath} />

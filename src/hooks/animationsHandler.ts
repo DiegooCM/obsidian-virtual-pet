@@ -1,4 +1,4 @@
-import { RefObject, useMemo } from "react";
+import { MutableRefObject, RefObject, useMemo, useRef } from "react";
 import { PetViewT } from "src/types";
 
 type Animations = "default" | "walk" | "sit" | "code" | "celebrate";
@@ -20,7 +20,7 @@ export class AnimationsHandler {
 	private isFinished: boolean;
 	// Timeouts Ids
 	private mainTimeoutId: number;
-	private sleepTimeoutId: number;
+	private sleepTimeoutRef: MutableRefObject<number | null>;
 	// Assets
 	private walkingPath: string;
 	private standingPath: string;
@@ -72,20 +72,20 @@ export class AnimationsHandler {
 		this.isInProcess = false;
 		this.isFinished = false;
 		this.mainTimeoutId = 0;
-		this.sleepTimeoutId = 0;
+		this.sleepTimeoutRef = useRef(null);
 	}
 
 	// Checks if the user hasn't written for a while, and if so it sets the pet to the sleeps animation
 	handleSleeping = () => {
-		if (this.sleepTimeoutId !== 0) clearTimeout(this.sleepTimeoutId);
 		if (this.petRef.current?.src === this.sleepingPath)
 			this.petRef.current.src = this.standingPath;
-
-		this.sleepTimeoutId = window.setTimeout(() => {
+		if (this.sleepTimeoutRef.current !== null) {
+			clearTimeout(this.sleepTimeoutRef.current);
+		}
+		this.sleepTimeoutRef.current = window.setTimeout(() => {
 			if (this.petRef.current)
 				this.petRef.current.src = this.sleepingPath;
-			this.sleepTimeoutId = 0;
-		}, 30000); // 30secs
+		}, 30000);
 	};
 
 	// I could make a function of the check is in process and ommit this function
