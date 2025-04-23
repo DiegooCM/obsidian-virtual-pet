@@ -16,6 +16,7 @@ export class AnimationsHandler {
 	private petRef;
 	private animationRef;
 	// Animations states
+	private defaultAnimationNumber: number;
 	private isInProcess: boolean;
 	private isFinished: boolean;
 	// Timeouts Ids
@@ -75,10 +76,22 @@ export class AnimationsHandler {
 		this.sleepTimeoutRef = useRef(null);
 	}
 
+	// Rotates default animations
+	handleDefaultAnimations = (): void => {
+		if (this.defaultAnimationNumber === 0) {
+			this.defaultAnimationNumber = 1;
+			if (this.petRef.current)
+				this.petRef.current.src = this.standingPath;
+		} else {
+			this.defaultAnimationNumber = 0;
+			this.handleAnimation("walk", 5000);
+		}
+	};
+
 	// Checks if the user hasn't written for a while, and if so it sets the pet to the sleeps animation
 	handleSleeping = () => {
 		if (this.petRef.current?.src === this.sleepingPath)
-			this.petRef.current.src = this.standingPath;
+			this.handleDefaultAnimations();
 		if (this.sleepTimeoutRef.current !== null) {
 			clearTimeout(this.sleepTimeoutRef.current);
 		}
@@ -88,7 +101,6 @@ export class AnimationsHandler {
 		}, 30000);
 	};
 
-	// I could make a function of the check is in process and ommit this function
 	handleAnimation = async (animation: Animations, time: number) => {
 		if (this.isInProcess) {
 			this.handleFinishAnimation();
@@ -106,10 +118,10 @@ export class AnimationsHandler {
 	};
 
 	private handleFinishAnimation = () => {
-		this.isFinished = false;
+		this.isFinished = true;
 		this.isInProcess = false;
 
-		if (this.petRef.current) this.petRef.current.src = this.standingPath;
+		this.handleDefaultAnimations();
 	};
 
 	private sideWalks(time: number) {
@@ -122,7 +134,7 @@ export class AnimationsHandler {
 			position = parseFloat(leftValueString);
 		}
 
-		let reqId = 0;
+		let reqId = 0; // Useref?
 		const speed = 6; //3
 
 		if (this.petRef.current) this.petRef.current.src = this.walkingPath;
@@ -144,13 +156,13 @@ export class AnimationsHandler {
 				if (this.petRef?.current)
 					this.petRef.current.style.transform = "scaleX(1)";
 
-				moveLeft();
+				handleState("left");
 			}
 		};
 
 		// Moves the pet to the left, cheking if he reaches the limit (0)
 		const moveLeft = () => {
-			if (position !== 0) {
+			if (position >= 0) {
 				position -= speed;
 				if (this.petRef?.current)
 					this.petRef.current.style.left = position + "px";
@@ -159,7 +171,7 @@ export class AnimationsHandler {
 				if (this.petRef?.current)
 					this.petRef.current.style.transform = "scaleX(-1)";
 
-				moveRight();
+				handleState("right");
 			}
 		};
 
