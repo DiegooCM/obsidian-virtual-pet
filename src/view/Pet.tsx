@@ -1,9 +1,10 @@
 import { useMemo, useRef } from "react";
 import { AnimationsHandler } from "src/hooks/animationsHandler";
-import { PetViewT } from "src/types";
+import { PetViewT, UserStats } from "src/types";
 
 interface PetProps {
 	view: PetViewT;
+	userStats: UserStats;
 	onReady: (animationsHandler: AnimationsHandler) => void;
 }
 
@@ -23,14 +24,16 @@ export const Pet: React.FC<PetProps> = (props) => {
 		[]
 	);
 
-	const petRef = useRef<HTMLImageElement>(null);
+	const petRef = useRef<HTMLDivElement>(null);
+	const petImgRef = useRef<HTMLImageElement>(null);
 	const animationRef = useRef<HTMLImageElement>(null);
 	const petContainerRef = useRef<HTMLDivElement>(null);
 
 	const animationsHandler = new AnimationsHandler({
-		petRef,
-		animationRef,
 		petContainerRef,
+		petRef,
+		petImgRef,
+		animationRef,
 		view: props.view,
 	});
 
@@ -44,8 +47,11 @@ export const Pet: React.FC<PetProps> = (props) => {
 				backgroundImage: `url(${backgroundPath})`,
 			}}
 		>
-			<img ref={petRef} id="pet" src={standingPath} />
-			<img ref={animationRef} id="animation" />
+			<div id="pet" ref={petRef}>
+				<p id="pet-level-info">Level: {props.userStats.level}</p>
+				<img id="pet-img" ref={petImgRef} src={standingPath} />
+				<img ref={animationRef} id="animation" />
+			</div>
 		</div>
 	);
 };

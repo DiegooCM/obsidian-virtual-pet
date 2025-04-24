@@ -1,41 +1,59 @@
-.react-root { /* Cambiar esto pq es probable q afecte a otros plugins */
-  height: auto;
-  width: 100%;
+.react-root {
+	/* Cambiar esto pq es probable q afecte a otros plugins */
+	height: auto;
+	width: 100%;
 }
 
 #pet-container {
-  aspect-ratio: 1 / 1;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  width: 100%;
+	aspect-ratio: 1 / 1;
+	background-size: cover;
+	background-position: center;
+	display: flex;
+	width: 100%;
 }
 
 #pet {
-  height: 82px;
-  width: 82px;
-  position: relative;
-  left: 50%;
-  top: 70%;
-  transform: scaleX(-1);
+	position: sticky;
+	height: fit-content;
+	left: 50%;
+	top: 100%;
+}
+
+#pet-img {
+	height: 82px;
+	width: 82px;
+	transform: scaleX(-1);
+}
+
+#pet-level-info {
+	width: 120%;
+	font-family: monospace;
+	font-size: 1.1rem;
+	text-shadow: 0px 1px 2px black;
+	margin-bottom: 5px;
 }
 
 #animation {
-  position: relative;
-  z-index: 1;
+	position: relative;
+	z-index: 1;
+}
+
+#exp-info {
+	font-family: monospace;
 }
 
 #exp-bar-container {
-  margin-top: 5px;
+	margin-top: 5px;
 }
 
 #exp-bar-border {
-  overflow:hidden;
-  border: 2px solid #2c2c2c ;
+	overflow: hidden;
+	border: 2px solid #2c2c2c;
 }
 
 #exp-bar {
-  position: relative;
-  background-color: var(--color-accent);
-  height: 16px;
+	position: relative;
+	background-color: var(--color-accent);
+	height: 16px;
+	transition: right 1s ease-in-out;
 }

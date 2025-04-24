@@ -5,7 +5,8 @@ type Animations = "default" | "walk" | "sit" | "code" | "celebrate";
 
 interface Props {
 	petContainerRef: RefObject<HTMLDivElement | null>;
-	petRef: RefObject<HTMLImageElement | null>;
+	petRef: RefObject<HTMLDivElement | null>;
+	petImgRef: RefObject<HTMLImageElement | null>;
 	animationRef: RefObject<HTMLImageElement | null>;
 	view: PetViewT;
 }
@@ -13,6 +14,7 @@ interface Props {
 export class AnimationsHandler {
 	// Refs
 	private petContainerRef;
+	private petImgRef;
 	private petRef;
 	private animationRef;
 	// Animations states
@@ -69,6 +71,7 @@ export class AnimationsHandler {
 
 		this.petContainerRef = props.petContainerRef;
 		this.petRef = props.petRef;
+		this.petImgRef = props.petImgRef;
 		this.animationRef = props.animationRef;
 		this.isInProcess = false;
 		this.isFinished = false;
@@ -80,24 +83,24 @@ export class AnimationsHandler {
 	handleDefaultAnimations = (): void => {
 		if (this.defaultAnimationNumber === 0) {
 			this.defaultAnimationNumber = 1;
-			if (this.petRef.current)
-				this.petRef.current.src = this.standingPath;
+			if (this.petImgRef.current)
+				this.petImgRef.current.src = this.standingPath;
 		} else {
 			this.defaultAnimationNumber = 0;
-			this.handleAnimation("walk", 5000);
+			this.handleAnimation("walk", 10000); // 10 secs
 		}
 	};
 
 	// Checks if the user hasn't written for a while, and if so it sets the pet to the sleeps animation
 	handleSleeping = () => {
-		if (this.petRef.current?.src === this.sleepingPath)
-			this.handleDefaultAnimations();
+		if (this.petImgRef.current?.src === this.sleepingPath)
+			this.handleAnimation("code", 7000); // 7 secs
 		if (this.sleepTimeoutRef.current !== null) {
 			clearTimeout(this.sleepTimeoutRef.current);
 		}
 		this.sleepTimeoutRef.current = window.setTimeout(() => {
-			if (this.petRef.current)
-				this.petRef.current.src = this.sleepingPath;
+			if (this.petImgRef.current)
+				this.petImgRef.current.src = this.sleepingPath;
 		}, 30000);
 	};
 
@@ -137,12 +140,13 @@ export class AnimationsHandler {
 		let reqId = 0; // Useref?
 		const speed = 6; //3
 
-		if (this.petRef.current) this.petRef.current.src = this.walkingPath;
+		if (this.petImgRef.current)
+			this.petImgRef.current.src = this.walkingPath;
 
 		// Moves the pet to the left, cheking if he reaches the limit (petContainer width)
 		const moveRight = () => {
 			const pageWidth = this.petContainerRef?.current?.offsetWidth;
-			const elWidth = this.petRef?.current?.offsetWidth;
+			const elWidth = this.petImgRef?.current?.offsetWidth;
 			if (
 				position <
 				(pageWidth && elWidth !== undefined ? pageWidth - elWidth : 180)
@@ -153,8 +157,8 @@ export class AnimationsHandler {
 
 				handleState("right");
 			} else {
-				if (this.petRef?.current)
-					this.petRef.current.style.transform = "scaleX(1)";
+				if (this.petImgRef?.current)
+					this.petImgRef.current.style.transform = "scaleX(1)";
 
 				handleState("left");
 			}
@@ -168,8 +172,8 @@ export class AnimationsHandler {
 					this.petRef.current.style.left = position + "px";
 				handleState("left");
 			} else {
-				if (this.petRef?.current)
-					this.petRef.current.style.transform = "scaleX(-1)";
+				if (this.petImgRef?.current)
+					this.petImgRef.current.style.transform = "scaleX(-1)";
 
 				handleState("right");
 			}
@@ -186,7 +190,7 @@ export class AnimationsHandler {
 			}, 220);
 		};
 
-		if (this.petRef.current?.style.transform === "scaleX(1)") moveLeft();
+		if (this.petImgRef.current?.style.transform === "scaleX(1)") moveLeft();
 		else moveRight();
 
 		this.mainTimeoutId = window.setTimeout(() => {
@@ -197,7 +201,8 @@ export class AnimationsHandler {
 
 	private codes(time: number) {
 		this.isInProcess = true;
-		if (this.petRef.current) this.petRef.current.src = this.codingPath;
+		if (this.petImgRef.current)
+			this.petImgRef.current.src = this.codingPath;
 
 		this.mainTimeoutId = window.setTimeout(
 			() => this.handleFinishAnimation(),
@@ -207,7 +212,8 @@ export class AnimationsHandler {
 
 	private celebrates(time: number) {
 		this.isInProcess = true;
-		if (this.petRef.current) this.petRef.current.src = this.celebratingPath;
+		if (this.petImgRef.current)
+			this.petImgRef.current.src = this.celebratingPath;
 
 		this.mainTimeoutId = window.setTimeout(
 			() => this.handleFinishAnimation(),

@@ -90,7 +90,9 @@ export class PetView extends React.Component<Props, State> {
 
 		return (
 			<div id="exp-bar-container">
-				<p id="exp-info"></p>
+				<p id="exp-info">
+					{this.state.userStats.exp} / {this.state.userStats.expGoal}
+				</p>
 				<div id="exp-bar-border">
 					<div
 						id="exp-bar"
@@ -132,7 +134,11 @@ export class PetView extends React.Component<Props, State> {
 	render() {
 		return (
 			<>
-				<Pet view={this.props.view} onReady={this.handlePetReady} />
+				<Pet
+					view={this.props.view}
+					userStats={this.state.userStats}
+					onReady={this.handlePetReady}
+				/>
 				<this.ExpBar />
 				<this.userDataNStats />
 			</>
