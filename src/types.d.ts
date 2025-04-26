@@ -4,6 +4,7 @@ import StatsHandler from "./stats/StatsHandler";
 export interface UserData {
 	actualFileWordCount: number;
 	filesCount: number;
+	isActualFile: boolean;
 }
 
 export interface UserStats {

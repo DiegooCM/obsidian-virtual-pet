@@ -180,9 +180,8 @@ export class AnimationsHandler {
 		};
 
 		const handleState = (side: string) => {
+			cancelAnimationFrame(reqId);
 			setTimeout(() => {
-				cancelAnimationFrame(reqId);
-
 				if (!this.isFinished)
 					reqId = requestAnimationFrame(
 						side === "right" ? moveRight : moveLeft

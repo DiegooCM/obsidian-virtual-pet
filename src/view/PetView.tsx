@@ -21,6 +21,7 @@ export class PetView extends React.Component<Props, State> {
 			userData: {
 				filesCount: -1,
 				actualFileWordCount: -1,
+				isActualFile: true,
 			},
 			userStats: {
 				exp: 0,
@@ -30,14 +31,20 @@ export class PetView extends React.Component<Props, State> {
 		};
 	}
 
+	// It calculate and update the userStats
 	setUserData(updatedUserData: UserData) {
-		const updatedUserStats = this.calcUserStats(updatedUserData);
-
 		this.animationsHandler.handleSleeping();
 
+		// Checks if the updatedUserData belongs to the same file that the user is making changes
+		if (updatedUserData.isActualFile) {
+			const updatedUserStats = this.calcUserStats(updatedUserData);
+
+			this.setState({
+				userStats: updatedUserStats,
+			});
+		}
 		this.setState({
 			userData: updatedUserData,
-			userStats: updatedUserStats,
 		});
 	}
 
@@ -112,8 +119,12 @@ export class PetView extends React.Component<Props, State> {
 					<h1> Actual Data</h1>
 					<p>Files Count: {this.state.userData.filesCount}</p>
 					<p>
-						Actual File Word Count:{" "}
+						Actual File Word Count:
 						{this.state.userData.actualFileWordCount}
+					</p>
+					<p>
+						Is Actual File:{" "}
+						{this.state.userData.isActualFile ? "true" : "false"}
 					</p>
 				</div>
 				<div className="user-stats">

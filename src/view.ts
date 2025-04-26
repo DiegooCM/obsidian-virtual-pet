@@ -80,11 +80,12 @@ export default class VirualPetView extends ItemView {
 					this.plugin,
 					this.petComponent.current?.state.userStats
 				); // Save the state userStats in the data.json
-				this.statsHandler
-					.getAllUserData()
-					.then((userData) =>
-						this.petComponent.current?.setUserData(userData)
-					);
+				this.statsHandler.getAllUserData().then((userData) =>
+					this.petComponent.current?.setUserData({
+						...userData,
+						isActualFile: false,
+					})
+				);
 			})
 		);
 
@@ -94,7 +95,10 @@ export default class VirualPetView extends ItemView {
 				this.statsHandler
 					.getAllUserData()
 					.then((userData) =>
-						this.petComponent.current?.setUserData(userData)
+						this.petComponent.current?.setUserData({
+							...userData,
+							isActualFile: true,
+						})
 					);
 			})
 		);
