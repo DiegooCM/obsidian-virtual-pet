@@ -18,3 +18,10 @@ export interface UserInfo {
 }
 
 export type PetViewT = View & { statsHandler: StatsHandler };
+
+export type Animations = "default" | "walk" | "sit" | "code" | "celebrate";
+
+export interface AnimationsHandlerT {
+	handleAnimation: (animation: Animations, time: number) => void;
+	handleSleeping: () => void;
+}

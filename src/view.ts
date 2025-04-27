@@ -66,20 +66,23 @@ export default class VirualPetView extends ItemView {
 
 		this.registerEvent(
 			this.app.workspace.on("quit", async () => {
+				// Save the state userStats in the data.json
 				await saveUserStats(
 					this.plugin,
 					this.petComponent.current?.state.userStats
-				); // Save the state userStats in the data.json
+				);
 			})
 		);
 
 		this.registerEvent(
 			// When a file is open
 			this.app.workspace.on("file-open", () => {
+				// Save the state userStats in the data.json
 				saveUserStats(
 					this.plugin,
 					this.petComponent.current?.state.userStats
-				); // Save the state userStats in the data.json
+				);
+				// Get the data of the new file
 				this.statsHandler.getAllUserData().then((userData) =>
 					this.petComponent.current?.setUserData({
 						...userData,
@@ -92,14 +95,12 @@ export default class VirualPetView extends ItemView {
 		this.registerEvent(
 			// When the user types
 			this.app.workspace.on("editor-change", () => {
-				this.statsHandler
-					.getAllUserData()
-					.then((userData) =>
-						this.petComponent.current?.setUserData({
-							...userData,
-							isActualFile: true,
-						})
-					);
+				this.statsHandler.getAllUserData().then((userData) =>
+					this.petComponent.current?.setUserData({
+						...userData,
+						isActualFile: true,
+					})
+				);
 			})
 		);
 	}

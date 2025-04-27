@@ -1,7 +1,6 @@
 import * as React from "react";
-import { PetViewT, UserData, UserStats } from "src/types";
+import { AnimationsHandlerT, PetViewT, UserData, UserStats } from "src/types";
 import { Pet } from "./Pet";
-import { AnimationsHandler } from "src/hooks/animationsHandler";
 
 interface Props {
 	view: PetViewT;
@@ -13,7 +12,7 @@ interface State {
 }
 
 export class PetView extends React.Component<Props, State> {
-	private animationsHandler: AnimationsHandler;
+	private animationsHandler: AnimationsHandlerT;
 	constructor(props: Props) {
 		super(props);
 
@@ -31,12 +30,16 @@ export class PetView extends React.Component<Props, State> {
 		};
 	}
 
+	handlePetReady = (animationsHandler: AnimationsHandlerT) => {
+		this.animationsHandler = animationsHandler;
+		animationsHandler.handleSleeping();
+	};
 	// It calculate and update the userStats
 	setUserData(updatedUserData: UserData) {
-		this.animationsHandler.handleSleeping();
-
 		// Checks if the updatedUserData belongs to the same file that the user is making changes
+
 		if (updatedUserData.isActualFile) {
+			this.animationsHandler.handleSleeping();
 			const updatedUserStats = this.calcUserStats(updatedUserData);
 
 			this.setState({
@@ -135,11 +138,6 @@ export class PetView extends React.Component<Props, State> {
 				</div>
 			</>
 		);
-	};
-
-	handlePetReady = (animationsHandler: AnimationsHandler) => {
-		this.animationsHandler = animationsHandler;
-		animationsHandler.handleSleeping();
 	};
 
 	render() {

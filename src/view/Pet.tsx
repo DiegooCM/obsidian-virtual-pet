@@ -1,43 +1,43 @@
-import { useMemo, useRef } from "react";
-import { AnimationsHandler } from "src/hooks/animationsHandler";
-import { PetViewT, UserStats } from "src/types";
+import { useEffect, useMemo, useRef } from "react";
+import useAnimationsHandler from "src/hooks/useAnimationsHandler";
+import { AnimationsHandlerT, PetViewT, UserStats } from "src/types";
 
 interface PetProps {
 	view: PetViewT;
 	userStats: UserStats;
-	onReady: (animationsHandler: AnimationsHandler) => void;
+	onReady: (animationsHandler: AnimationsHandlerT) => void;
 }
 
-export const Pet: React.FC<PetProps> = (props) => {
+export const Pet: React.FC<PetProps> = ({ view, userStats, onReady }) => {
 	const backgroundPath = useMemo(
 		() =>
-			props.view.app.vault.adapter.getResourcePath(
-				"./.obsidian/plugins/obsidian-virtual-pet/images/background2a.png"
+			view.app.vault.adapter.getResourcePath(
+				"./.obsidian/plugins/obsidian-virtual-pet/images/background2.png"
 			),
 		[]
 	);
 	const standingPath = useMemo(
 		() =>
-			props.view.app.vault.adapter.getResourcePath(
+			view.app.vault.adapter.getResourcePath(
 				"./.obsidian/plugins/obsidian-virtual-pet/images/standing.gif"
 			),
 		[]
 	);
 
-	const petRef = useRef<HTMLDivElement>(null);
-	const petImgRef = useRef<HTMLImageElement>(null);
-	const animationRef = useRef<HTMLImageElement>(null);
-	const petContainerRef = useRef<HTMLDivElement>(null);
-
-	const animationsHandler = new AnimationsHandler({
+	const petRef = useRef<HTMLDivElement | null>(null);
+	const petImgRef = useRef<HTMLImageElement | null>(null);
+	const animationRef = useRef<HTMLImageElement | null>(null);
+	const petContainerRef = useRef<HTMLDivElement | null>(null);
+	const animationsHandler = useAnimationsHandler({
 		petContainerRef,
 		petRef,
 		petImgRef,
 		animationRef,
-		view: props.view,
+		view,
 	});
-
-	props.onReady(animationsHandler);
+	useEffect(() => {
+		onReady(animationsHandler);
+	}, [onReady]);
 
 	return (
 		<div
@@ -48,7 +48,7 @@ export const Pet: React.FC<PetProps> = (props) => {
 			}}
 		>
 			<div id="pet" ref={petRef}>
-				<p id="pet-level-info">Level: {props.userStats.level}</p>
+				<p id="pet-level-info">Level: {userStats.level}</p>
 				<img id="pet-img" ref={petImgRef} src={standingPath} />
 				<img ref={animationRef} id="animation" />
 			</div>
