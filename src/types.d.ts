@@ -25,3 +25,14 @@ export interface AnimationsHandlerT {
 	handleAnimation: (animation: Animations, time: number) => void;
 	handleSleeping: () => void;
 }
+
+export interface PetState {
+	userData: UserData;
+	userStats: UserStats;
+}
+
+export interface petAnimation {
+	animation: number[][];
+	speed: number;
+	fps: number;
+}

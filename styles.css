@@ -1,63 +1,110 @@
 .react-root {
-	/* Cambiar esto pq es probable q afecte a otros plugins */
-	height: auto;
 	width: 100%;
+	height: 100%;
 }
 
-#pet-container {
+.plugin {
+	width: 100%;
 	aspect-ratio: 1 / 1;
-	background-size: cover;
-	background-position: center;
-	display: flex;
+}
+
+.debug-tools {
+	height: 40%;
+}
+
+/* Pet */
+.pet-buttons {
 	width: 100%;
-}
-
-#pet {
+	height: 20%;
 	display: flex;
-	width: 35%;
-	position: sticky;
-	height: fit-content;
-	left: 50%;
-	top: 100%;
-	align-items: center;
-	flex-direction: column;
+	justify-content: center;
+
+	gap: 10px;
+	padding: 10px;
+	box-sizing: border-box;
 }
 
-#pet-img {
+.pet-buttons button {
+	height: 40px;
+	width: 100px;
+}
+
+.pet-buttons .active {
+	box-shadow: inset 0px 0px 10px 0px #bbb;
+}
+
+.pet-animations-container {
+	position: relative;
+	width: 100%;
+	height: 80%;
+}
+
+.pet-container {
+	position: absolute;
+	color: #000;
+	font-family: monospace;
+	font-size: 1rem;
+
+	top: 50%;
+}
+
+.pet {
+	scale: 2;
+
+	height: 64px;
+	width: 64px;
+
 	image-rendering: pixelated;
+}
+
+.pet-level {
+	position: absolute;
+	width: max-content;
+	top: -64px;
+}
+
+/* Experience Bar */
+
+.exp-bar-container {
+	height: 20%;
+	display: flex;
+	flex-direction: column;
+	color: #000;
+	font-family: monospace;
+}
+
+.exp-info {
+	margin: 0;
+	/* padding-inline: 10px; */
+	font-size: 1rem;
+}
+
+.exp-bar {
+	align-self: center;
+	height: 40px;
 	width: 100%;
-	transform: scaleX(-1);
+	border: 3px solid #444;
 }
 
-#pet-level-info {
-	white-space: nowrap;
-	font-family: monospace;
-	font-size: 1.7vh;
-	text-shadow: 0px 1px 2px black;
-	margin-bottom: 5px;
+.exp-quantity {
+	width: 0%;
+	height: 100%;
+
+	background: #bbb;
 }
 
-#animation {
-	position: relative;
-	z-index: 1;
+.exp-buttons {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	gap: 40px;
 }
 
-#exp-info {
-	font-family: monospace;
-}
-
-#exp-bar-container {
-	margin-top: 5px;
-}
-
-#exp-bar-border {
-	overflow: hidden;
-	border: 2px solid #2c2c2c;
-}
-
-#exp-bar {
-	position: relative;
-	background-color: var(--color-accent);
-	height: 16px;
-	transition: right 1s ease-in-out;
+.exp-buttons button {
+	height: 40px;
+	width: 80px;
+	border: 2px solid #666;
+	background: #fff;
+	font-size: 1.5rem;
 }

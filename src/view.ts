@@ -3,13 +3,13 @@ import { ItemView, Plugin, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
-import { PetView } from "./view/PetView";
+import PetView from "./view/PetView";
+// import {PetView} from './view/PetView copy'
 import StatsHandler from "./stats/StatsHandler";
-import { getUserStats, saveUserStats } from "./hooks/useData";
 
 export default class VirualPetView extends ItemView {
 	private reactRoot: Root | null = null;
-	private petComponent: React.RefObject<PetView>;
+	// private petComponent: React.RefObject<typeof PetView>;
 	public statsHandler: StatsHandler;
 	private plugin: Plugin;
 
@@ -17,8 +17,6 @@ export default class VirualPetView extends ItemView {
 		super(leaf);
 
 		this.plugin = plugin;
-
-		this.petComponent = React.createRef();
 	}
 
 	getViewType() {
@@ -40,7 +38,8 @@ export default class VirualPetView extends ItemView {
 
 		this.statsHandler = new StatsHandler(
 			this.app.vault,
-			this.app.workspace
+			this.app.workspace,
+			this.plugin
 		);
 
 		// Pet View
@@ -50,27 +49,19 @@ export default class VirualPetView extends ItemView {
 		this.reactRoot = createRoot(reactContainer);
 		this.reactRoot.render(
 			React.createElement(PetView, {
-				view: this,
-				ref: this.petComponent,
+				statsHandler: this.statsHandler,
+				app: this.app,
 			})
 		);
 
 		// Gets the userStats from the data.json and save them in the state
-		getUserStats(this.plugin).then((loadedUserStats) => {
-			if (loadedUserStats) {
-				this.petComponent.current?.setState({
-					userStats: loadedUserStats,
-				});
-			}
-		});
+		this.statsHandler.getUserStatsFromJson();
 
+		// Save the state userStats in the data.json when the app is about to quit
 		this.registerEvent(
 			this.app.workspace.on("quit", async () => {
-				// Save the state userStats in the data.json
-				await saveUserStats(
-					this.plugin,
-					this.petComponent.current?.state.userStats
-				);
+				// Que lo coja de statsHandler y no de aquí
+				await this.statsHandler.saveUserStats();
 			})
 		);
 
@@ -78,35 +69,23 @@ export default class VirualPetView extends ItemView {
 			// When a file is open
 			this.app.workspace.on("file-open", () => {
 				// Save the state userStats in the data.json
-				saveUserStats(
-					this.plugin,
-					this.petComponent.current?.state.userStats
-				);
-				// Get the data of the new file
-				this.statsHandler.getAllUserData().then((userData) =>
-					this.petComponent.current?.setUserData({
-						...userData,
-						isActualFile: false,
-					})
-				);
+				this.statsHandler.saveUserStats();
+				// Hacía lo mismo q en el de abajo pero actualFile: false
+				this.statsHandler.updateUserDataNStats();
 			})
 		);
 
 		this.registerEvent(
 			// When the user types
 			this.app.workspace.on("editor-change", () => {
-				this.statsHandler.getAllUserData().then((userData) =>
-					this.petComponent.current?.setUserData({
-						...userData,
-						isActualFile: true,
-					})
-				);
+				// Antes cogía los datos del .getAllUserData() y se los pasaba al dataUtil y ahí ponía q actualFile: true
+				this.statsHandler.updateUserDataNStats();
 			})
 		);
 	}
 
 	async onClose(): Promise<void> {
-		saveUserStats(this.plugin, this.petComponent.current?.state.userStats);
+		this.statsHandler.saveUserStats();
 		if (this.reactRoot) {
 			this.reactRoot.unmount();
 			this.reactRoot = null;

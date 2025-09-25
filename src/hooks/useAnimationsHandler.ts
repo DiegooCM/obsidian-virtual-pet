@@ -85,12 +85,6 @@ const useAnimationsHandler = (props: Props): AnimationsHandlerT => {
 	};
 
 	const handleAnimation = async (animation: Animations, time: number) => {
-		// console.log(
-		// 	"Animation: ",
-		// 	animation,
-		// 	"\nIs in process: ",
-		// 	isInProcess.current
-		// );
 		if (isInProcess.current) {
 			handleFinishAnimation();
 			clearTimeout(mainTimeoutId.current);

@@ -1,156 +1,184 @@
-import * as React from "react";
-import { AnimationsHandlerT, PetViewT, UserData, UserStats } from "src/types";
-import { Pet } from "./Pet";
+import UserInfo from "src/components/UserInfo";
+import StatsHandler from "src/stats/StatsHandler";
 
-interface Props {
-	view: PetViewT;
-}
+import { LegacyRef, useMemo, useRef, useState } from "react";
+import animations from "../animations.json";
+import type { petAnimation } from "../types";
+import Expbar from "../components/ExpBar";
+import PetButtons from "src/components/PetButtons";
+import { App } from "obsidian";
 
-interface State {
-	userData: UserData;
-	userStats: UserStats;
-}
+type PetView = {
+	statsHandler: StatsHandler;
+	app: App;
+};
 
-export class PetView extends React.Component<Props, State> {
-	private animationsHandler: AnimationsHandlerT;
-	constructor(props: Props) {
-		super(props);
+export default function PetView({ statsHandler, app }: PetView) {
+	const [userData, setUserData] = useState(statsHandler.getUserData());
+	const [userStats, setUserStats] = useState(statsHandler.getUserStats());
 
-		this.state = {
-			userData: {
-				filesCount: -1,
-				actualFileWordCount: -1,
-				isActualFile: true,
-			},
-			userStats: {
-				exp: 0,
-				expGoal: 10,
-				level: 0,
-			},
-		};
-	}
+	// Assets
+	const petSpritesheet = useMemo(
+		() =>
+			app.vault.adapter.getResourcePath(
+				"./.obsidian/plugins/obsidian-virtual-pet/assets/spritesheet.png"
+			),
+		[]
+	);
+	const petBackground = useMemo(
+		() =>
+			app.vault.adapter.getResourcePath(
+				"./.obsidian/plugins/obsidian-virtual-pet/assets/background.png"
+			),
+		[]
+	);
 
-	handlePetReady = (animationsHandler: AnimationsHandlerT) => {
-		this.animationsHandler = animationsHandler;
-		animationsHandler.handleSleeping();
+	// States
+	const [actualAnimation, setActualAnimation] = useState<petAnimation>(
+		animations.walkAnimation
+	);
+
+	// Refs
+	const petRef: LegacyRef<HTMLDivElement> | null = useRef(null);
+	const petContainerRef: LegacyRef<HTMLDivElement> | null = useRef(null);
+	const petAnimationsContainerRef: LegacyRef<HTMLDivElement> | null =
+		useRef(null);
+	const intervalId = useRef(0);
+
+	const previousAnimationIdx = useRef<number>(0);
+	const animationFrameId = useRef<number>(0);
+	const petVelocity = useRef<number>(actualAnimation.speed);
+
+	const fpsAnimation = actualAnimation.fps; // Not all the frames of each animations last the same, this const says to the loop how much has the frame to last
+
+	// Change ActualAnimation
+	const changeAnimation = (newAnimation: petAnimation) => {
+		if (actualAnimation === newAnimation) return;
+
+		// cancelAnimationFrame(animationFrameId.current);
+		// animationFrameId.current = 0;
+		setActualAnimation(newAnimation);
 	};
-	// It calculate and update the userStats
-	setUserData(updatedUserData: UserData) {
-		// Checks if the updatedUserData belongs to the same file that the user is making changes
 
-		if (updatedUserData.isActualFile) {
-			this.animationsHandler.handleSleeping();
-			const updatedUserStats = this.calcUserStats(updatedUserData);
+	// Update User info
+	const updateUserInfo = () => {
+		const newUserData = statsHandler.getUserData();
+		const newUserStats = statsHandler.getUserStats();
 
-			this.setState({
-				userStats: updatedUserStats,
-			});
+		if (JSON.stringify(newUserData) !== JSON.stringify(userData)) {
+			// Update the data
+			setUserData(newUserData);
 		}
-		this.setState({
-			userData: updatedUserData,
-		});
+		if (JSON.stringify(newUserStats) !== JSON.stringify(userStats)) {
+			if (newUserStats.exp >= newUserStats.expGoal) {
+				levelUp();
+			} else {
+				setUserStats(newUserStats);
+			}
+		}
+	};
+	// Level up function
+	const levelUp = () => {
+		// Animation changes
+		setActualAnimation(animations.celebrateAnimation);
+		setTimeout(() => setActualAnimation(animations.walkAnimation), 2000);
+
+		setUserStats(statsHandler.petLevelUp());
+	};
+
+	// Main Loop
+	const animate = (timestamp: number) => {
+		// Pet animation
+		if (!petRef.current || !petContainerRef.current) return;
+
+		const windowWidth =
+			petAnimationsContainerRef.current?.clientWidth || 600;
+
+		const animationIdx =
+			Math.floor(timestamp / (1000 / fpsAnimation)) %
+			actualAnimation.animation.length;
+
+		if (animationIdx !== previousAnimationIdx.current) {
+			petRef.current.style.backgroundPosition = `-${
+				actualAnimation.animation[animationIdx][0] * 64
+			}px
+        -${actualAnimation.animation[animationIdx][1] * 64}px`;
+
+			// Movement animation
+			if (actualAnimation.speed > 0) {
+				const actualLeft = parseInt(petContainerRef.current.style.left);
+				petContainerRef.current.style.left = `${
+					actualLeft + petVelocity.current
+				}px`;
+
+				// Touched left border
+				if (actualLeft <= 64) {
+					petVelocity.current = actualAnimation.speed;
+					petRef.current.style.transform = "scaleX(1)";
+				}
+				// Touched right border
+				if (actualLeft >= windowWidth - 128) {
+					petVelocity.current = actualAnimation.speed * -1;
+					petRef.current.style.transform = "scaleX(-1)";
+				}
+			}
+		}
+
+		previousAnimationIdx.current = animationIdx;
+
+		// Start new loop
+		animationFrameId.current = requestAnimationFrame(animate);
+	};
+
+	//
+	if (intervalId.current) {
+		clearInterval(intervalId.current);
 	}
+	intervalId.current = window.setInterval(() => {
+		updateUserInfo();
+	}, 500);
 
-	// In statsHandler?
-	calcUserStats(updatedUserData: UserData): UserStats {
-		if (
-			Object.values(updatedUserData).includes(-1) ||
-			Object.values(this.state.userData).includes(-1)
-		) {
-			return this.state.userStats;
-		}
+	// Animation frame loop
+	if (animationFrameId.current)
+		cancelAnimationFrame(animationFrameId.current);
+	animationFrameId.current = requestAnimationFrame(animate);
 
-		// Experience calculation
-		const filesDif =
-			updatedUserData.filesCount - this.state.userData.filesCount;
-		const fileWordsDif =
-			updatedUserData.actualFileWordCount -
-			this.state.userData.actualFileWordCount;
-
-		const newExp = filesDif * 50 + fileWordsDif + this.state.userStats.exp;
-
-		// Checks if the user reach the exp goal
-		if (newExp >= this.state.userStats.expGoal) {
-			const newExpGoal = Math.floor(this.state.userStats.expGoal * 1.5);
-			const newLevel = this.state.userStats.level + 1;
-			this.animationsHandler.handleAnimation("celebrate", 2150);
-			return {
-				exp: 0,
-				expGoal: newExpGoal,
-				level: newLevel,
-			};
-		}
-
-		return {
-			...this.state.userStats,
-			exp: newExp < 0 ? 0 : newExp, // The exp cannot be lower than 0
-		};
-	}
-
-	ExpBar = () => {
-		const [expPercentage, setExpPercentage] = React.useState(0);
-
-		React.useEffect(() => {
-			setExpPercentage(
-				100 -
-					(this.state.userStats.exp / this.state.userStats.expGoal) *
-						100
-			);
-		}, [this.state.userStats.exp]);
-
-		return (
-			<div id="exp-bar-container">
-				<p id="exp-info">
-					{this.state.userStats.exp} / {this.state.userStats.expGoal}
-				</p>
-				<div id="exp-bar-border">
+	return (
+		<>
+			<div
+				className="plugin"
+				style={{
+					background: `url(${petBackground}) 0% 0% / cover no-repeat`,
+				}}
+			>
+				<div
+					className="pet-animations-container"
+					ref={petAnimationsContainerRef}
+				>
 					<div
-						id="exp-bar"
-						style={{
-							right: `${expPercentage}%`,
-						}}
-					/>
+						className="pet-container"
+						ref={petContainerRef}
+						style={{ left: "0px" }}
+					>
+						<p className="pet-level">Level: {userStats.level}</p>
+						<div
+							className="pet"
+							ref={petRef}
+							style={{ background: `url(${petSpritesheet})` }}
+						></div>
+					</div>
 				</div>
+
+				<Expbar exp={userStats.exp} expGoal={userStats.expGoal} />
 			</div>
-		);
-	};
-
-	userDataNStats = () => {
-		return (
-			<>
-				<div className="actual-Data">
-					<h1> Actual Data</h1>
-					<p>Files Count: {this.state.userData.filesCount}</p>
-					<p>
-						Actual File Word Count:
-						{this.state.userData.actualFileWordCount}
-					</p>
-					<p>
-						Is Actual File:{" "}
-						{this.state.userData.isActualFile ? "true" : "false"}
-					</p>
-				</div>
-				<div className="user-stats">
-					<h1> User Stats</h1>
-					<p>Exp: {this.state.userStats.exp}</p>
-					<p>Exp Goal: {this.state.userStats.expGoal}</p>
-					<p>Level: {this.state.userStats.level}</p>
-				</div>
-			</>
-		);
-	};
-
-	render() {
-		return (
-			<>
-				<Pet
-					view={this.props.view}
-					userStats={this.state.userStats}
-					onReady={this.handlePetReady}
+			<div className="debug-tools">
+				<UserInfo userData={userData} userStats={userStats} />
+				<h1>Change Pet Animation</h1>
+				<PetButtons
+					actualAnimation={actualAnimation}
+					changeAnimation={changeAnimation}
 				/>
-				<this.ExpBar />
-				<this.userDataNStats />
-			</>
-		);
-	}
+			</div>
+		</>
+	);
 }
