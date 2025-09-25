@@ -1,12 +1,13 @@
 import UserInfo from "src/components/UserInfo";
 import StatsHandler from "src/stats/StatsHandler";
 
-import { LegacyRef, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import animations from "../animations.json";
 import type { petAnimation } from "../types";
 import Expbar from "../components/ExpBar";
 import PetButtons from "src/components/PetButtons";
 import { App } from "obsidian";
+import Pet from "src/components/Pet";
 
 type PetView = {
 	statsHandler: StatsHandler;
@@ -18,13 +19,6 @@ export default function PetView({ statsHandler, app }: PetView) {
 	const [userStats, setUserStats] = useState(statsHandler.getUserStats());
 
 	// Assets
-	const petSpritesheet = useMemo(
-		() =>
-			app.vault.adapter.getResourcePath(
-				"./.obsidian/plugins/obsidian-virtual-pet/assets/spritesheet.png"
-			),
-		[]
-	);
 	const petBackground = useMemo(
 		() =>
 			app.vault.adapter.getResourcePath(
@@ -34,30 +28,18 @@ export default function PetView({ statsHandler, app }: PetView) {
 	);
 
 	// States
-	const [actualAnimation, setActualAnimation] = useState<petAnimation>(
+	const [animation, setAnimation] = useState<petAnimation>(
 		animations.walkAnimation
 	);
 
 	// Refs
-	const petRef: LegacyRef<HTMLDivElement> | null = useRef(null);
-	const petContainerRef: LegacyRef<HTMLDivElement> | null = useRef(null);
-	const petAnimationsContainerRef: LegacyRef<HTMLDivElement> | null =
-		useRef(null);
 	const intervalId = useRef(0);
 
-	const previousAnimationIdx = useRef<number>(0);
-	const animationFrameId = useRef<number>(0);
-	const petVelocity = useRef<number>(actualAnimation.speed);
-
-	const fpsAnimation = actualAnimation.fps; // Not all the frames of each animations last the same, this const says to the loop how much has the frame to last
-
-	// Change ActualAnimation
+	// Change Animation
 	const changeAnimation = (newAnimation: petAnimation) => {
-		if (actualAnimation === newAnimation) return;
+		if (animation === newAnimation) return;
 
-		// cancelAnimationFrame(animationFrameId.current);
-		// animationFrameId.current = 0;
-		setActualAnimation(newAnimation);
+		setAnimation(newAnimation);
 	};
 
 	// Update User info
@@ -80,54 +62,10 @@ export default function PetView({ statsHandler, app }: PetView) {
 	// Level up function
 	const levelUp = () => {
 		// Animation changes
-		setActualAnimation(animations.celebrateAnimation);
-		setTimeout(() => setActualAnimation(animations.walkAnimation), 2000);
+		setAnimation(animations.celebrateAnimation);
+		setTimeout(() => setAnimation(animations.walkAnimation), 2000);
 
 		setUserStats(statsHandler.petLevelUp());
-	};
-
-	// Main Loop
-	const animate = (timestamp: number) => {
-		// Pet animation
-		if (!petRef.current || !petContainerRef.current) return;
-
-		const windowWidth =
-			petAnimationsContainerRef.current?.clientWidth || 600;
-
-		const animationIdx =
-			Math.floor(timestamp / (1000 / fpsAnimation)) %
-			actualAnimation.animation.length;
-
-		if (animationIdx !== previousAnimationIdx.current) {
-			petRef.current.style.backgroundPosition = `-${
-				actualAnimation.animation[animationIdx][0] * 64
-			}px
-        -${actualAnimation.animation[animationIdx][1] * 64}px`;
-
-			// Movement animation
-			if (actualAnimation.speed > 0) {
-				const actualLeft = parseInt(petContainerRef.current.style.left);
-				petContainerRef.current.style.left = `${
-					actualLeft + petVelocity.current
-				}px`;
-
-				// Touched left border
-				if (actualLeft <= 64) {
-					petVelocity.current = actualAnimation.speed;
-					petRef.current.style.transform = "scaleX(1)";
-				}
-				// Touched right border
-				if (actualLeft >= windowWidth - 128) {
-					petVelocity.current = actualAnimation.speed * -1;
-					petRef.current.style.transform = "scaleX(-1)";
-				}
-			}
-		}
-
-		previousAnimationIdx.current = animationIdx;
-
-		// Start new loop
-		animationFrameId.current = requestAnimationFrame(animate);
 	};
 
 	//
@@ -136,12 +74,7 @@ export default function PetView({ statsHandler, app }: PetView) {
 	}
 	intervalId.current = window.setInterval(() => {
 		updateUserInfo();
-	}, 500);
-
-	// Animation frame loop
-	if (animationFrameId.current)
-		cancelAnimationFrame(animationFrameId.current);
-	animationFrameId.current = requestAnimationFrame(animate);
+	}, 200);
 
 	return (
 		<>
@@ -151,31 +84,19 @@ export default function PetView({ statsHandler, app }: PetView) {
 					background: `url(${petBackground}) 0% 0% / cover no-repeat`,
 				}}
 			>
-				<div
-					className="pet-animations-container"
-					ref={petAnimationsContainerRef}
-				>
-					<div
-						className="pet-container"
-						ref={petContainerRef}
-						style={{ left: "0px" }}
-					>
-						<p className="pet-level">Level: {userStats.level}</p>
-						<div
-							className="pet"
-							ref={petRef}
-							style={{ background: `url(${petSpritesheet})` }}
-						></div>
-					</div>
-				</div>
-
+				<Pet
+					animation={animation}
+					setAnimation={setAnimation}
+					app={app}
+					userStats={userStats}
+				/>
 				<Expbar exp={userStats.exp} expGoal={userStats.expGoal} />
 			</div>
 			<div className="debug-tools">
 				<UserInfo userData={userData} userStats={userStats} />
 				<h1>Change Pet Animation</h1>
 				<PetButtons
-					actualAnimation={actualAnimation}
+					animation={animation}
 					changeAnimation={changeAnimation}
 				/>
 			</div>

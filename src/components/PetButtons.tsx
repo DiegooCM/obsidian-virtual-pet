@@ -2,12 +2,12 @@ import type { petAnimation } from "../types";
 import animations from "../animations.json";
 
 type PetButtonsType = {
-	actualAnimation: petAnimation;
+	animation: petAnimation;
 	changeAnimation: (newAnimation: petAnimation) => void;
 };
 
 export default function PetButtons({
-	actualAnimation,
+	animation,
 	changeAnimation,
 }: PetButtonsType) {
 	return (
@@ -17,9 +17,7 @@ export default function PetButtons({
 					changeAnimation(animations.standAnimation);
 				}}
 				className={
-					actualAnimation === animations.standAnimation
-						? "active"
-						: ""
+					animation === animations.standAnimation ? "active" : ""
 				}
 			>
 				Stand
@@ -29,7 +27,7 @@ export default function PetButtons({
 					changeAnimation(animations.walkAnimation);
 				}}
 				className={
-					actualAnimation === animations.walkAnimation ? "active" : ""
+					animation === animations.walkAnimation ? "active" : ""
 				}
 			>
 				Walk
@@ -39,9 +37,7 @@ export default function PetButtons({
 					changeAnimation(animations.celebrateAnimation);
 				}}
 				className={
-					actualAnimation === animations.celebrateAnimation
-						? "active"
-						: ""
+					animation === animations.celebrateAnimation ? "active" : ""
 				}
 			>
 				Celebrate
@@ -51,9 +47,7 @@ export default function PetButtons({
 					changeAnimation(animations.codingAnimation);
 				}}
 				className={
-					actualAnimation === animations.codingAnimation
-						? "active"
-						: ""
+					animation === animations.codingAnimation ? "active" : ""
 				}
 			>
 				Code
@@ -63,9 +57,7 @@ export default function PetButtons({
 					changeAnimation(animations.sleepingAnimation);
 				}}
 				className={
-					actualAnimation === animations.sleepingAnimation
-						? "active"
-						: ""
+					animation === animations.sleepingAnimation ? "active" : ""
 				}
 			>
 				Sleep
