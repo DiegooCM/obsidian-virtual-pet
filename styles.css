@@ -49,8 +49,6 @@
 }
 
 .pet {
-	scale: 2;
-
 	height: 64px;
 	width: 64px;
 
@@ -75,7 +73,7 @@
 
 .exp-info {
 	margin: 0;
-	/* padding-inline: 10px; */
+	padding-inline: 10px;
 	font-size: 1rem;
 }
 

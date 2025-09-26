@@ -29,10 +29,11 @@ export default function Pet({
 	const petContainerRef: LegacyRef<HTMLDivElement> | null = useRef(null);
 	const petAnimationsContainerRef: LegacyRef<HTMLDivElement> | null =
 		useRef(null);
+	const petVelocity = useRef<number>(animation.speed);
+	const petScale = useRef<number>(1.5);
 
 	const previousAnimationIdx = useRef<number>(0);
 	const animationFrameId = useRef<number>(0);
-	const petVelocity = useRef<number>(animation.speed);
 	const actualAnimation = useRef<petAnimation>();
 
 	// Main Loop
@@ -48,10 +49,15 @@ export default function Pet({
 			animation.animation.length;
 
 		if (animationIdx !== previousAnimationIdx.current) {
+			// Change sprite
 			petRef.current.style.backgroundPosition = `-${
 				animation.animation[animationIdx][0] * 64
 			}px
         -${animation.animation[animationIdx][1] * 64}px`;
+
+			// Change pet size
+			petScale.current = (windowWidth * 2) / 400;
+			petRef.current.style.scale = petScale.current.toString();
 
 			// Movement animation
 			if (animation.speed > 0) {
@@ -61,12 +67,12 @@ export default function Pet({
 				}px`;
 
 				// Touched left border
-				if (actualLeft <= 64) {
+				if (actualLeft <= 0) {
 					petVelocity.current = animation.speed;
 					petRef.current.style.transform = "scaleX(1)";
 				}
 				// Touched right border
-				if (actualLeft >= windowWidth - 128) {
+				if (actualLeft >= windowWidth - 64 * petScale.current) {
 					petVelocity.current = animation.speed * -1;
 					petRef.current.style.transform = "scaleX(-1)";
 				}

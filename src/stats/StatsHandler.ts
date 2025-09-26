@@ -26,7 +26,7 @@ export default class StatsHandler {
 		};
 	}
 
-	async updateUserDataNStats() {
+	updateUserDataNStats = async () => {
 		// Actual file where the user is working
 		const filePath = this.workspace.getActiveFile();
 
@@ -51,38 +51,38 @@ export default class StatsHandler {
 				exp: newExp > 0 ? newExp : 0,
 			};
 		}
-	}
+	};
 
-	getFilesCount(): number {
+	getFilesCount = (): number => {
 		const filesCount = this.vault.getMarkdownFiles().length;
 		this.userData.filesCount = filesCount;
 
 		return filesCount;
-	}
+	};
 
-	async getFileWordsCount(filePath: TFile): Promise<number> {
+	getFileWordsCount = async (filePath: TFile): Promise<number> => {
 		const fileWords = await this.vault
 			.cachedRead(filePath)
 			.then((text) => countWords(text));
 		this.userData.actualFileWordCount = fileWords;
 
 		return fileWords;
-	}
+	};
 
-	getUserData(): UserData {
+	getUserData = (): UserData => {
 		return { ...this.userData };
-	}
+	};
 
-	getUserStats(): UserStats {
+	getUserStats = (): UserStats => {
 		return { ...this.userStats };
-	}
+	};
 
 	setUserStats = (newUserStats: UserStats): void => {
 		// TODO: Hacer comprobaciones de si el nuevo contenido es válido y luego cambiarlo
 		this.userStats = newUserStats;
 	};
 
-	async getUserStatsFromJson(): Promise<void> {
+	getUserStatsFromJson = async (): Promise<void> => {
 		try {
 			const data = await this.plugin.loadData();
 
@@ -93,15 +93,15 @@ export default class StatsHandler {
 		} catch (error) {
 			console.error(error);
 		}
-	}
+	};
 
-	async saveUserStats(): Promise<void> {
+	saveUserStats = async (): Promise<void> => {
 		if (this.userStats?.exp) {
 			this.plugin.saveData({
 				userStats: this.userStats,
 			});
 		}
-	}
+	};
 
 	petLevelUp = (): UserStats => {
 		this.userStats = {
