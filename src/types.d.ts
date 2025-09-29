@@ -2,7 +2,7 @@ import { View } from "obsidian";
 import StatsHandler from "./stats/StatsHandler";
 
 export interface UserData {
-	actualFileWordCount: number;
+	fileWordCount: number;
 	filesCount: number;
 	isActualFile: boolean;
 }
@@ -19,20 +19,24 @@ export interface UserInfo {
 
 export type PetViewT = View & { statsHandler: StatsHandler };
 
-export type Animations = "default" | "walk" | "sit" | "code" | "celebrate";
-
-export interface AnimationsHandlerT {
-	handleAnimation: (animation: Animations, time: number) => void;
-	handleSleeping: () => void;
-}
-
 export interface PetState {
 	userData: UserData;
 	userStats: UserStats;
 }
 
-export interface petAnimation {
+export interface PetAnimation {
 	animation: number[][];
 	speed: number;
 	fps: number;
 }
+
+export interface AnimationsHandler {
+	animation: PetAnimation;
+	handleSleeping: () => void;
+	changeAnimation: (newAnimation: PetAnimation) => void;
+	levelUp: () => void;
+}
+
+export type PetViewRef = {
+	triggerChild: () => void;
+};

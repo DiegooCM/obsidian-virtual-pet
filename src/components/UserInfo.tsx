@@ -13,7 +13,7 @@ export default function UserInfo({ userData, userStats }: UserInfo) {
 				<p>Files Count: {userData.filesCount}</p>
 				<p>
 					Actual File Word Count:
-					{userData.actualFileWordCount}
+					{userData.fileWordCount}
 				</p>
 				<p>
 					Is Actual File: {userData.isActualFile ? "true" : "false"}

@@ -16,7 +16,7 @@ export default class StatsHandler {
 
 		this.userData = {
 			filesCount: -1,
-			actualFileWordCount: -1,
+			fileWordCount: -1,
 			isActualFile: true,
 		};
 		this.userStats = {
@@ -32,7 +32,7 @@ export default class StatsHandler {
 
 		if (!filePath) return;
 
-		const oldWordsCount = this.userData.actualFileWordCount;
+		const oldWordsCount = this.userData.fileWordCount;
 		const oldFileCount = this.userData.filesCount;
 		const newWordsCount = await this.getFileWordsCount(filePath);
 
@@ -64,7 +64,7 @@ export default class StatsHandler {
 		const fileWords = await this.vault
 			.cachedRead(filePath)
 			.then((text) => countWords(text));
-		this.userData.actualFileWordCount = fileWords;
+		this.userData.fileWordCount = fileWords;
 
 		return fileWords;
 	};

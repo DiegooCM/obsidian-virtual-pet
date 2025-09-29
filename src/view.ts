@@ -1,22 +1,25 @@
 // https://docs.obsidian.md/Plugins/User+interface/Views
 import { ItemView, Plugin, WorkspaceLeaf } from "obsidian";
-import * as React from "react";
+import { createElement, createRef, RefObject } from "react";
 import { Root, createRoot } from "react-dom/client";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
 import PetView from "./view/PetView";
 // import {PetView} from './view/PetView copy'
 import StatsHandler from "./stats/StatsHandler";
+import { PetViewRef } from "./types";
 
 export default class VirualPetView extends ItemView {
 	private reactRoot: Root | null = null;
 	// private petComponent: React.RefObject<typeof PetView>;
 	public statsHandler: StatsHandler;
 	private plugin: Plugin;
+	private petViewRef: RefObject<PetViewRef | null>;
 
 	constructor(leaf: WorkspaceLeaf, plugin: Plugin) {
 		super(leaf);
 
 		this.plugin = plugin;
+		this.petViewRef = createRef();
 	}
 
 	getViewType() {
@@ -48,9 +51,10 @@ export default class VirualPetView extends ItemView {
 
 		this.reactRoot = createRoot(reactContainer);
 		this.reactRoot.render(
-			React.createElement(PetView, {
+			createElement(PetView, {
 				statsHandler: this.statsHandler,
 				app: this.app,
+				ref: this.petViewRef,
 			})
 		);
 
@@ -70,7 +74,7 @@ export default class VirualPetView extends ItemView {
 			this.app.workspace.on("file-open", () => {
 				// Save the state userStats in the data.json
 				this.statsHandler.saveUserStats();
-				// Hacía lo mismo q en el de abajo pero actualFile: false
+				// Update info
 				this.statsHandler.updateUserDataNStats();
 			})
 		);
@@ -78,8 +82,10 @@ export default class VirualPetView extends ItemView {
 		this.registerEvent(
 			// When the user types
 			this.app.workspace.on("editor-change", () => {
-				// Antes cogía los datos del .getAllUserData() y se los pasaba al dataUtil y ahí ponía q actualFile: true
+				// Update info
 				this.statsHandler.updateUserDataNStats();
+				// Calls a function in PetView for handeling animations and user info
+				this.petViewRef.current?.triggerChild();
 			})
 		);
 	}

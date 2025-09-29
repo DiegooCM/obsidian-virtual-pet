@@ -1,24 +1,20 @@
+import { Ref, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { App } from "obsidian";
 import UserInfo from "src/components/UserInfo";
 import StatsHandler from "src/stats/StatsHandler";
-
-import { useMemo, useRef, useState } from "react";
-import animations from "../animations.json";
-import type { petAnimation } from "../types";
 import Expbar from "../components/ExpBar";
 import PetButtons from "src/components/PetButtons";
-import { App } from "obsidian";
 import Pet from "src/components/Pet";
+import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
+import { PetViewRef } from "src/types";
 
-type PetView = {
+interface PetView {
 	statsHandler: StatsHandler;
 	app: App;
-};
+	ref: Ref<PetViewRef>;
+}
 
-export default function PetView({ statsHandler, app }: PetView) {
-	const [userData, setUserData] = useState(statsHandler.getUserData());
-	const [userStats, setUserStats] = useState(statsHandler.getUserStats());
-
-	// Assets
+export default function PetView({ statsHandler, app, ref }: PetView) {
 	const petBackground = useMemo(
 		() =>
 			app.vault.adapter.getResourcePath(
@@ -27,20 +23,11 @@ export default function PetView({ statsHandler, app }: PetView) {
 		[]
 	);
 
-	// States
-	const [animation, setAnimation] = useState<petAnimation>(
-		animations.walkAnimation
-	);
+	const [userData, setUserData] = useState(statsHandler.getUserData());
+	const [userStats, setUserStats] = useState(statsHandler.getUserStats());
 
-	// Refs
-	const intervalId = useRef(0);
-
-	// Change Animation
-	const changeAnimation = (newAnimation: petAnimation) => {
-		if (animation === newAnimation) return;
-
-		setAnimation(newAnimation);
-	};
+	const { animation, handleSleeping, changeAnimation, levelUp } =
+		useAnimationsHandler();
 
 	// Update User info
 	const updateUserInfo = () => {
@@ -52,29 +39,31 @@ export default function PetView({ statsHandler, app }: PetView) {
 			setUserData(newUserData);
 		}
 		if (JSON.stringify(newUserStats) !== JSON.stringify(userStats)) {
+			// Level up
 			if (newUserStats.exp >= newUserStats.expGoal) {
 				levelUp();
-			} else {
+				setUserStats(statsHandler.petLevelUp());
+			}
+			// Not level up
+			else {
 				setUserStats(newUserStats);
 			}
 		}
 	};
-	// Level up function
-	const levelUp = () => {
-		// Animation changes
-		setAnimation(animations.celebrateAnimation);
-		setTimeout(() => setAnimation(animations.walkAnimation), 2000);
 
-		setUserStats(statsHandler.petLevelUp());
+	const onUserType = () => {
+		handleSleeping();
+		updateUserInfo();
 	};
 
-	//
-	if (intervalId.current) {
-		clearInterval(intervalId.current);
-	}
-	intervalId.current = window.setInterval(() => {
-		updateUserInfo();
-	}, 200);
+	// To expose the onUserType function on the ref
+	useImperativeHandle(ref, () => ({
+		triggerChild: onUserType,
+	}));
+
+	useEffect(() => {
+		onUserType();
+	}, []);
 
 	return (
 		<>
@@ -84,12 +73,7 @@ export default function PetView({ statsHandler, app }: PetView) {
 					background: `url(${petBackground}) 0% 0% / cover no-repeat`,
 				}}
 			>
-				<Pet
-					animation={animation}
-					setAnimation={setAnimation}
-					app={app}
-					userStats={userStats}
-				/>
+				<Pet animation={animation} app={app} userStats={userStats} />
 				<Expbar exp={userStats.exp} expGoal={userStats.expGoal} />
 			</div>
 			<div className="debug-tools">

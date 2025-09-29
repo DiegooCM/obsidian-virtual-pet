@@ -1,20 +1,14 @@
 import { App } from "obsidian";
-import { LegacyRef, useMemo, useRef } from "react";
-import { petAnimation, UserStats } from "src/types";
+import { RefObject, useMemo, useRef } from "react";
+import { PetAnimation, UserStats } from "src/types";
 
 interface Props {
-	animation: petAnimation;
-	setAnimation: React.Dispatch<React.SetStateAction<petAnimation>>;
+	animation: PetAnimation;
 	app: App;
 	userStats: UserStats;
 }
 
-export default function Pet({
-	animation,
-	setAnimation,
-	app,
-	userStats,
-}: Props) {
+export default function Pet({ animation, app, userStats }: Props) {
 	// Assets
 	const petSpritesheet = useMemo(
 		() =>
@@ -25,16 +19,16 @@ export default function Pet({
 	);
 
 	// Refs
-	const petRef: LegacyRef<HTMLDivElement> | null = useRef(null);
-	const petContainerRef: LegacyRef<HTMLDivElement> | null = useRef(null);
-	const petAnimationsContainerRef: LegacyRef<HTMLDivElement> | null =
+	const petRef: RefObject<HTMLDivElement | null> = useRef(null);
+	const petContainerRef: RefObject<HTMLDivElement | null> = useRef(null);
+	const PetAnimationsContainerRef: RefObject<HTMLDivElement | null> =
 		useRef(null);
 	const petVelocity = useRef<number>(animation.speed);
 	const petScale = useRef<number>(1.5);
 
 	const previousAnimationIdx = useRef<number>(0);
 	const animationFrameId = useRef<number>(0);
-	const actualAnimation = useRef<petAnimation>();
+	const actualAnimation = useRef<PetAnimation>(null);
 
 	// Main Loop
 	const animate = (timestamp: number) => {
@@ -42,7 +36,7 @@ export default function Pet({
 		if (!petRef.current || !petContainerRef.current) return;
 
 		const windowWidth =
-			petAnimationsContainerRef.current?.clientWidth || 600;
+			PetAnimationsContainerRef.current?.clientWidth || 600;
 
 		const animationIdx =
 			Math.floor(timestamp / (1000 / animation.fps)) %
@@ -98,7 +92,7 @@ export default function Pet({
 	return (
 		<div
 			className="pet-animations-container"
-			ref={petAnimationsContainerRef}
+			ref={PetAnimationsContainerRef}
 		>
 			<div
 				className="pet-container"

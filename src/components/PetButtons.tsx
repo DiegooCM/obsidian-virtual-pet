@@ -1,9 +1,9 @@
-import type { petAnimation } from "../types";
+import type { PetAnimation } from "../types";
 import animations from "../animations.json";
 
 type PetButtonsType = {
-	animation: petAnimation;
-	changeAnimation: (newAnimation: petAnimation) => void;
+	animation: PetAnimation;
+	changeAnimation: (newAnimation: PetAnimation) => void;
 };
 
 export default function PetButtons({
