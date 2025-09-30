@@ -15,9 +15,6 @@ export default function UserInfo({ userData, userStats }: UserInfo) {
 					Actual File Word Count:
 					{userData.fileWordCount}
 				</p>
-				<p>
-					Is Actual File: {userData.isActualFile ? "true" : "false"}
-				</p>
 			</div>
 			<div className="user-stats">
 				<h1> User Stats</h1>

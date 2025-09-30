@@ -17,7 +17,6 @@ export default class StatsHandler {
 		this.userData = {
 			filesCount: -1,
 			fileWordCount: -1,
-			isActualFile: true,
 		};
 		this.userStats = {
 			exp: 0,
@@ -26,24 +25,29 @@ export default class StatsHandler {
 		};
 	}
 
-	updateUserDataNStats = async () => {
+	updateUserDataNStats = async (isFileOpen: boolean) => {
+		let fileWordsDif = 0;
 		// Actual file where the user is working
 		const filePath = this.workspace.getActiveFile();
 
 		if (!filePath) return;
 
-		const oldWordsCount = this.userData.fileWordCount;
-		const oldFileCount = this.userData.filesCount;
-		const newWordsCount = await this.getFileWordsCount(filePath);
+		// Data Calculation
+		const oldUserData = { ...this.userData };
+		const newFileCount = this.getFilesCount();
 
 		// Stats Calculation
-		const filesDif = this.getFilesCount() - oldFileCount;
-		const fileWordsDif = newWordsCount - oldWordsCount;
+		const filesDif = newFileCount - this.userData.filesCount;
+		await this.getFileWordsCount(filePath).then((newWordsCount) => {
+			fileWordsDif = newWordsCount - oldUserData.fileWordCount;
+		});
+
+		if (isFileOpen) return;
 
 		const newExp = filesDif * 50 + fileWordsDif + this.userStats.exp;
 
 		if (
-			!Object.values(this.userData).includes(-1) &&
+			!Object.values(oldUserData).includes(-1) &&
 			newExp !== this.userStats.exp
 		) {
 			this.userStats = {
@@ -95,8 +99,8 @@ export default class StatsHandler {
 		}
 	};
 
-	saveUserStats = async (): Promise<void> => {
-		if (this.userStats?.exp) {
+	saveUserStats = (): void => {
+		if (this.userStats) {
 			this.plugin.saveData({
 				userStats: this.userStats,
 			});

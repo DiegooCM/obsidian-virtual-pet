@@ -63,29 +63,29 @@ export default class VirualPetView extends ItemView {
 
 		// Save the state userStats in the data.json when the app is about to quit
 		this.registerEvent(
-			this.app.workspace.on("quit", async () => {
+			this.app.workspace.on("quit", () => {
 				// Que lo coja de statsHandler y no de aquí
-				await this.statsHandler.saveUserStats();
+				this.statsHandler.saveUserStats();
 			})
 		);
 
 		this.registerEvent(
 			// When a file is open
-			this.app.workspace.on("file-open", () => {
+			this.app.workspace.on("file-open", async () => {
 				// Save the state userStats in the data.json
 				this.statsHandler.saveUserStats();
 				// Update info
-				this.statsHandler.updateUserDataNStats();
+				await this.statsHandler.updateUserDataNStats(true);
+				// Sets data and stats in petview
+				this.petViewRef.current?.triggerChild("file-open");
 			})
 		);
 
 		this.registerEvent(
 			// When the user types
 			this.app.workspace.on("editor-change", () => {
-				// Update info
-				this.statsHandler.updateUserDataNStats();
-				// Calls a function in PetView for handeling animations and user info
-				this.petViewRef.current?.triggerChild();
+				this.statsHandler.updateUserDataNStats(false);
+				this.petViewRef.current?.triggerChild("editor-change");
 			})
 		);
 	}

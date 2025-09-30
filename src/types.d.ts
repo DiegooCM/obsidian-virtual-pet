@@ -4,7 +4,6 @@ import StatsHandler from "./stats/StatsHandler";
 export interface UserData {
 	fileWordCount: number;
 	filesCount: number;
-	isActualFile: boolean;
 }
 
 export interface UserStats {
@@ -38,5 +37,7 @@ export interface AnimationsHandler {
 }
 
 export type PetViewRef = {
-	triggerChild: () => void;
+	triggerChild: (action: string) => void;
 };
+
+export type UserActions = "file-open" | "editor-change";

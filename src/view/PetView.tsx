@@ -1,4 +1,4 @@
-import { Ref, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { Ref, useImperativeHandle, useMemo, useState } from "react";
 import { App } from "obsidian";
 import UserInfo from "src/components/UserInfo";
 import StatsHandler from "src/stats/StatsHandler";
@@ -6,7 +6,7 @@ import Expbar from "../components/ExpBar";
 import PetButtons from "src/components/PetButtons";
 import Pet from "src/components/Pet";
 import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
-import { PetViewRef } from "src/types";
+import { PetViewRef, UserActions } from "src/types";
 
 interface PetView {
 	statsHandler: StatsHandler;
@@ -51,19 +51,15 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 		}
 	};
 
-	const onUserType = () => {
-		handleSleeping();
-		updateUserInfo();
-	};
-
-	// To expose the onUserType function on the ref
-	useImperativeHandle(ref, () => ({
-		triggerChild: onUserType,
-	}));
-
-	useEffect(() => {
-		onUserType();
-	}, []);
+	// To expose the onUserAction function on the ref
+	useImperativeHandle<PetViewRef, PetViewRef>(ref, () => {
+		return {
+			triggerChild(action: UserActions) {
+				if (action === "editor-change") handleSleeping();
+				updateUserInfo();
+			},
+		};
+	});
 
 	return (
 		<>
