@@ -24,6 +24,7 @@ export interface PetState {
 }
 
 export interface PetAnimation {
+	name: string;
 	animation: number[][];
 	speed: number;
 	fps: number;

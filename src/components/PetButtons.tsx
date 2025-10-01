@@ -4,61 +4,50 @@ import animations from "../animations.json";
 type PetButtonsType = {
 	animation: PetAnimation;
 	changeAnimation: (newAnimation: PetAnimation) => void;
+	handleDefaults: () => void;
 };
 
 export default function PetButtons({
 	animation,
 	changeAnimation,
+	handleDefaults,
 }: PetButtonsType) {
 	return (
 		<div className="pet-buttons">
 			<button
 				onClick={() => {
-					changeAnimation(animations.standAnimation);
+					handleDefaults();
 				}}
 				className={
-					animation === animations.standAnimation ? "active" : ""
+					animation === animations.stand ||
+					animation === animations.walk
+						? "active"
+						: ""
 				}
 			>
-				Stand
+				Default
 			</button>
 			<button
 				onClick={() => {
-					changeAnimation(animations.walkAnimation);
+					changeAnimation(animations.celebrate);
 				}}
-				className={
-					animation === animations.walkAnimation ? "active" : ""
-				}
-			>
-				Walk
-			</button>
-			<button
-				onClick={() => {
-					changeAnimation(animations.celebrateAnimation);
-				}}
-				className={
-					animation === animations.celebrateAnimation ? "active" : ""
-				}
+				className={animation === animations.celebrate ? "active" : ""}
 			>
 				Celebrate
 			</button>
 			<button
 				onClick={() => {
-					changeAnimation(animations.codingAnimation);
+					changeAnimation(animations.code);
 				}}
-				className={
-					animation === animations.codingAnimation ? "active" : ""
-				}
+				className={animation === animations.code ? "active" : ""}
 			>
 				Code
 			</button>
 			<button
 				onClick={() => {
-					changeAnimation(animations.sleepingAnimation);
+					changeAnimation(animations.sleep);
 				}}
-				className={
-					animation === animations.sleepingAnimation ? "active" : ""
-				}
+				className={animation === animations.sleep ? "active" : ""}
 			>
 				Sleep
 			</button>

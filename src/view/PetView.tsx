@@ -1,4 +1,4 @@
-import { Ref, useImperativeHandle, useMemo, useState } from "react";
+import { Ref, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { App } from "obsidian";
 import UserInfo from "src/components/UserInfo";
 import StatsHandler from "src/stats/StatsHandler";
@@ -26,8 +26,13 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 	const [userData, setUserData] = useState(statsHandler.getUserData());
 	const [userStats, setUserStats] = useState(statsHandler.getUserStats());
 
-	const { animation, handleSleeping, changeAnimation, levelUp } =
-		useAnimationsHandler();
+	const {
+		animation,
+		handleSleeping,
+		handleDefaults,
+		changeAnimation,
+		levelUp,
+	} = useAnimationsHandler();
 
 	// Update User info
 	const updateUserInfo = () => {
@@ -61,6 +66,10 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 		};
 	});
 
+	useEffect(() => {
+		handleDefaults();
+	}, []);
+
 	return (
 		<>
 			<div
@@ -78,6 +87,7 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 				<PetButtons
 					animation={animation}
 					changeAnimation={changeAnimation}
+					handleDefaults={handleDefaults}
 				/>
 			</div>
 		</>

@@ -4,12 +4,22 @@ import { useRef, useState } from "react";
 
 export function useAnimationsHandler() {
 	const sleepingTimeoutId = useRef(0);
-	const [animation, setAnimation] = useState<PetAnimation>(
-		animations.walkAnimation
-	);
+	const defaultTimeoutId = useRef(0);
+	const nextDefault = useRef(animations.stand); // no tiene q ver
+	const [animation, setAnimation] = useState<PetAnimation>(animations.stand);
 
+	// Rotates defaults animations
 	const handleDefaults = () => {
-		setAnimation(animations.standAnimation);
+		nextDefault.current === animations.stand
+			? (nextDefault.current = animations.walk)
+			: (nextDefault.current = animations.stand);
+
+		setAnimation(nextDefault.current);
+
+		defaultTimeoutId.current = window.setTimeout(
+			() => handleDefaults(),
+			20000
+		); // 20 seconds
 	};
 
 	const handleSleeping = () => {
@@ -17,33 +27,38 @@ export function useAnimationsHandler() {
 			clearTimeout(sleepingTimeoutId.current);
 		}
 
-		// Checks if it sleeping makes it coding during 5 seconds
-		if (animation === animations.sleepingAnimation) {
-			setAnimation(animations.codingAnimation);
-			setTimeout(() => handleDefaults(), 5000); // 5 seconds
+		// Checks if it sleeping makes it coding during 10 seconds
+		if (animation === animations.sleep) {
+			changeAnimation(animations.code);
+			setTimeout(() => handleDefaults(), 10000); // 10 seconds
 		}
 
 		sleepingTimeoutId.current = window.setTimeout(() => {
-			setAnimation(animations.sleepingAnimation);
-		}, 30000); // 30 seconds
+			changeAnimation(animations.sleep);
+		}, 60000); // 1 min
 	};
 
-	// This function is only use in the devtools
 	const changeAnimation = (newAnimation: PetAnimation) => {
-		if (animation === newAnimation) return;
+		if (defaultTimeoutId.current) {
+			clearTimeout(defaultTimeoutId.current);
+			defaultTimeoutId.current = 0;
+		}
 
 		setAnimation(newAnimation);
 	};
 
 	const levelUp = () => {
 		// Animation changes
-		setAnimation(animations.celebrateAnimation);
-		setTimeout(() => setAnimation(animations.walkAnimation), 2000);
+		changeAnimation(animations.celebrate);
+		window.setTimeout(() => {
+			handleDefaults();
+		}, 3000); // 3 seconds
 	};
 
 	return {
 		animation,
 		handleSleeping,
+		handleDefaults,
 		changeAnimation,
 		levelUp,
 	};

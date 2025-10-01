@@ -1,5 +1,6 @@
 {
-	"walkAnimation": {
+	"walk": {
+		"name": "walk",
 		"animation": [
 			[0, 0],
 			[1, 0],
@@ -15,7 +16,8 @@
 		"speed": 4,
 		"fps": 8
 	},
-	"standAnimation": {
+	"stand": {
+		"name": "stand",
 		"animation": [
 			[0, 2],
 			[1, 2]
@@ -23,7 +25,8 @@
 		"speed": 0,
 		"fps": 4
 	},
-	"celebrateAnimation": {
+	"celebrate": {
+		"name": "celebrate",
 		"animation": [
 			[2, 2],
 			[3, 2],
@@ -34,7 +37,8 @@
 		"speed": 0,
 		"fps": 8
 	},
-	"codingAnimation": {
+	"code": {
+		"name": "code",
 		"animation": [
 			[2, 3],
 			[3, 3]
@@ -42,7 +46,8 @@
 		"speed": 0,
 		"fps": 3
 	},
-	"sleepingAnimation": {
+	"sleep": {
+		"name": "sleep",
 		"animation": [
 			[4, 3],
 			[0, 4],
