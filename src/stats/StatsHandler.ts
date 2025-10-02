@@ -107,9 +107,9 @@ export default class StatsHandler {
 		}
 	};
 
-	petLevelUp = (): UserStats => {
+	petLevelUp = (expRemaining: number): UserStats => {
 		this.userStats = {
-			exp: 0,
+			exp: expRemaining,
 			expGoal: Math.floor(this.userStats.expGoal * 1.2),
 			level: this.userStats.level + 1,
 		};

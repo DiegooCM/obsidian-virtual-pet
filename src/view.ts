@@ -44,6 +44,8 @@ export default class VirualPetView extends ItemView {
 			this.app.workspace,
 			this.plugin
 		);
+		// Gets the userStats from the data.json and save them in the state
+		this.statsHandler.getUserStatsFromJson();
 
 		// Pet View
 		const reactContainer = container.createEl("div");
@@ -57,9 +59,6 @@ export default class VirualPetView extends ItemView {
 				ref: this.petViewRef,
 			})
 		);
-
-		// Gets the userStats from the data.json and save them in the state
-		this.statsHandler.getUserStatsFromJson();
 
 		// Save the state userStats in the data.json when the app is about to quit
 		this.registerEvent(

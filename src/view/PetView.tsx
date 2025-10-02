@@ -47,7 +47,8 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 			// Level up
 			if (newUserStats.exp >= newUserStats.expGoal) {
 				levelUp();
-				setUserStats(statsHandler.petLevelUp());
+				const newExp = newUserStats.exp - newUserStats.expGoal;
+				setUserStats(statsHandler.petLevelUp(newExp));
 			}
 			// Not level up
 			else {
@@ -68,6 +69,7 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 
 	useEffect(() => {
 		handleDefaults();
+		window.setTimeout(() => updateUserInfo(), 50); // The timeout is for giving time to load the data from de data.json
 	}, []);
 
 	return (

@@ -47,7 +47,7 @@ export default function Pet({ animation, app, userStats }: Props) {
 			petRef.current.style.backgroundPosition = `-${
 				animation.animation[animationIdx][0] * 64
 			}px
-        -${animation.animation[animationIdx][1] * 64}px`;
+        -${animation.animation[animationIdx][1] * 64 + 2}px`; // The +2 is for preventing that the sprite on top of the actual appears
 
 			// Change pet size
 			petScale.current = (windowWidth * 2) / 400;
@@ -61,12 +61,15 @@ export default function Pet({ animation, app, userStats }: Props) {
 				}px`;
 
 				// Touched left border
-				if (actualLeft <= 0) {
+				if (actualLeft <= Math.floor(64 * (petScale.current - 1))) {
 					petVelocity.current = animation.speed;
 					petRef.current.style.transform = "scaleX(1)";
 				}
 				// Touched right border
-				if (actualLeft >= windowWidth - 64 * petScale.current) {
+				if (
+					actualLeft >=
+					Math.floor(windowWidth - 64 * petScale.current)
+				) {
 					petVelocity.current = animation.speed * -1;
 					petRef.current.style.transform = "scaleX(-1)";
 				}
@@ -99,7 +102,15 @@ export default function Pet({ animation, app, userStats }: Props) {
 				ref={petContainerRef}
 				style={{ left: "0px" }}
 			>
-				<p className="pet-level">Level: {userStats.level}</p>
+				<p
+					className="pet-level"
+					style={{
+						top: `-${32 * petScale.current}px`,
+						fontSize: `${10 * petScale.current}px`,
+					}}
+				>
+					Level: {userStats.level}
+				</p>
 				<div
 					className="pet"
 					ref={petRef}
