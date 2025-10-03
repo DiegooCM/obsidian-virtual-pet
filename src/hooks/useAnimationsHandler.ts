@@ -47,7 +47,7 @@ export function useAnimationsHandler() {
 		setAnimation(newAnimation);
 	};
 
-	const levelUp = () => {
+	const levelUpAnimation = () => {
 		// Animation changes
 		changeAnimation(animations.celebrate);
 		window.setTimeout(() => {
@@ -60,6 +60,6 @@ export function useAnimationsHandler() {
 		handleSleeping,
 		handleDefaults,
 		changeAnimation,
-		levelUp,
+		levelUpAnimation,
 	};
 }

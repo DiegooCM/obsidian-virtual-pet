@@ -81,18 +81,13 @@ export default class StatsHandler {
 		return { ...this.userStats };
 	};
 
-	setUserStats = (newUserStats: UserStats): void => {
-		// TODO: Hacer comprobaciones de si el nuevo contenido es válido y luego cambiarlo
-		this.userStats = newUserStats;
-	};
-
 	getUserStatsFromJson = async (): Promise<void> => {
 		try {
 			const data = await this.plugin.loadData();
 
 			// Checks if the user has stats
 			if (data.userStats && Object.keys(data).length !== 0) {
-				this.setUserStats(data.userStats);
+				this.userStats = data.userStats;
 			}
 		} catch (error) {
 			console.error(error);
@@ -112,6 +107,15 @@ export default class StatsHandler {
 			exp: expRemaining,
 			expGoal: Math.floor(this.userStats.expGoal * 1.2),
 			level: this.userStats.level + 1,
+		};
+
+		return { ...this.userStats };
+	};
+
+	petChangeExp = (newAddExp: number) => {
+		this.userStats = {
+			...this.userStats,
+			exp: newAddExp,
 		};
 
 		return { ...this.userStats };

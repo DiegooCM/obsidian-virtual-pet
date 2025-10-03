@@ -6,7 +6,8 @@ import Expbar from "../components/ExpBar";
 import PetButtons from "src/components/PetButtons";
 import Pet from "src/components/Pet";
 import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
-import { PetViewRef, UserActions } from "src/types";
+import { PetViewRef, UserActions, UserStats } from "src/types";
+import ExpButtons from "src/components/ExpButtons";
 
 interface PetView {
 	statsHandler: StatsHandler;
@@ -31,8 +32,14 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 		handleSleeping,
 		handleDefaults,
 		changeAnimation,
-		levelUp,
+		levelUpAnimation,
 	} = useAnimationsHandler();
+
+	const levelUp = (newUserStats: UserStats) => {
+		levelUpAnimation();
+		const newExp = newUserStats.exp - newUserStats.expGoal;
+		setUserStats(statsHandler.petLevelUp(newExp));
+	};
 
 	// Update User info
 	const updateUserInfo = () => {
@@ -46,9 +53,7 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 		if (JSON.stringify(newUserStats) !== JSON.stringify(userStats)) {
 			// Level up
 			if (newUserStats.exp >= newUserStats.expGoal) {
-				levelUp();
-				const newExp = newUserStats.exp - newUserStats.expGoal;
-				setUserStats(statsHandler.petLevelUp(newExp));
+				levelUp(newUserStats);
 			}
 			// Not level up
 			else {
@@ -90,6 +95,12 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 					animation={animation}
 					changeAnimation={changeAnimation}
 					handleDefaults={handleDefaults}
+				/>
+				<ExpButtons
+					petChangeExp={statsHandler.petChangeExp}
+					userStats={userStats}
+					levelUp={levelUp}
+					setUserStats={setUserStats}
 				/>
 			</div>
 		</>
