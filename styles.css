@@ -1,18 +1,89 @@
+@import url("https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap");
+
 .react-root {
 	width: 100%;
 	height: 100%;
+	container-type: size;
 }
 
 .plugin {
 	width: 100%;
+	display: grid;
+	grid-template-rows: 75% 25%;
 	aspect-ratio: 1 / 1;
+
+	font-family: Pixelify Sans;
 }
 
 .debug-tools {
 	height: 40%;
 }
 
-/* Pet */
+/* Plugin*/
+
+.pet-animations-container {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.pet-container {
+	position: absolute;
+	color: #000;
+	font-size: 1rem;
+
+	top: 50%;
+}
+
+.pet {
+	height: 64px;
+	width: 64px;
+	transform-origin: top;
+
+	image-rendering: pixelated;
+}
+
+.pet-level {
+	position: absolute;
+	width: max-content;
+	font-size: 1.2rem;
+	margin: 0;
+	bottom: 64px;
+}
+
+/* Experience Bar */
+
+.exp-bar-container {
+	display: flex;
+	justify-content: end;
+	position: relative;
+	flex-direction: column;
+	color: #000;
+	margin: 10px;
+}
+
+.exp-info {
+	margin: 0;
+	font-size: 1.2rem;
+}
+
+.exp-bar {
+	align-self: center;
+	height: 100%;
+	width: 100%;
+	border: 3px solid #444;
+	max-height: 50px;
+	min-height: 30px;
+}
+
+.exp-quantity {
+	width: 0%;
+	height: 100%;
+
+	background: #bbb;
+}
+
+/* Plugin */
 .pet-buttons {
 	width: 100%;
 	height: 20%;
@@ -33,64 +104,6 @@
 	box-shadow: inset 0px 0px 10px 0px #bbb;
 }
 
-.pet-animations-container {
-	position: relative;
-	width: 100%;
-	height: 80%;
-}
-
-.pet-container {
-	position: absolute;
-	color: #000;
-	font-family: monospace;
-	font-size: 1rem;
-
-	top: 50%;
-}
-
-.pet {
-	height: 64px;
-	width: 64px;
-
-	image-rendering: pixelated;
-}
-
-.pet-level {
-	position: absolute;
-	width: max-content;
-	top: -64px;
-}
-
-/* Experience Bar */
-
-.exp-bar-container {
-	height: 20%;
-	display: flex;
-	flex-direction: column;
-	color: #000;
-	font-family: monospace;
-}
-
-.exp-info {
-	margin: 0;
-	padding-inline: 10px;
-	font-size: 1rem;
-}
-
-.exp-bar {
-	align-self: center;
-	height: 40px;
-	width: 100%;
-	border: 3px solid #444;
-}
-
-.exp-quantity {
-	width: 0%;
-	height: 100%;
-
-	background: #bbb;
-}
-
 .exp-buttons {
 	display: flex;
 	justify-content: center;
@@ -105,4 +118,21 @@
 	border: 2px solid #666;
 	background: #fff;
 	font-size: 1.5rem;
+}
+
+@container (max-width: 250px) {
+	.plugin {
+		grid-template-rows: 70% 30%;
+	}
+
+	.exp-bar {
+		min-height: 20px;
+	}
+
+	.exp-info {
+		font-size: 0.9rem;
+	}
+	.pet-level {
+		font-size: 0.9rem;
+	}
 }

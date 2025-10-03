@@ -69,7 +69,7 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 
 	useEffect(() => {
 		handleDefaults();
-		window.setTimeout(() => updateUserInfo(), 50); // The timeout is for giving time to load the data from de data.json
+		window.setTimeout(() => updateUserInfo(), 100); // The timeout is for giving time to load the data from de data.json
 	}, []);
 
 	return (

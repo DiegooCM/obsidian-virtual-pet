@@ -23,8 +23,8 @@ export default function Pet({ animation, app, userStats }: Props) {
 	const petContainerRef: RefObject<HTMLDivElement | null> = useRef(null);
 	const PetAnimationsContainerRef: RefObject<HTMLDivElement | null> =
 		useRef(null);
-	const petVelocity = useRef<number>(animation.speed);
 	const petScale = useRef<number>(1.5);
+	let petVelocity = animation.speed;
 
 	const previousAnimationIdx = useRef<number>(0);
 	const animationFrameId = useRef<number>(0);
@@ -49,7 +49,7 @@ export default function Pet({ animation, app, userStats }: Props) {
 			}px
         -${animation.animation[animationIdx][1] * 64 + 2}px`; // The +2 is for preventing that the sprite on top of the actual appears
 
-			// Change pet size
+			// Change pet styles
 			petScale.current = (windowWidth * 2) / 400;
 			petRef.current.style.scale = petScale.current.toString();
 
@@ -57,12 +57,12 @@ export default function Pet({ animation, app, userStats }: Props) {
 			if (animation.speed > 0) {
 				const actualLeft = parseInt(petContainerRef.current.style.left);
 				petContainerRef.current.style.left = `${
-					actualLeft + petVelocity.current
+					actualLeft + petVelocity
 				}px`;
 
 				// Touched left border
 				if (actualLeft <= Math.floor(64 * (petScale.current - 1))) {
-					petVelocity.current = animation.speed;
+					petVelocity = animation.speed;
 					petRef.current.style.transform = "scaleX(1)";
 				}
 				// Touched right border
@@ -70,7 +70,7 @@ export default function Pet({ animation, app, userStats }: Props) {
 					actualLeft >=
 					Math.floor(windowWidth - 64 * petScale.current)
 				) {
-					petVelocity.current = animation.speed * -1;
+					petVelocity = animation.speed * -1;
 					petRef.current.style.transform = "scaleX(-1)";
 				}
 			}
@@ -102,15 +102,7 @@ export default function Pet({ animation, app, userStats }: Props) {
 				ref={petContainerRef}
 				style={{ left: "0px" }}
 			>
-				<p
-					className="pet-level"
-					style={{
-						top: `-${32 * petScale.current}px`,
-						fontSize: `${10 * petScale.current}px`,
-					}}
-				>
-					Level: {userStats.level}
-				</p>
+				<p className="pet-level">Level: {userStats.level}</p>
 				<div
 					className="pet"
 					ref={petRef}
