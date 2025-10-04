@@ -5,11 +5,16 @@ import { useRef, useState } from "react";
 export function useAnimationsHandler() {
 	const sleepingTimeoutId = useRef(0);
 	const defaultTimeoutId = useRef(0);
-	const nextDefault = useRef(animations.stand); // no tiene q ver
+	const nextDefault = useRef<PetAnimation | null>(null);
 	const [animation, setAnimation] = useState<PetAnimation>(animations.stand);
 
 	// Rotates defaults animations
 	const handleDefaults = () => {
+		if (defaultTimeoutId.current) {
+			clearTimeout(defaultTimeoutId.current);
+			defaultTimeoutId.current = 0;
+		}
+
 		nextDefault.current === animations.stand
 			? (nextDefault.current = animations.walk)
 			: (nextDefault.current = animations.stand);
@@ -39,11 +44,6 @@ export function useAnimationsHandler() {
 	};
 
 	const changeAnimation = (newAnimation: PetAnimation) => {
-		if (defaultTimeoutId.current) {
-			clearTimeout(defaultTimeoutId.current);
-			defaultTimeoutId.current = 0;
-		}
-
 		setAnimation(newAnimation);
 	};
 

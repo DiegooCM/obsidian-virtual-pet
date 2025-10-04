@@ -1,4 +1,11 @@
-import { Ref, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import {
+	Ref,
+	useEffect,
+	useImperativeHandle,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { App } from "obsidian";
 import UserInfo from "src/components/UserInfo";
 import StatsHandler from "src/stats/StatsHandler";
@@ -26,6 +33,7 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 
 	const [userData, setUserData] = useState(statsHandler.getUserData());
 	const [userStats, setUserStats] = useState(statsHandler.getUserStats());
+	const onLevelUp = useRef<boolean>(false);
 
 	const {
 		animation,
@@ -37,6 +45,8 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 
 	const levelUp = (newUserStats: UserStats) => {
 		levelUpAnimation();
+		onLevelUp.current = true;
+		setTimeout(() => (onLevelUp.current = false), 3000);
 		const newExp = newUserStats.exp - newUserStats.expGoal;
 		setUserStats(statsHandler.petLevelUp(newExp));
 	};
@@ -85,7 +95,12 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 					background: `url(${petBackground}) 0% 0% / cover no-repeat`,
 				}}
 			>
-				<Pet animation={animation} app={app} userStats={userStats} />
+				<Pet
+					animation={animation}
+					app={app}
+					userStats={userStats}
+					onLevelUp={onLevelUp.current}
+				/>
 				<Expbar exp={userStats.exp} expGoal={userStats.expGoal} />
 			</div>
 			<div className="debug-tools">

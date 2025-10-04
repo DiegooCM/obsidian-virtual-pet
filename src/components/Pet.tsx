@@ -6,9 +6,11 @@ interface Props {
 	animation: PetAnimation;
 	app: App;
 	userStats: UserStats;
+	onLevelUp: boolean;
 }
 
-export default function Pet({ animation, app, userStats }: Props) {
+export default function Pet({ animation, app, userStats, onLevelUp }: Props) {
+	console.log(onLevelUp);
 	// Assets
 	const petSpritesheet = useMemo(
 		() =>
@@ -24,7 +26,7 @@ export default function Pet({ animation, app, userStats }: Props) {
 	const PetAnimationsContainerRef: RefObject<HTMLDivElement | null> =
 		useRef(null);
 	const petScale = useRef<number>(1.5);
-	let petVelocity = animation.speed;
+	const petVelocity = useRef<number>(animation.speed);
 
 	const previousAnimationIdx = useRef<number>(0);
 	const animationFrameId = useRef<number>(0);
@@ -57,12 +59,12 @@ export default function Pet({ animation, app, userStats }: Props) {
 			if (animation.speed > 0) {
 				const actualLeft = parseInt(petContainerRef.current.style.left);
 				petContainerRef.current.style.left = `${
-					actualLeft + petVelocity
+					actualLeft + petVelocity.current
 				}px`;
 
 				// Touched left border
 				if (actualLeft <= Math.floor(64 * (petScale.current - 1))) {
-					petVelocity = animation.speed;
+					petVelocity.current = animation.speed;
 					petRef.current.style.transform = "scaleX(1)";
 				}
 				// Touched right border
@@ -70,7 +72,7 @@ export default function Pet({ animation, app, userStats }: Props) {
 					actualLeft >=
 					Math.floor(windowWidth - 64 * petScale.current)
 				) {
-					petVelocity = animation.speed * -1;
+					petVelocity.current = animation.speed * -1;
 					petRef.current.style.transform = "scaleX(-1)";
 				}
 			}
@@ -97,6 +99,7 @@ export default function Pet({ animation, app, userStats }: Props) {
 			className="pet-animations-container"
 			ref={PetAnimationsContainerRef}
 		>
+			{onLevelUp && <h1 className="animations-text">Level Up!</h1>}
 			<div
 				className="pet-container"
 				ref={petContainerRef}
