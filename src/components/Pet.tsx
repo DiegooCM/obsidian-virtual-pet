@@ -10,7 +10,6 @@ interface Props {
 }
 
 export default function Pet({ animation, app, userStats, onLevelUp }: Props) {
-	console.log(onLevelUp);
 	// Assets
 	const petSpritesheet = useMemo(
 		() =>

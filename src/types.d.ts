@@ -10,8 +10,35 @@ export interface UserStats {
 	exp: number;
 	expGoal: number;
 	level: number;
+	coins: number;
 }
 
+export type ItemCategory = "background" | "accessory";
+
+export type UserItem = {
+	[K in ItemCategory]: string;
+};
+
+type UserItemsObtained = {
+	[K in ItemCategory]: string[];
+};
+
+export interface UserItems {
+	equiped: UserItem;
+	obtained: UserItemsObtained;
+}
+
+type ItemJson = {
+	name: string;
+	price: number;
+	url: string;
+};
+
+export interface ItemsJson {
+	name: string;
+	category: ItemCategory;
+	items: ItemJson[];
+}
 export interface UserInfo {
 	exp: number;
 }

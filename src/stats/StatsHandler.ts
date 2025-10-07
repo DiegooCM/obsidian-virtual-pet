@@ -1,13 +1,14 @@
 import { Plugin, TFile, Vault, Workspace } from "obsidian";
 import { countWords } from "../utils/statsUtils";
-import { UserData, UserStats } from "../types";
+import { ItemCategory, UserData, UserItems, UserStats } from "../types";
 
 export default class StatsHandler {
 	private vault: Vault;
 	private workspace: Workspace;
 	private plugin: Plugin;
-	public userData: UserData;
-	public userStats: UserStats;
+	private userData: UserData;
+	private userStats: UserStats;
+	private userItems: UserItems;
 
 	constructor(vault: Vault, workspace: Workspace, plugin: Plugin) {
 		this.vault = vault;
@@ -22,6 +23,17 @@ export default class StatsHandler {
 			exp: 0,
 			expGoal: 10,
 			level: 0,
+			coins: 1000,
+		};
+		this.userItems = {
+			equiped: {
+				background: "01",
+				accessory: "",
+			},
+			obtained: {
+				background: ["01"],
+				accessory: ["glasses"],
+			},
 		};
 	}
 
@@ -81,13 +93,21 @@ export default class StatsHandler {
 		return { ...this.userStats };
 	};
 
+	getUserItems = (): UserItems => {
+		return { ...this.userItems };
+	};
+
 	getUserStatsFromJson = async (): Promise<void> => {
 		try {
 			const data = await this.plugin.loadData();
+			if (Object.keys(data).length === 0) return;
 
 			// Checks if the user has stats
-			if (data.userStats && Object.keys(data).length !== 0) {
-				this.userStats = data.userStats;
+			if (data.userStats) {
+				this.userStats = { ...data.userStats };
+			}
+			if (data.userItems) {
+				this.userItems = { ...data.userItems };
 			}
 		} catch (error) {
 			console.error(error);
@@ -98,6 +118,7 @@ export default class StatsHandler {
 		if (this.userStats) {
 			this.plugin.saveData({
 				userStats: this.userStats,
+				userItems: this.userItems,
 			});
 		}
 	};
@@ -107,6 +128,7 @@ export default class StatsHandler {
 			exp: expRemaining,
 			expGoal: Math.floor(this.userStats.expGoal * 1.2),
 			level: this.userStats.level + 1,
+			coins: this.userStats.coins + 50,
 		};
 
 		return { ...this.userStats };
@@ -119,5 +141,22 @@ export default class StatsHandler {
 		};
 
 		return { ...this.userStats };
+	};
+
+	addNewItem = (
+		itemName: string,
+		itemCategory: ItemCategory,
+		itemPrice: number
+	) => {
+		this.userStats.coins = this.userStats.coins - itemPrice;
+		this.userItems.obtained[itemCategory].push(itemName);
+	};
+
+	equipItem = (itemName: string, itemCategory: ItemCategory) => {
+		this.userItems.equiped[itemCategory] = itemName;
+	};
+
+	unequipItem = (itemName: string, itemCategory: ItemCategory) => {
+		this.userItems.equiped[itemCategory] = "";
 	};
 }

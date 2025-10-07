@@ -1,0 +1,29 @@
+[
+	{
+		"name": "Backgrounds",
+		"category": "background",
+		"items": [
+			{
+				"name": "01",
+				"price": 40,
+				"url": "/assets/background.png"
+			},
+			{
+				"name": "02",
+				"price": 80,
+				"url": "/assets/background2.png"
+			}
+		]
+	},
+	{
+		"name": "Accessories",
+		"category": "accessory",
+		"items": [
+			{
+				"name": "glasses",
+				"price": 120,
+				"url": "/assets/glassesSpritesheet.png"
+			}
+		]
+	}
+]

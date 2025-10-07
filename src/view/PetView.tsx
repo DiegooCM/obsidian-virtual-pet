@@ -15,6 +15,7 @@ import Pet from "src/components/Pet";
 import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
 import { PetViewRef, UserActions, UserStats } from "src/types";
 import ExpButtons from "src/components/ExpButtons";
+import { ShopModal } from "src/components/ShopModal";
 
 interface PetView {
 	statsHandler: StatsHandler;
@@ -95,6 +96,13 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 					background: `url(${petBackground}) 0% 0% / cover no-repeat`,
 				}}
 			>
+				<button
+					className="shop-btn"
+					onClick={() => new ShopModal(app, statsHandler).open()}
+					style={{ position: "absolute", zIndex: 10 }}
+				>
+					Open shop
+				</button>
 				<Pet
 					animation={animation}
 					app={app}

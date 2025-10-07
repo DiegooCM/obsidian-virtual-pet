@@ -160,3 +160,74 @@
 		font-size: 1.5rem;
 	}
 }
+
+/* Shop */
+
+.virtual-pet-shop {
+	width: 75%;
+	height: 100%;
+	font-size: Pixelify Sans;
+}
+
+.virtual-pet-shop .modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+}
+
+.virtual-pet-shop .modal-title {
+	margin-left: 0;
+}
+
+.coins-container {
+	width: 100px;
+	height: 40px;
+	display: grid;
+	align-items: center;
+	background: #444;
+	border-radius: 10px;
+}
+
+.coins-container span {
+	text-align: center;
+}
+
+.shop-container {
+	display: flex;
+}
+
+.filter {
+	width: 150px;
+	font-size: 1.5rem;
+	padding-left: 10px;
+}
+
+.items-container {
+	width: calc(100% - 150px);
+	padding-left: 10px;
+}
+
+.items {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 20px;
+}
+
+.shop-item img {
+	width: 100%;
+	object-fit: contain;
+}
+
+.item-info {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+}
+
+.item-name {
+	font-size: 1.2rem;
+}
+
+.item-price {
+	font-size: 1rem;
+}
