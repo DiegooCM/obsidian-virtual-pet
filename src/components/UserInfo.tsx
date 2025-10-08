@@ -1,11 +1,12 @@
-import { UserData, UserStats } from "src/types";
+import { UserData, UserItems, UserStats } from "src/types";
 
 interface UserInfo {
 	userData: UserData;
 	userStats: UserStats;
+	userItems: UserItems;
 }
 
-export default function UserInfo({ userData, userStats }: UserInfo) {
+export default function UserInfo({ userData, userStats, userItems }: UserInfo) {
 	return (
 		<>
 			<div className="actual-Data">
@@ -22,6 +23,14 @@ export default function UserInfo({ userData, userStats }: UserInfo) {
 				<p>Exp Goal: {userStats.expGoal}</p>
 				<p>Level: {userStats.level}</p>
 				<p>Coins: {userStats.coins}</p>
+			</div>
+			<div className="div user-items">
+				<h2>Equiped</h2>
+				<p>Background: {userItems.equiped.background}</p>
+				<p>Accesory: {userItems.equiped.accessory}</p>
+				<h2>Obtained</h2>
+				<p>Backgrounds: {userItems.obtained.background}</p>
+				<p>Accessory: {userItems.obtained.accessory}</p>
 			</div>
 		</>
 	);

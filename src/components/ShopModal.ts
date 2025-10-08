@@ -7,21 +7,32 @@ export class ShopModal extends Modal {
 	private userStats: UserStats;
 	private userItems: UserItems;
 	private statsHandler: StatsHandler;
+	private setUserItems: (value: React.SetStateAction<UserItems>) => void;
 
-	constructor(app: App, statsHandler: StatsHandler) {
+	constructor(
+		app: App,
+		statsHandler: StatsHandler,
+		setUserItems: (value: React.SetStateAction<UserItems>) => void
+	) {
 		super(app);
 		this.statsHandler = statsHandler;
 		this.userStats = this.statsHandler.getUserStats();
 		this.userItems = this.statsHandler.getUserItems();
+		this.setUserItems = setUserItems;
 	}
+
 	onOpen(): void {
 		this.modalEl.addClass("virtual-pet-shop");
 		this.createShop();
 	}
 
+	onClose(): void {
+		this.setUserItems(this.userItems);
+	}
+
 	createShop = () => {
 		// Header
-		this.titleEl.createEl("h1", { text: "Shop" });
+		this.headerEl.createEl("h1", { text: "Shop" });
 		this.headerEl.createDiv("coins-container").createEl("span", {
 			text: `Coins: ${this.userStats.coins}`,
 		});
@@ -45,7 +56,7 @@ export class ShopModal extends Modal {
 				cardItem.createEl("img", {
 					attr: {
 						src: this.app.vault.adapter.getResourcePath(
-							"./.obsidian/plugins/obsidian-virtual-pet" +
+							"./.obsidian/plugins/obsidian-virtual-pet/" +
 								item.url
 						),
 					},
@@ -60,7 +71,7 @@ export class ShopModal extends Modal {
 							text: "Unequip",
 						})
 						.onClickEvent(() =>
-							this.equipItem(item.name, itemsCategory.category)
+							this.unequipItem(item.name, itemsCategory.category)
 						);
 				} else if (itemState === "obtained") {
 					itemInfo
@@ -85,6 +96,12 @@ export class ShopModal extends Modal {
 		});
 	};
 
+	modalRerender = () => {
+		this.contentEl.innerHTML = "";
+		this.headerEl.innerHTML = "";
+		this.createShop();
+	};
+
 	checkItem = (itemName: string, itemCategory: ItemCategory) => {
 		const isEquiped = this.userItems.equiped[itemCategory] === itemName;
 		if (isEquiped) return "equiped";
@@ -104,13 +121,17 @@ export class ShopModal extends Modal {
 		if (itemPrice && this.userStats.coins > itemPrice) {
 			this.statsHandler.addNewItem(itemName, itemCategory, itemPrice);
 		}
+
+		this.modalRerender();
 	};
 
 	equipItem = (itemName: string, itemCategory: ItemCategory) => {
 		this.statsHandler.equipItem(itemName, itemCategory);
+		this.modalRerender();
 	};
 
 	unequipItem = (itemName: string, itemCategory: ItemCategory) => {
 		this.statsHandler.unequipItem(itemName, itemCategory);
+		this.modalRerender();
 	};
 }

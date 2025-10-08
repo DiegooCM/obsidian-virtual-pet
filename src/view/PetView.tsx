@@ -16,6 +16,7 @@ import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
 import { PetViewRef, UserActions, UserStats } from "src/types";
 import ExpButtons from "src/components/ExpButtons";
 import { ShopModal } from "src/components/ShopModal";
+import items from "src/items.json";
 
 interface PetView {
 	statsHandler: StatsHandler;
@@ -24,16 +25,9 @@ interface PetView {
 }
 
 export default function PetView({ statsHandler, app, ref }: PetView) {
-	const petBackground = useMemo(
-		() =>
-			app.vault.adapter.getResourcePath(
-				"./.obsidian/plugins/obsidian-virtual-pet/assets/background.png"
-			),
-		[]
-	);
-
 	const [userData, setUserData] = useState(statsHandler.getUserData());
 	const [userStats, setUserStats] = useState(statsHandler.getUserStats());
+	const [userItems, setUserItems] = useState(statsHandler.getUserItems());
 	const onLevelUp = useRef<boolean>(false);
 
 	const {
@@ -44,6 +38,16 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 		levelUpAnimation,
 	} = useAnimationsHandler();
 
+	const getActualBackground = () => {
+		let actualBgUrl = items
+			.find((i) => i.category === "background")
+			?.items.find((i) => i.name === userItems.equiped.background)?.url;
+		if (!actualBgUrl) actualBgUrl = "assets/background.png";
+		return app.vault.adapter.getResourcePath(
+			`./.obsidian/plugins/obsidian-virtual-pet/${actualBgUrl}`
+		);
+	};
+
 	const levelUp = (newUserStats: UserStats) => {
 		levelUpAnimation();
 		onLevelUp.current = true;
@@ -52,10 +56,13 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 		setUserStats(statsHandler.petLevelUp(newExp));
 	};
 
+	const petBackground = useMemo(() => getActualBackground(), [userItems]);
+
 	// Update User info
 	const updateUserInfo = () => {
 		const newUserData = statsHandler.getUserData();
 		const newUserStats = statsHandler.getUserStats();
+		const newUserItems = statsHandler.getUserItems();
 
 		if (JSON.stringify(newUserData) !== JSON.stringify(userData)) {
 			// Update the data
@@ -70,6 +77,9 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 			else {
 				setUserStats(newUserStats);
 			}
+		}
+		if (JSON.stringify(newUserItems) !== JSON.stringify(userItems)) {
+			setUserItems(newUserItems);
 		}
 	};
 
@@ -98,7 +108,9 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 			>
 				<button
 					className="shop-btn"
-					onClick={() => new ShopModal(app, statsHandler).open()}
+					onClick={() =>
+						new ShopModal(app, statsHandler, setUserItems).open()
+					}
 					style={{ position: "absolute", zIndex: 10 }}
 				>
 					Open shop
@@ -112,7 +124,11 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 				<Expbar exp={userStats.exp} expGoal={userStats.expGoal} />
 			</div>
 			<div className="debug-tools">
-				<UserInfo userData={userData} userStats={userStats} />
+				<UserInfo
+					userData={userData}
+					userStats={userStats}
+					userItems={userItems}
+				/>
 				<h1>Change Pet Animation</h1>
 				<PetButtons
 					animation={animation}
