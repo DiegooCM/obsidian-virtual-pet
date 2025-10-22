@@ -1,15 +1,16 @@
 import { App } from "obsidian";
 import { RefObject, useMemo, useRef } from "react";
-import { PetAnimation, UserStats } from "src/types";
+import { PetAnimation, UserStats, UserItems } from "src/types";
 
 interface Props {
 	animation: PetAnimation;
 	app: App;
 	userStats: UserStats;
+	userItems: UserItems;
 	onLevelUp: boolean;
 }
 
-export default function Pet({ animation, app, userStats, onLevelUp }: Props) {
+export default function Pet({ animation, app, userStats, userItems, onLevelUp }: Props) {
 	// Assets
 	const petSpritesheet = useMemo(
 		() =>
@@ -19,8 +20,16 @@ export default function Pet({ animation, app, userStats, onLevelUp }: Props) {
 		[]
 	);
 
+	const petAccessorySpritesheet = useMemo(
+		() =>
+			app.vault.adapter.getResourcePath(
+				`./.obsidian/plugins/obsidian-virtual-pet/assets/${userItems.equiped.accessory}Spritesheet.png`),
+		[userItems.equiped.accessory]
+	);
+
 	// Refs
 	const petRef: RefObject<HTMLDivElement | null> = useRef(null);
+	const petAccessoryRef: RefObject<HTMLDivElement | null> = useRef(null);
 	const petContainerRef: RefObject<HTMLDivElement | null> = useRef(null);
 	const PetAnimationsContainerRef: RefObject<HTMLDivElement | null> =
 		useRef(null);
@@ -34,7 +43,7 @@ export default function Pet({ animation, app, userStats, onLevelUp }: Props) {
 	// Main Loop
 	const animate = (timestamp: number) => {
 		// Pet animation
-		if (!petRef.current || !petContainerRef.current) return;
+		if (!petRef.current || !petContainerRef.current || !petAccessoryRef.current) return;
 
 		const windowWidth =
 			PetAnimationsContainerRef.current?.clientWidth || 600;
@@ -45,11 +54,12 @@ export default function Pet({ animation, app, userStats, onLevelUp }: Props) {
 
 		if (animationIdx !== previousAnimationIdx.current) {
 			// Change sprite
-			petRef.current.style.backgroundPosition = `-${
-				animation.animation[animationIdx][0] * 64
-			}px
-        -${animation.animation[animationIdx][1] * 64 + 2}px`; // The +2 is for preventing that the sprite on top of the actual appears
+			const newPos = `
+			-${animation.animation[animationIdx][0] * 64}px
+			-${animation.animation[animationIdx][1] * 64 + 2}px`// The +2 is for preventing that the sprite on top of the actual appears
 
+			petRef.current.style.backgroundPosition = newPos; 
+			petAccessoryRef.current.style.backgroundPosition = newPos
 			// Change pet styles
 			petScale.current = (windowWidth * 2) / 400;
 			petRef.current.style.scale = petScale.current.toString();
@@ -109,7 +119,13 @@ export default function Pet({ animation, app, userStats, onLevelUp }: Props) {
 					className="pet"
 					ref={petRef}
 					style={{ background: `url(${petSpritesheet})` }}
-				></div>
+				>
+					<div 
+					className="pet-accessory" 
+					ref={petAccessoryRef} 
+					style={{ background: userItems.equiped.accessory !== '' ? `url(${petAccessorySpritesheet})`: '' }}
+					></div>
+				</div>
 			</div>
 		</div>
 	);

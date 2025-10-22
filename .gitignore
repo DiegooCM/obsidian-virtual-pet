@@ -1,9 +1,4 @@
-# vscode
-.vscode 
-
-# Intellij
-*.iml
-.idea
+.editorconfig
 
 # npm
 node_modules

@@ -119,6 +119,7 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 					animation={animation}
 					app={app}
 					userStats={userStats}
+					userItems={userItems}
 					onLevelUp={onLevelUp.current}
 				/>
 				<Expbar exp={userStats.exp} expGoal={userStats.expGoal} />
