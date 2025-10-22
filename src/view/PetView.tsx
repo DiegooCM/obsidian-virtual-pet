@@ -29,6 +29,11 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 	const [userStats, setUserStats] = useState(statsHandler.getUserStats());
 	const [userItems, setUserItems] = useState(statsHandler.getUserItems());
 	const onLevelUp = useRef<boolean>(false);
+  const coinUrl = useMemo(() => 
+    app.vault.adapter.getResourcePath(
+      "./.obsidian/plugins/obsidian-virtual-pet/assets/coin.png"
+    )
+    ,[])
 
 	const {
 		animation,
@@ -104,17 +109,25 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 				className="plugin"
 				style={{
 					background: `url(${petBackground}) 0% 0% / cover no-repeat`,
-				}}
-			>
-				<button
-					className="shop-btn"
-					onClick={() =>
-						new ShopModal(app, statsHandler, setUserItems).open()
-					}
-					style={{ position: "absolute", zIndex: 10 }}
-				>
-					Open shop
-				</button>
+        }}
+      >
+        <div
+          className="top-bar"
+        >
+          <div 
+            onClick={() =>
+              new ShopModal(app, statsHandler, setUserItems).open()
+            }
+          style={{display: "flex", cursor: "pointer"}}
+          >
+            <img className="top-bar-coin"src={coinUrl}/>
+            <p
+              className="coins-count"
+            >
+              {userStats.coins}
+            </p>
+          </div>
+        </div>
 				<Pet
 					animation={animation}
 					app={app}

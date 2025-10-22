@@ -46,17 +46,18 @@ export default class StatsHandler {
 
 		// Data Calculation
 		const oldUserData = { ...this.userData };
-		const newFileCount = this.getFilesCount();
-
+		// const newFileCount = this.getFilesCount();
+    const newFileCount = this.vault.getMarkdownFiles().length
+    this.userData.filesCount = newFileCount
 		// Stats Calculation
-		const filesDif = newFileCount - this.userData.filesCount;
+		const filesDif = newFileCount - oldUserData.filesCount;
 		await this.getFileWordsCount(filePath).then((newWordsCount) => {
 			fileWordsDif = newWordsCount - oldUserData.fileWordCount;
 		});
-
-		if (isFileOpen) return;
+		if (isFileOpen && filesDif !== 1) return;
 
 		const newExp = filesDif * 50 + fileWordsDif + this.userStats.exp;
+    const newCoins = filesDif * 10 + this.userStats.coins
 
 		if (
 			!Object.values(oldUserData).includes(-1) &&
@@ -65,15 +66,9 @@ export default class StatsHandler {
 			this.userStats = {
 				...this.userStats,
 				exp: newExp > 0 ? newExp : 0,
+        coins: newCoins
 			};
 		}
-	};
-
-	getFilesCount = (): number => {
-		const filesCount = this.vault.getMarkdownFiles().length;
-		this.userData.filesCount = filesCount;
-
-		return filesCount;
 	};
 
 	getFileWordsCount = async (filePath: TFile): Promise<number> => {

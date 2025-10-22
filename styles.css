@@ -7,6 +7,7 @@
 }
 
 .plugin {
+  position: relative;
 	width: 100%;
 	display: grid;
 	grid-template-rows: 75% 25%;
@@ -20,6 +21,27 @@
 }
 
 /* Plugin*/
+.top-bar {
+  position: absolute;
+  display: flex;
+  justify-content: end;
+  width: 100%;
+  height: 32px;
+  padding-inline: 10px;
+  background-color: #0007;
+  z-index: 10;
+}
+.top-bar-coin {
+  height: 32px;
+  image-rendering: pixelated;
+}
+
+.coins-count {
+  height: 100%;
+  margin:0;
+  align-content: center;
+  color: #ccc;
+}
 
 .pet-animations-container {
 	position: relative;

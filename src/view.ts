@@ -81,7 +81,7 @@ export default class VirualPetView extends ItemView {
 		);
 
 		this.registerEvent(
-			// When the user types
+      // When the user types
 			this.app.workspace.on("editor-change", () => {
 				this.statsHandler.updateUserDataNStats(false);
 				this.petViewRef.current?.triggerChild("editor-change");

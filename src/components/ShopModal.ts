@@ -8,7 +8,6 @@ export class ShopModal extends Modal {
 	private userItems: UserItems;
 	private statsHandler: StatsHandler;
 	private setUserItems: (value: React.SetStateAction<UserItems>) => void;
-
 	constructor(
 		app: App,
 		statsHandler: StatsHandler,
