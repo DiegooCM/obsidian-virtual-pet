@@ -74,7 +74,7 @@ export default class VirualPetView extends ItemView {
 				// Save the state userStats in the data.json
 				this.statsHandler.saveUserStats();
 				// Update info
-				await this.statsHandler.updateUserDataNStats(true);
+				await this.statsHandler.onFileOpen();
 				// Sets data and stats in petview
 				this.petViewRef.current?.triggerChild("file-open");
 			})
@@ -83,11 +83,12 @@ export default class VirualPetView extends ItemView {
 		this.registerEvent(
       // When the user types
 			this.app.workspace.on("editor-change", () => {
-				this.statsHandler.updateUserDataNStats(false);
+				this.statsHandler.updateUserDataNStats();
 				this.petViewRef.current?.triggerChild("editor-change");
 			})
-		);
-	}
+    );
+
+  }
 
 	async onClose(): Promise<void> {
 		this.statsHandler.saveUserStats();

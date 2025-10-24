@@ -37,7 +37,22 @@ export default class StatsHandler {
 		};
 	}
 
-	updateUserDataNStats = async (isFileOpen: boolean) => {
+  onFileOpen = async() => {
+		const oldUserData = { ...this.userData };
+
+    const newFileCount = this.vault.getMarkdownFiles().length
+    this.userData.filesCount = newFileCount
+		const filesDif = newFileCount - oldUserData.filesCount;
+
+    const newCoins = this.userStats.coins + (filesDif * 10)
+
+    this.userStats = {
+      ...this.userStats,
+      coins: newCoins
+    };
+  } 
+
+	updateUserDataNStats = async () => {
 		let fileWordsDif = 0;
 		// Actual file where the user is working
 		const filePath = this.workspace.getActiveFile();
@@ -46,18 +61,13 @@ export default class StatsHandler {
 
 		// Data Calculation
 		const oldUserData = { ...this.userData };
-		// const newFileCount = this.getFilesCount();
-    const newFileCount = this.vault.getMarkdownFiles().length
-    this.userData.filesCount = newFileCount
-		// Stats Calculation
-		const filesDif = newFileCount - oldUserData.filesCount;
+
 		await this.getFileWordsCount(filePath).then((newWordsCount) => {
 			fileWordsDif = newWordsCount - oldUserData.fileWordCount;
 		});
-		if (isFileOpen && filesDif !== 1) return;
 
-		const newExp = filesDif * 50 + fileWordsDif + this.userStats.exp;
-    const newCoins = filesDif * 10 + this.userStats.coins
+		// Stats Calculation
+		const newExp = fileWordsDif + this.userStats.exp;
 
 		if (
 			!Object.values(oldUserData).includes(-1) &&
@@ -66,7 +76,6 @@ export default class StatsHandler {
 			this.userStats = {
 				...this.userStats,
 				exp: newExp > 0 ? newExp : 0,
-        coins: newCoins
 			};
 		}
 	};
