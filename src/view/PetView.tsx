@@ -15,7 +15,7 @@ import Pet from "src/components/Pet";
 import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
 import { PetViewRef, UserActions, UserStats } from "src/types";
 import ExpButtons from "src/components/ExpButtons";
-import { ShopModal } from "src/components/ShopModal";
+import { ShopModal } from "src/components/shop/ShopModal";
 import items from "src/items.json";
 
 interface PetView {

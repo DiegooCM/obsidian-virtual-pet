@@ -1,8 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap");
 
 .react-root {
-	width: 100%;
-	height: 100%;
+	width: 100%; height: 100%;
 	container-type: size;
 }
 
@@ -34,6 +33,7 @@
 .top-bar-coin {
   height: 32px;
   image-rendering: pixelated;
+  -webkit-user-drag: none;
 }
 
 .coins-count {
@@ -190,48 +190,67 @@
 
 /* Shop */
 
+body {
+  background: #000;
+}
+
 .virtual-pet-shop {
 	width: 75%;
 	height: 100%;
-	font-size: Pixelify Sans;
+	font-family: Pixelify Sans;
+  color: #000;
+  padding: 0;
+  border: 2px solid #000;
+  border-radius: 0;
 }
 
 .virtual-pet-shop .modal-header {
+  position:relative;
 	display: flex;
-	justify-content: space-between;
-	align-items: baseline;
+	justify-content: center;
+	align-items: center;
+  background-color: #555;
+  margin:0;
+  border: 2px solid #000;
 }
 
-.virtual-pet-shop .modal-title {
-	margin-left: 0;
+.virtual-pet-shop .modal-header h1 {
+  font-size: 2.2rem;
+}
+
+.virtual-pet-shop .modal-content {
+  display: flex;
+  background-color: #777;
+}
+
+.virtual-pet-shop .modal-content > * {
+  border: 2px solid #000;
 }
 
 .coins-container {
-	width: 100px;
-	height: 40px;
-	display: grid;
+  position:absolute;
+  right: 50px;
+	display: flex;
 	align-items: center;
-	background: #444;
-	border-radius: 10px;
+  font-size: 1.3rem;
 }
 
 .coins-container span {
 	text-align: center;
 }
-
-.shop-container {
-	display: flex;
+.coins-container img {
+  height: 43px;
 }
 
 .filter {
-	width: 150px;
+	width: 20%;
 	font-size: 1.5rem;
 	padding-left: 10px;
 }
 
 .items-container {
 	width: calc(100% - 150px);
-	padding-left: 10px;
+	padding: 30px;
 }
 
 .items {
@@ -240,18 +259,32 @@
 	gap: 20px;
 }
 
-.shop-item img {
+.shop-item {
+  border: 2px solid #000;
+}
+
+.item-img {
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.item-img img {
 	width: 100%;
-	object-fit: contain;
+  object-fit: contain;
+  image-rendering: pixelated;
+  background-color: #999;
 }
 
 .item-info {
 	display: flex;
 	justify-content: space-between;
 	align-items: baseline;
+  border-top: 2px solid #000;
+  padding: 12px;
 }
 
 .item-name {
+  margin:0;
 	font-size: 1.2rem;
 }
 
