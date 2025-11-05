@@ -242,15 +242,52 @@ body {
   height: 43px;
 }
 
+/* Filter */
+ 
 .filter {
 	width: 20%;
 	font-size: 1.5rem;
-	padding-left: 10px;
+	padding: 10px;
 }
 
+.accordion {
+  margin-bottom: 10px;
+}
+.accordion-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.accordion-info h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.accordion-info span {
+  font-size: 1rem;
+}
+
+.accordion-content {
+  padding-left: 10px;
+}
+
+.accordion-closed { 
+  height: 0;
+  overflow: hidden;
+}
+
+.accordion-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 1.2rem;
+}
+
+/* Items */
 .items-container {
 	width: calc(100% - 150px);
-	padding: 30px;
+	padding-left: 30px;
 }
 
 .items {

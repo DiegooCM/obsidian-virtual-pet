@@ -151,16 +151,20 @@ export default class StatsHandler {
 		itemName: string,
 		itemCategory: ItemCategory,
 		itemPrice: number
-	) => {
+	):[UserStats,UserItems] => {
 		this.userStats.coins = this.userStats.coins - itemPrice;
 		this.userItems.obtained[itemCategory].push(itemName);
+
+    return [{...this.userStats}, {...this.userItems}]
 	};
 
-	equipItem = (itemName: string, itemCategory: ItemCategory) => {
+	equipItem = (itemName: string, itemCategory: ItemCategory):UserItems => {
 		this.userItems.equiped[itemCategory] = itemName;
+    return {...this.userItems};
 	};
 
-	unequipItem = (itemName: string, itemCategory: ItemCategory) => {
+	unequipItem = (itemCategory: ItemCategory):UserItems => {
 		this.userItems.equiped[itemCategory] = "";
+    return {...this.userItems}
 	};
 }

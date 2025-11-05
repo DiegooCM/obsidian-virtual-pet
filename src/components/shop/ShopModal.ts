@@ -1,7 +1,9 @@
 import { App, Modal } from "obsidian";
 import StatsHandler from "src/stats/StatsHandler";
 import { UserItems, UserStats } from "src/types";
-import { ShopItems } from "./ShopItems";
+import { Root, createRoot } from "react-dom/client";
+import { createElement } from "react";
+import { Shop } from "./Shop";
 
 export class ShopModal extends Modal {
 	private userStats: UserStats;
@@ -9,13 +11,15 @@ export class ShopModal extends Modal {
 	private statsHandler: StatsHandler;
 	private headerEl: HTMLElement; // Idk why the modal class don't recognize headerEl. I declare it for removing the error on my editor
   private setUserItems: (value: React.SetStateAction<UserItems>) => void;
+	private reactRoot: Root | null = null;
+
 	constructor(
 		app: App,
 		statsHandler: StatsHandler,
 		setUserItems: (value: React.SetStateAction<UserItems>) => void
 	) {
 		super(app);
-		this.statsHandler = statsHandler;
+	 	this.statsHandler = statsHandler;
 		this.userStats = this.statsHandler.getUserStats();
 		this.userItems = this.statsHandler.getUserItems();
 		this.setUserItems = setUserItems;
@@ -42,24 +46,18 @@ export class ShopModal extends Modal {
     coinsContainer.createEl("span", {
 			text: this.userStats.coins.toString(),
 		});
-		// Filter
-		const filter = this.contentEl.createDiv("filter");
-		filter.createEl("p", { text: "All" });
-		// Items
-    ShopItems({
-      contentEl: this.contentEl,
-      userItems: this.userItems, 
-      userStats: this.userStats,
-      statsHandler: this.statsHandler,
-      modalRerender: this.modalRerender,
-      app: this.app
-    });
-	};
 
-	modalRerender = () => {
-		this.contentEl.innerHTML = "";
-		this.headerEl.innerHTML = "";
-		this.createShop();
-	};
-
+		this.reactRoot = createRoot(this.contentEl);
+		this.reactRoot.render(
+			createElement(Shop, 
+        {
+          userItems: this.userItems, 
+          setUserItems: this.setUserItems,
+          userStats: this.userStats,
+          statsHandler: this.statsHandler,
+          app: this.app
+        }
+      )
+    );
+  }
 }

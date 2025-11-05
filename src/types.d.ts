@@ -69,3 +69,11 @@ export type PetViewRef = {
 };
 
 export type UserActions = "file-open" | "editor-change";
+
+export type Filter = {
+  "category": string,
+  "options": {
+    [key: string]: boolean
+  }
+}
+export type Filters = Filter[]

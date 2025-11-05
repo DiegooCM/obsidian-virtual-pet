@@ -48,8 +48,7 @@ export default class VirualPetView extends ItemView {
 		this.statsHandler.getUserStatsFromJson();
 
 		// Pet View
-		const reactContainer = container.createEl("div");
-		reactContainer.addClass("react-root");
+		const reactContainer = container.createDiv("react-root");
 
 		this.reactRoot = createRoot(reactContainer);
 		this.reactRoot.render(
