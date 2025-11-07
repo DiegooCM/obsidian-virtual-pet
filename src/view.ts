@@ -4,8 +4,7 @@ import { createElement, createRef, RefObject } from "react";
 import { Root, createRoot } from "react-dom/client";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
 import PetView from "./view/PetView";
-// import {PetView} from './view/PetView copy'
-import StatsHandler from "./stats/StatsHandler";
+import StatsHandler from "./utils/statsHandler";
 import { PetViewRef } from "./types";
 
 export default class VirualPetView extends ItemView {

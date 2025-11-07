@@ -1,8 +1,7 @@
 import { App } from "obsidian";
 import { useMemo } from "react";
-import items from "src/items.json";
-import StatsHandler from "src/stats/StatsHandler";
-import { ItemCategory, ItemJson, ItemsJson, UserItems, UserStats } from "src/types";
+import StatsHandler from "src/utils/statsHandler";
+import { ItemCategory, ItemJson, ItemsCategory, ItemsJson, UserItems, UserStats } from "src/types";
 
 interface shopItemsI {
   userItems: UserItems;
@@ -10,9 +9,10 @@ interface shopItemsI {
   userStats: UserStats;
   statsHandler: StatsHandler;
   app: App;
+  items: ItemsJson;
 }
 
-export function ShopItems({userItems, setUserItems, userStats, statsHandler, app}: shopItemsI) {
+export function ShopItems({userItems, setUserItems, userStats, statsHandler, app, items}: shopItemsI) {
   // Checks what is the state of the item ("equiped", "obtained", ""(not buyed))
   const checkItem = (itemName: string, itemCategory: ItemCategory) => {
     if (userItems.equiped[itemCategory] === itemName) return "equiped";
@@ -32,7 +32,7 @@ export function ShopItems({userItems, setUserItems, userStats, statsHandler, app
 
   };
 
-  const ShopItem = ({item, itemsCategory}: {item:ItemJson, itemsCategory: ItemsJson}) => {
+  const ShopItem = ({item, itemsCategory}: {item:ItemJson, itemsCategory: ItemsCategory}) => {
     const ItemButton = ({itemState}:{itemState: string}) => {
       if (itemState === "equiped") {
         return (
@@ -84,7 +84,7 @@ export function ShopItems({userItems, setUserItems, userStats, statsHandler, app
     <div className="items-container">
       {
         // Map to items.json, is returned the categories of the items.json
-        items.map((itemsCategory: ItemsJson) => {
+        items.map((itemsCategory: ItemsCategory) => {
           return (
             <div key={itemsCategory.name}>
               <h2>{itemsCategory.name}</h2>

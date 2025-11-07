@@ -1,5 +1,5 @@
 import { View } from "obsidian";
-import StatsHandler from "./stats/StatsHandler";
+import statsHandler from "./utils/statsHandler";
 
 export interface UserData {
 	fileWordCount: number;
@@ -34,16 +34,19 @@ type ItemJson = {
 	url: string;
 };
 
-export interface ItemsJson {
+export type ItemsCategory = {
 	name: string;
 	category: ItemCategory;
 	items: ItemJson[];
-}
+};
+
+export type ItemsJson = ItemsCategory[];
+
 export interface UserInfo {
 	exp: number;
 }
 
-export type PetViewT = View & { statsHandler: StatsHandler };
+export type PetViewT = View & { statsHandler: statsHandler };
 
 export interface PetState {
 	userData: UserData;

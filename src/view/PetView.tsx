@@ -8,7 +8,7 @@ import {
 } from "react";
 import { App } from "obsidian";
 import UserInfo from "src/components/UserInfo";
-import StatsHandler from "src/stats/StatsHandler";
+import StatsHandler from "src/utils/statsHandler";
 import Expbar from "../components/ExpBar";
 import PetButtons from "src/components/PetButtons";
 import Pet from "src/components/Pet";

@@ -1,5 +1,5 @@
 import { App, Modal } from "obsidian";
-import StatsHandler from "src/stats/StatsHandler";
+import StatsHandler from "src/utils/statsHandler";
 import { UserItems, UserStats } from "src/types";
 import { Root, createRoot } from "react-dom/client";
 import { createElement } from "react";

@@ -1,10 +1,11 @@
 import { App } from "obsidian";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { defaultFilters } from "src/constants";
-import StatsHandler from "src/stats/StatsHandler";
+import StatsHandler from "src/utils/statsHandler";
 import { UserItems, UserStats } from "src/types";
 import { ShopFilter } from "./ShopFilter";
 import { ShopItems } from "./ShopItems";
+import { filterItems } from "src/utils/shopUtils";
 
 interface ShopI {
   userItems: UserItems;
@@ -18,10 +19,13 @@ export function Shop({userItems, setUserItems, userStats, statsHandler, app}: Sh
   const [filters, setFilters] = useState(defaultFilters)
   const [shopUserItems, setShopUserItems] = useState(userItems)
 
+  const itemsJsonFiltered = filterItems(filters, userItems);
+
   return (
     <>
       <ShopFilter filters={filters} setFilters={setFilters}/>
-      <ShopItems userItems={shopUserItems} setUserItems={setShopUserItems} userStats={userStats} statsHandler={statsHandler} app={app}/>
+      <ShopItems userItems={shopUserItems} setUserItems={setShopUserItems} userStats={userStats} statsHandler={statsHandler} app={app} items={itemsJsonFiltered} />
     </>
   )
 }
+
