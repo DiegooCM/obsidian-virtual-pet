@@ -1,49 +1,51 @@
 import { PetAnimation } from "src/types";
 import animations from "../animations.json";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function useAnimationsHandler() {
 	const sleepingTimeoutId = useRef(0);
 	const defaultTimeoutId = useRef(0);
-	const nextDefault = useRef<PetAnimation | null>(null);
+	const nextDefault = useRef<PetAnimation>(animations.stand);
 	const [animation, setAnimation] = useState<PetAnimation>(animations.stand);
+  const animationRef = useRef(animation)
 
-	// Rotates defaults animations
-	const handleDefaults = () => {
-		if (defaultTimeoutId.current) {
-			clearTimeout(defaultTimeoutId.current);
-			defaultTimeoutId.current = 0;
-		}
+  // Rotates defaults animations
+  const handleDefaults = () => {
+    window.clearTimeout(defaultTimeoutId.current);
 
-		nextDefault.current === animations.stand
-			? (nextDefault.current = animations.walk)
-			: (nextDefault.current = animations.stand);
+    if(animationRef.current === animations.sleep) {
+      return;
+    }
 
-		setAnimation(nextDefault.current);
+    changeAnimation(nextDefault.current);
 
-		defaultTimeoutId.current = window.setTimeout(
-			() => handleDefaults(),
-			20000
-		); // 20 seconds
-	};
+    nextDefault.current === animations.stand ? 
+      (nextDefault.current = animations.walk) :
+      (nextDefault.current = animations.stand);
+
+    defaultTimeoutId.current = window.setTimeout(
+      () => handleDefaults() ,
+      20000
+    ); // 20 seconds
+  };
 
 	const handleSleeping = () => {
-		if (sleepingTimeoutId.current) {
-			clearTimeout(sleepingTimeoutId.current);
-		}
+    clearTimeout(sleepingTimeoutId.current);
 
 		// Checks if it sleeping makes it coding during 10 seconds
 		if (animation === animations.sleep) {
 			changeAnimation(animations.code);
-			setTimeout(() => handleDefaults(), 10000); // 10 seconds
+			setTimeout(() => {
+        handleDefaults()}, 10000); // 10 seconds
 		}
 
 		sleepingTimeoutId.current = window.setTimeout(() => {
 			changeAnimation(animations.sleep);
-		}, 60000); // 1 min
+		}, 30000); // 30 secs
 	};
 
 	const changeAnimation = (newAnimation: PetAnimation) => {
+    if (animation === newAnimation) return;
 		setAnimation(newAnimation);
 	};
 
@@ -55,8 +57,12 @@ export function useAnimationsHandler() {
 		}, 3000); // 3 seconds
 	};
 
-	return {
-		animation,
+  useEffect(() => {
+    animationRef.current = animation
+  },[animation])
+
+  return {
+    animation,
 		handleSleeping,
 		handleDefaults,
 		changeAnimation,

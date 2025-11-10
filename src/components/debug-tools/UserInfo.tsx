@@ -26,11 +26,11 @@ export default function UserInfo({ userData, userStats, userItems }: UserInfo) {
 			</div>
 			<div className="div user-items">
 				<h2>Equiped</h2>
-				<p>Background: {userItems.equiped.background}</p>
-				<p>Accesory: {userItems.equiped.accessory}</p>
+				<p>Background: {userItems.equiped.Backgrounds}</p>
+				<p>Accesory: {userItems.equiped.Accessories}</p>
 				<h2>Obtained</h2>
-				<p>Backgrounds: {userItems.obtained.background}</p>
-				<p>Accessory: {userItems.obtained.accessory}</p>
+				<p>Backgrounds: {userItems.obtained.Backgrounds}</p>
+				<p>Accessory: {userItems.obtained.Accessories}</p>
 			</div>
 		</>
 	);

@@ -13,7 +13,7 @@ export interface UserStats {
 	coins: number;
 }
 
-export type ItemCategory = "background" | "accessory";
+export type ItemCategory = "Backgrounds" | "Accessories";
 
 export type UserItem = {
 	[K in ItemCategory]: string;
@@ -35,7 +35,6 @@ type ItemJson = {
 };
 
 export type ItemsCategory = {
-	name: string;
 	category: ItemCategory;
 	items: ItemJson[];
 };
@@ -63,8 +62,9 @@ export interface PetAnimation {
 export interface AnimationsHandler {
 	animation: PetAnimation;
 	handleSleeping: () => void;
+  handleDefaults: () => void;
 	changeAnimation: (newAnimation: PetAnimation) => void;
-	levelUp: () => void;
+	levelUpAnimation: () => void;
 }
 
 export type PetViewRef = {

@@ -23,8 +23,8 @@ export default function Pet({ animation, app, userStats, userItems, onLevelUp }:
 	const petAccessorySpritesheet = useMemo(
 		() =>
 			app.vault.adapter.getResourcePath(
-				`./.obsidian/plugins/obsidian-virtual-pet/assets/${userItems.equiped.accessory}Spritesheet.png`),
-		[userItems.equiped.accessory]
+				`./.obsidian/plugins/obsidian-virtual-pet/assets/${userItems.equiped.Accessories}Spritesheet.png`),
+		[userItems.equiped.Accessories]
 	);
 
 	// Refs
@@ -123,7 +123,7 @@ export default function Pet({ animation, app, userStats, userItems, onLevelUp }:
 					<div 
 					className="pet-accessory" 
 					ref={petAccessoryRef} 
-					style={{ background: userItems.equiped.accessory !== '' ? `url(${petAccessorySpritesheet})`: '' }}
+					style={{ background: userItems.equiped.Accessories !== '' ? `url(${petAccessorySpritesheet})`: '' }}
 					></div>
 				</div>
 			</div>

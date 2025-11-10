@@ -3,7 +3,7 @@ import { ItemView, Plugin, WorkspaceLeaf } from "obsidian";
 import { createElement, createRef, RefObject } from "react";
 import { Root, createRoot } from "react-dom/client";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
-import PetView from "./view/PetView";
+import PetView from "src/components/pet/PetView";
 import StatsHandler from "./utils/statsHandler";
 import { PetViewRef } from "./types";
 
@@ -55,8 +55,7 @@ export default class VirualPetView extends ItemView {
 				statsHandler: this.statsHandler,
 				app: this.app,
 				ref: this.petViewRef,
-			})
-		);
+			}));
 
 		// Save the state userStats in the data.json when the app is about to quit
 		this.registerEvent(

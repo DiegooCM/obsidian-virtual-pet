@@ -27,12 +27,12 @@ export default class StatsHandler {
 		};
 		this.userItems = {
 			equiped: {
-				background: "01",
-				accessory: "",
+				Backgrounds: "01",
+				Accessories: "",
 			},
 			obtained: {
-				background: ["01"],
-				accessory: ["glasses"],
+				Backgrounds: ["01"],
+				Accessories: ["glasses"],
 			},
 		};
 	}

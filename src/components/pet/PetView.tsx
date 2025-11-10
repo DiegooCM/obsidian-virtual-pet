@@ -7,16 +7,14 @@ import {
 	useState,
 } from "react";
 import { App } from "obsidian";
-import UserInfo from "src/components/UserInfo";
 import StatsHandler from "src/utils/statsHandler";
-import Expbar from "../components/ExpBar";
-import PetButtons from "src/components/PetButtons";
-import Pet from "src/components/Pet";
-import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
-import { PetViewRef, UserActions, UserStats } from "src/types";
-import ExpButtons from "src/components/ExpButtons";
+import Expbar from "src/components/pet/ExpBar";
+import Pet from "src/components/pet/Pet";
+import { AnimationsHandler, PetViewRef, UserActions, UserStats } from "src/types";
 import { ShopModal } from "src/components/shop/ShopModal";
 import items from "src/items.json";
+import { DebugTools } from "src/components/debug-tools/DebugTools";
+import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
 
 interface PetView {
 	statsHandler: StatsHandler;
@@ -35,18 +33,12 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
     )
     ,[])
 
-	const {
-		animation,
-		handleSleeping,
-		handleDefaults,
-		changeAnimation,
-		levelUpAnimation,
-	} = useAnimationsHandler();
+  const animationsHandler = useAnimationsHandler()
 
 	const getActualBackground = () => {
 		let actualBgUrl = items
-			.find((i) => i.category === "background")
-			?.items.find((i) => i.name === userItems.equiped.background)?.url;
+			.find((i) => i.category === "Backgrounds")
+			?.items.find((i) => i.name === userItems.equiped.Backgrounds)?.url;
 		if (!actualBgUrl) actualBgUrl = "assets/background.png";
 		return app.vault.adapter.getResourcePath(
 			`./.obsidian/plugins/obsidian-virtual-pet/${actualBgUrl}`
@@ -54,7 +46,7 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 	};
 
 	const levelUp = (newUserStats: UserStats) => {
-		levelUpAnimation();
+		animationsHandler.levelUpAnimation();
 		onLevelUp.current = true;
 		setTimeout(() => (onLevelUp.current = false), 3000);
 		const newExp = newUserStats.exp - newUserStats.expGoal;
@@ -92,23 +84,24 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 	useImperativeHandle<PetViewRef, PetViewRef>(ref, () => {
 		return {
 			triggerChild(action: UserActions) {
-				if (action === "editor-change") handleSleeping();
+				if (action === "editor-change") animationsHandler.handleSleeping();
 				updateUserInfo();
 			},
 		};
 	});
 
 	useEffect(() => {
-		handleDefaults();
+		animationsHandler.handleDefaults();
+    animationsHandler.handleSleeping();
 		window.setTimeout(() => updateUserInfo(), 100); // The timeout is for giving time to load the data from de data.json
 	}, []);
 
-	return (
-		<>
-			<div
-				className="plugin"
-				style={{
-					background: `url(${petBackground}) 0% 0% / cover no-repeat`,
+  return (
+    <>
+      <div
+        className="plugin"
+        style={{
+          background: `url(${petBackground}) 0% 0% / cover no-repeat`,
         }}
       >
         <div
@@ -118,7 +111,7 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
             onClick={() =>
               new ShopModal(app, statsHandler, setUserItems).open()
             }
-          style={{display: "flex", cursor: "pointer"}}
+            style={{display: "flex", cursor: "pointer"}}
           >
             <img className="top-bar-coin"src={coinUrl}/>
             <p
@@ -128,34 +121,25 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
             </p>
           </div>
         </div>
-				<Pet
-					animation={animation}
-					app={app}
-					userStats={userStats}
-					userItems={userItems}
-					onLevelUp={onLevelUp.current}
-				/>
-				<Expbar exp={userStats.exp} expGoal={userStats.expGoal} />
-			</div>
-			<div className="debug-tools">
-				<UserInfo
-					userData={userData}
-					userStats={userStats}
-					userItems={userItems}
-				/>
-				<h1>Change Pet Animation</h1>
-				<PetButtons
-					animation={animation}
-					changeAnimation={changeAnimation}
-					handleDefaults={handleDefaults}
-				/>
-				<ExpButtons
-					petChangeExp={statsHandler.petChangeExp}
-					userStats={userStats}
-					levelUp={levelUp}
-					setUserStats={setUserStats}
-				/>
-			</div>
-		</>
-	);
+        <Pet
+          animation={animationsHandler.animation}
+          app={app}
+          userStats={userStats}
+          userItems={userItems}
+          onLevelUp={onLevelUp.current}
+        />
+        <Expbar exp={userStats.exp} expGoal={userStats.expGoal} />
+      </div>
+      <DebugTools 
+        userData={userData}
+        userStats={userStats}
+        userItems={userItems}
+        animationsHandler={animationsHandler} 
+        statsHandler={statsHandler}
+        levelUp={levelUp}
+        setUserStats={setUserStats}
+      />
+
+    </>
+  );
 }

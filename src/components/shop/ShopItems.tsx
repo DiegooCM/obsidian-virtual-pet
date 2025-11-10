@@ -22,7 +22,7 @@ export function ShopItems({userItems, setUserItems, userStats, statsHandler, app
 
   const buyItem = (itemName: string, itemCategory: ItemCategory) => {
     const itemPrice = items
-      .find((categoryGroup) => categoryGroup.category === itemCategory)
+      .find((itemsCategory) => itemsCategory.category === itemCategory)
       ?.items.find((item) => item.name === itemName)?.price;
 
     if (itemPrice && userStats.coins > itemPrice) {
@@ -86,8 +86,8 @@ export function ShopItems({userItems, setUserItems, userStats, statsHandler, app
         // Map to items.json, is returned the categories of the items.json
         items.map((itemsCategory: ItemsCategory) => {
           return (
-            <div key={itemsCategory.name}>
-              <h2>{itemsCategory.name}</h2>
+            <div key={itemsCategory.category}>
+              <h2>{itemsCategory.category}</h2>
               <div className="items">
                 {// Map to the items category, is returned each item
                   itemsCategory.items.map((item) => {

@@ -11,7 +11,7 @@ export function filterItems(filters: Filters, userItems: UserItems):ItemsJson {
 
     // Filter the itemsJson with the toFilter.
     toFilter.map((filterCategory) => {
-      itemsJsonFiltered = itemsJsonFiltered.filter((itemsCategory) => itemsCategory.name !== filterCategory);
+      itemsJsonFiltered = itemsJsonFiltered.filter((itemsCategory) => itemsCategory.category !== filterCategory);
     })
 
   }

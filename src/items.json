@@ -1,7 +1,6 @@
 [
 	{
-		"name": "Backgrounds",
-		"category": "background",
+		"category": "Backgrounds",
 		"items": [
 			{
 				"name": "01",
@@ -16,8 +15,7 @@
 		]
 	},
 	{
-		"name": "Accessories",
-		"category": "accessory",
+		"category": "Accessories",
 		"items": [
 			{
 				"name": "glasses",

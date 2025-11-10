@@ -1,5 +1,5 @@
-import type { PetAnimation } from "../types";
-import animations from "../animations.json";
+import type { PetAnimation } from "src/types";
+import animations from "src/animations.json";
 
 type PetButtonsType = {
 	animation: PetAnimation;
