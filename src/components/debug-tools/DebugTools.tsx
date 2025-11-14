@@ -18,22 +18,21 @@ export function DebugTools({userData, userStats, userItems, animationsHandler,st
 
   return (
     <div className="debug-tools">
-      <UserInfo
-        userData={userData}
-        userStats={userStats}
-        userItems={userItems}
-      />
       <h1>Change Pet Animation</h1>
       <PetButtons
         animation={animationsHandler.animation}
-        changeAnimation={animationsHandler.changeAnimation}
-        handleDefaults={animationsHandler.handleDefaults}
+        animationsHandler={animationsHandler}
       />
       <ExpButtons
         petChangeExp={statsHandler.petChangeExp}
         userStats={userStats}
         levelUp={levelUp}
         setUserStats={setUserStats}
+      />
+      <UserInfo
+        userData={userData}
+        userStats={userStats}
+        userItems={userItems}
       />
     </div>
   )

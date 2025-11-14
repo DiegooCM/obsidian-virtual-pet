@@ -62,7 +62,7 @@ export interface PetAnimation {
 export interface AnimationsHandler {
 	animation: PetAnimation;
 	handleSleeping: () => void;
-  handleDefaults: () => void;
+  handleDefaults: (next?:string) => void;
 	changeAnimation: (newAnimation: PetAnimation) => void;
 	levelUpAnimation: () => void;
 }
@@ -71,7 +71,7 @@ export type PetViewRef = {
 	triggerChild: (action: string) => void;
 };
 
-export type UserActions = "file-open" | "editor-change";
+export type UserActions = "file-open" | "editor-change" ;
 
 export type Filter = {
   "category": string,

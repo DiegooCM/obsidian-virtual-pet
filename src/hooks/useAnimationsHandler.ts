@@ -10,10 +10,12 @@ export function useAnimationsHandler() {
   const animationRef = useRef(animation)
 
   // Rotates defaults animations
-  const handleDefaults = () => {
+  const handleDefaults = (next?:string) => {
+    if (next === "walk") nextDefault.current = animations.walk
+
     window.clearTimeout(defaultTimeoutId.current);
 
-    if(animationRef.current === animations.sleep) {
+    if(animationRef.current === animations.sleep && !next) {
       return;
     }
 

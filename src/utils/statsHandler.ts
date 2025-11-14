@@ -38,11 +38,15 @@ export default class StatsHandler {
 	}
 
   onFileOpen = async() => {
+    if (this.workspace.getActiveFile()?.extension !== "md") return;
+
 		const oldUserData = { ...this.userData };
 
     const newFileCount = this.vault.getMarkdownFiles().length
     this.userData.filesCount = newFileCount
 		const filesDif = newFileCount - oldUserData.filesCount;
+
+    if (oldUserData.filesCount === -1) return;
 
     const newCoins = this.userStats.coins + (filesDif * 10)
 
@@ -52,32 +56,32 @@ export default class StatsHandler {
     };
   } 
 
-	updateUserDataNStats = async () => {
-		let fileWordsDif = 0;
-		// Actual file where the user is working
-		const filePath = this.workspace.getActiveFile();
+  updateUserDataNStats = async () => {
+    // Actual file where the user is working
+    const filePath = this.workspace.getActiveFile();
 
-		if (!filePath) return;
+    if (!filePath) return;
 
-		// Data Calculation
-		const oldUserData = { ...this.userData };
+    // Data Calculation
+    const oldUserData = { ...this.userData };
 
-		await this.getFileWordsCount(filePath).then((newWordsCount) => {
-			fileWordsDif = newWordsCount - oldUserData.fileWordCount;
-		});
+    await this.getFileWordsCount(filePath).then((newWordsCount) => {
+      const fileWordsDif = newWordsCount - oldUserData.fileWordCount;
 
-		// Stats Calculation
-		const newExp = fileWordsDif + this.userStats.exp;
+      // Stats Calculation
+      const newExp = fileWordsDif + this.userStats.exp;
 
-		if (
-			!Object.values(oldUserData).includes(-1) &&
-			newExp !== this.userStats.exp
-		) {
-			this.userStats = {
-				...this.userStats,
-				exp: newExp > 0 ? newExp : 0,
-			};
-		}
+      if (
+        oldUserData.fileWordCount !== -1 &&
+          newExp !== this.userStats.exp
+      ) {
+        this.userStats = {
+          ...this.userStats,
+          exp: newExp > 0 ? newExp : 0,
+        };
+      }
+    });
+
 	};
 
 	getFileWordsCount = async (filePath: TFile): Promise<number> => {

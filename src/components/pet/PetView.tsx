@@ -10,7 +10,7 @@ import { App } from "obsidian";
 import StatsHandler from "src/utils/statsHandler";
 import Expbar from "src/components/pet/ExpBar";
 import Pet from "src/components/pet/Pet";
-import { AnimationsHandler, PetViewRef, UserActions, UserStats } from "src/types";
+import { PetViewRef, UserActions, UserStats } from "src/types";
 import { ShopModal } from "src/components/shop/ShopModal";
 import items from "src/items.json";
 import { DebugTools } from "src/components/debug-tools/DebugTools";
@@ -126,6 +126,7 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
           app={app}
           userStats={userStats}
           userItems={userItems}
+          animationsHandler={animationsHandler}
           onLevelUp={onLevelUp.current}
         />
         <Expbar exp={userStats.exp} expGoal={userStats.expGoal} />

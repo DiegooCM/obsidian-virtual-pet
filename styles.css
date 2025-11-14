@@ -66,6 +66,7 @@
 	transform-origin: top;
 
 	image-rendering: pixelated;
+  border: 1px solid red;
 }
 
 .pet-level {

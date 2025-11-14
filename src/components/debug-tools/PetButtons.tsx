@@ -1,22 +1,20 @@
-import type { PetAnimation } from "src/types";
+import type { AnimationsHandler, PetAnimation } from "src/types";
 import animations from "src/animations.json";
 
 type PetButtonsType = {
 	animation: PetAnimation;
-	changeAnimation: (newAnimation: PetAnimation) => void;
-	handleDefaults: () => void;
+  animationsHandler: AnimationsHandler;
 };
 
 export default function PetButtons({
 	animation,
-	changeAnimation,
-	handleDefaults,
+  animationsHandler
 }: PetButtonsType) {
 	return (
 		<div className="pet-buttons">
 			<button
 				onClick={() => {
-					handleDefaults();
+					animationsHandler.handleDefaults("next");
 				}}
 				className={
 					animation === animations.stand ||
@@ -29,7 +27,7 @@ export default function PetButtons({
 			</button>
 			<button
 				onClick={() => {
-					changeAnimation(animations.celebrate);
+					animationsHandler.changeAnimation(animations.celebrate);
 				}}
 				className={animation === animations.celebrate ? "active" : ""}
 			>
@@ -37,7 +35,7 @@ export default function PetButtons({
 			</button>
 			<button
 				onClick={() => {
-					changeAnimation(animations.code);
+					animationsHandler.changeAnimation(animations.code);
 				}}
 				className={animation === animations.code ? "active" : ""}
 			>
@@ -45,7 +43,7 @@ export default function PetButtons({
 			</button>
 			<button
 				onClick={() => {
-					changeAnimation(animations.sleep);
+					animationsHandler.changeAnimation(animations.sleep);
 				}}
 				className={animation === animations.sleep ? "active" : ""}
 			>
