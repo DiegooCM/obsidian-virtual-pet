@@ -85,6 +85,13 @@ export default class VirualPetView extends ItemView {
 			})
     );
 
+		this.registerEvent(
+      // Leaf changes (leaf = filetree, plugins, current-file,...)
+			this.app.workspace.on("active-leaf-change", () => {
+				this.statsHandler.updateUserDataNStats();
+				this.petViewRef.current?.triggerChild("active-leaf-change");
+			})
+    );
   }
 
 	async onClose(): Promise<void> {

@@ -1,5 +1,6 @@
 import { PetAnimation } from "src/types";
 import animations from "../animations.json";
+import animationsTimes from "../animationsTimes.json"
 import { useEffect, useRef, useState } from "react";
 
 export function useAnimationsHandler() {
@@ -15,9 +16,7 @@ export function useAnimationsHandler() {
 
     window.clearTimeout(defaultTimeoutId.current);
 
-    if(animationRef.current === animations.sleep && !next) {
-      return;
-    }
+    if (animationRef.current === animations.sleep && !next) return;
 
     changeAnimation(nextDefault.current);
 
@@ -27,7 +26,7 @@ export function useAnimationsHandler() {
 
     defaultTimeoutId.current = window.setTimeout(
       () => handleDefaults() ,
-      20000
+      animationsTimes.handleDefaults
     ); // 20 seconds
   };
 
@@ -38,12 +37,12 @@ export function useAnimationsHandler() {
 		if (animation === animations.sleep) {
 			changeAnimation(animations.code);
 			setTimeout(() => {
-        handleDefaults()}, 10000); // 10 seconds
+        handleDefaults()}, animationsTimes.coding); // 10 seconds
 		}
 
 		sleepingTimeoutId.current = window.setTimeout(() => {
 			changeAnimation(animations.sleep);
-		}, 30000); // 30 secs
+		}, animationsTimes.sleepingAfterInactive); // 30 secs
 	};
 
 	const changeAnimation = (newAnimation: PetAnimation) => {
@@ -56,7 +55,7 @@ export function useAnimationsHandler() {
 		changeAnimation(animations.celebrate);
 		window.setTimeout(() => {
 			handleDefaults();
-		}, 3000); // 3 seconds
+		}, animationsTimes.levelUp); // 3 seconds
 	};
 
   useEffect(() => {

@@ -3,6 +3,7 @@ import { RefObject, useCallback, useEffect, useMemo, useRef } from "react";
 import { PetAnimation, UserStats, UserItems, AnimationsHandler } from "src/types";
 
 interface Props {
+  isPluginActive: boolean;
 	animation: PetAnimation;
 	app: App;
 	userStats: UserStats;
@@ -11,7 +12,7 @@ interface Props {
 	onLevelUp: boolean;
 }
 
-export default function Pet({ animation, app, userStats, userItems,animationsHandler, onLevelUp }: Props) {
+export default function Pet({ isPluginActive, animation, app, userStats, userItems,animationsHandler, onLevelUp }: Props) {
 	// Assets
 	const petSpritesheet = useMemo(
 		() =>
@@ -36,8 +37,6 @@ export default function Pet({ animation, app, userStats, userItems,animationsHan
 
 	const petScale = useRef<number>(1.5);
   const petDirecction = useRef<number>(1); // 1 = right, -1 = left
-	//const petVelocity = useRef<number>(animation.speed);
-  const petVelocity = animation.speed;
 
 	const previousAnimationIdx = useRef<number>(0);
 	const animationFrameId = useRef<number>(0);
@@ -47,6 +46,8 @@ export default function Pet({ animation, app, userStats, userItems,animationsHan
   const isOutside = useRef<boolean>(false);
 
   const checkIsInside = (windowWidth:number, actualLeft:number, petScale:number) => {
+    if (petScale === 0) return; // Preventing bug on leaf open
+
     const petOuterRelWidth = ((petScale - 1) * 64) / 2
     const margin = petScale * 5;
 
@@ -56,8 +57,6 @@ export default function Pet({ animation, app, userStats, userItems,animationsHan
     else if ( windowWidth - actualLeft < 64 + petOuterRelWidth - margin) isOutside.current = true
     // Is inside
     else isOutside.current = false 
-
-    //if (isOutsideTimeoutRef && isOutside.current) window.clearTimeout(isOutsideTimeoutRef.current);
 
     if (isOutside.current && !isOutsideTimeoutRef.current) {
       isOutsideTimeoutRef.current = window.setTimeout(() => {
@@ -98,7 +97,7 @@ export default function Pet({ animation, app, userStats, userItems,animationsHan
       
 			// Movement animation
 			if (animation.speed !== 0) {
-        actualLeft = actualLeft + petVelocity * petDirecction.current
+        actualLeft = actualLeft + animation.speed * petDirecction.current
 				petContainerRef.current.style.left = `${
 					actualLeft
 				}px`;
@@ -123,7 +122,7 @@ export default function Pet({ animation, app, userStats, userItems,animationsHan
 		// Start new loop
 		animationFrameId.current = requestAnimationFrame(animate);
 	};
-
+  
 	// Animation frame loop
 	if (actualAnimation.current !== animation) {
 		actualAnimation.current = animation;
@@ -133,6 +132,13 @@ export default function Pet({ animation, app, userStats, userItems,animationsHan
 		// Start a new animation
 		animationFrameId.current = requestAnimationFrame(animate);
 	}
+
+  // When the user doesn't have the leaf open it stops the animation
+  cancelAnimationFrame(animationFrameId.current);
+
+  if(isPluginActive) {
+    animationFrameId.current = requestAnimationFrame(animate) 
+  }; 
 
 	return (
 		<div

@@ -1,5 +1,6 @@
 import {
 	Ref,
+	RefObject,
 	useEffect,
 	useImperativeHandle,
 	useMemo,
@@ -23,10 +24,12 @@ interface PetView {
 }
 
 export default function PetView({ statsHandler, app, ref }: PetView) {
+  const [isPluginActive, setIsPluginActive] = useState<boolean>(false);
 	const [userData, setUserData] = useState(statsHandler.getUserData());
 	const [userStats, setUserStats] = useState(statsHandler.getUserStats());
 	const [userItems, setUserItems] = useState(statsHandler.getUserItems());
 	const onLevelUp = useRef<boolean>(false);
+  const pluginRef: RefObject<HTMLDivElement | null> = useRef(null);
   const coinUrl = useMemo(() => 
     app.vault.adapter.getResourcePath(
       "./.obsidian/plugins/obsidian-virtual-pet/assets/coin.png"
@@ -44,6 +47,18 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 			`./.obsidian/plugins/obsidian-virtual-pet/${actualBgUrl}`
 		);
 	};
+
+  const checkWidth = () => {
+    if (!pluginRef.current) {
+      setIsPluginActive(false)
+      return;
+    }
+    
+    const actualWidth = pluginRef.current.clientWidth
+    actualWidth > 0 ? 
+      !isPluginActive && setIsPluginActive(true) :
+      isPluginActive && setIsPluginActive(false);
+  }
 
 	const levelUp = (newUserStats: UserStats) => {
 		animationsHandler.levelUpAnimation();
@@ -85,6 +100,7 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 		return {
 			triggerChild(action: UserActions) {
 				if (action === "editor-change") animationsHandler.handleSleeping();
+        if (action === "active-leaf-change") checkWidth();
 				updateUserInfo();
 			},
 		};
@@ -100,6 +116,7 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
     <>
       <div
         className="plugin"
+        ref={pluginRef}
         style={{
           background: `url(${petBackground}) 0% 0% / cover no-repeat`,
         }}
@@ -121,7 +138,9 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
             </p>
           </div>
         </div>
+        
         <Pet
+          isPluginActive={isPluginActive}
           animation={animationsHandler.animation}
           app={app}
           userStats={userStats}

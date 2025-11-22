@@ -71,7 +71,7 @@ export type PetViewRef = {
 	triggerChild: (action: string) => void;
 };
 
-export type UserActions = "file-open" | "editor-change" ;
+export type UserActions = "file-open" | "editor-change" | "active-leaf-change";
 
 export type Filter = {
   "category": string,
