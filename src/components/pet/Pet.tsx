@@ -1,34 +1,19 @@
 import { App } from "obsidian";
-import { RefObject, useCallback, useEffect, useMemo, useRef } from "react";
-import { PetAnimation, UserStats, UserItems, AnimationsHandler } from "src/types";
+import { memo, RefObject, useCallback, useEffect, useMemo, useRef } from "react";
+import { PetAnimation, UserStats, UserItems, AnimationsHandler, HandleDefaults } from "src/types";
 
 interface Props {
   isPluginActive: boolean;
 	animation: PetAnimation;
-	app: App;
-	userStats: UserStats;
+  petSpritesheet: string;
+  petAccessorySpritesheet: string;
+	userLevel: number;
 	userItems: UserItems;
-  animationsHandler: AnimationsHandler;
+  handleDefaults: HandleDefaults;
 	onLevelUp: boolean;
 }
 
-export default function Pet({ isPluginActive, animation, app, userStats, userItems,animationsHandler, onLevelUp }: Props) {
-	// Assets
-	const petSpritesheet = useMemo(
-		() =>
-			app.vault.adapter.getResourcePath(
-				"./.obsidian/plugins/obsidian-virtual-pet/assets/spritesheet.png"
-			),
-		[]
-	);
-
-	const petAccessorySpritesheet = useMemo(
-		() =>
-			app.vault.adapter.getResourcePath(
-				`./.obsidian/plugins/obsidian-virtual-pet/assets/${userItems.equiped.Accessories}Spritesheet.png`),
-		[userItems.equiped.Accessories]
-	);
-
+export const Pet = memo(({ isPluginActive, animation, petSpritesheet, petAccessorySpritesheet, userLevel, userItems, handleDefaults, onLevelUp }: Props) => {
 	// Refs
 	const petRef: RefObject<HTMLDivElement | null> = useRef(null);
 	const petAccessoryRef: RefObject<HTMLDivElement | null> = useRef(null);
@@ -60,7 +45,7 @@ export default function Pet({ isPluginActive, animation, app, userStats, userIte
 
     if (isOutside.current && !isOutsideTimeoutRef.current) {
       isOutsideTimeoutRef.current = window.setTimeout(() => {
-        animationsHandler.handleDefaults("walk")
+        handleDefaults("walk")
         isOutsideTimeoutRef.current = 0
       }, 1000); 
     }
@@ -151,7 +136,7 @@ export default function Pet({ isPluginActive, animation, app, userStats, userIte
 				ref={petContainerRef}
 				style={{ left: "30px" }}
 			>
-				<p className="pet-level">Level: {userStats.level}</p>
+				<p className="pet-level">Level: {userLevel}</p>
 				<div
 					className="pet"
 					ref={petRef}
@@ -166,4 +151,4 @@ export default function Pet({ isPluginActive, animation, app, userStats, userIte
 			</div>
 		</div>
 	);
-}
+});

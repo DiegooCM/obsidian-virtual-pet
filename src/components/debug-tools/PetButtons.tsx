@@ -14,7 +14,7 @@ export default function PetButtons({
 		<div className="pet-buttons">
 			<button
 				onClick={() => {
-					animationsHandler.handleDefaults("next");
+					animationsHandler.handleDefaults();
 				}}
 				className={
 					animation === animations.stand ||

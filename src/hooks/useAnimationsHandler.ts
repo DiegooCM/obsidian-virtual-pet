@@ -1,7 +1,7 @@
 import { PetAnimation } from "src/types";
 import animations from "../animations.json";
 import animationsTimes from "../animationsTimes.json"
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useAnimationsHandler() {
 	const sleepingTimeoutId = useRef(0);
@@ -11,7 +11,7 @@ export function useAnimationsHandler() {
   const animationRef = useRef(animation)
 
   // Rotates defaults animations
-  const handleDefaults = (next?:string) => {
+  const handleDefaults = useCallback((next?:string) => {
     if (next === "walk") nextDefault.current = animations.walk
 
     window.clearTimeout(defaultTimeoutId.current);
@@ -28,13 +28,13 @@ export function useAnimationsHandler() {
       () => handleDefaults() ,
       animationsTimes.handleDefaults
     ); // 20 seconds
-  };
+  }, [nextDefault.current]);
 
 	const handleSleeping = () => {
     clearTimeout(sleepingTimeoutId.current);
 
 		// Checks if it sleeping makes it coding during 10 seconds
-		if (animation === animations.sleep) {
+		if (animationRef.current === animations.sleep) {
 			changeAnimation(animations.code);
 			setTimeout(() => {
         handleDefaults()}, animationsTimes.coding); // 10 seconds
@@ -46,7 +46,7 @@ export function useAnimationsHandler() {
 	};
 
 	const changeAnimation = (newAnimation: PetAnimation) => {
-    if (animation === newAnimation) return;
+    if (animationRef.current === newAnimation) return;
 		setAnimation(newAnimation);
 	};
 

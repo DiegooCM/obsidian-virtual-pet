@@ -59,10 +59,12 @@ export interface PetAnimation {
 	fps: number;
 }
 
+export type HandleDefaults = (next?:string) => void;
+
 export interface AnimationsHandler {
 	animation: PetAnimation;
 	handleSleeping: () => void;
-  handleDefaults: (next?:string) => void;
+  handleDefaults: HandleDefaults;
 	changeAnimation: (newAnimation: PetAnimation) => void;
 	levelUpAnimation: () => void;
 }

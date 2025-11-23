@@ -10,7 +10,7 @@ import {
 import { App } from "obsidian";
 import StatsHandler from "src/utils/statsHandler";
 import Expbar from "src/components/pet/ExpBar";
-import Pet from "src/components/pet/Pet";
+import { Pet } from "src/components/pet/Pet";
 import { PetViewRef, UserActions, UserStats } from "src/types";
 import { ShopModal } from "src/components/shop/ShopModal";
 import items from "src/items.json";
@@ -30,11 +30,29 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 	const [userItems, setUserItems] = useState(statsHandler.getUserItems());
 	const onLevelUp = useRef<boolean>(false);
   const pluginRef: RefObject<HTMLDivElement | null> = useRef(null);
+
+  // Assets
   const coinUrl = useMemo(() => 
     app.vault.adapter.getResourcePath(
       "./.obsidian/plugins/obsidian-virtual-pet/assets/coin.png"
     )
     ,[])
+  
+
+  const petSpritesheet = useMemo(
+		() =>
+			app.vault.adapter.getResourcePath(
+				"./.obsidian/plugins/obsidian-virtual-pet/assets/spritesheet.png"
+			),
+		[]
+	);
+
+	const petAccessorySpritesheet = useMemo(
+		() =>
+			app.vault.adapter.getResourcePath(
+				`./.obsidian/plugins/obsidian-virtual-pet/assets/${userItems.equiped.Accessories}Spritesheet.png`),
+		[userItems.equiped.Accessories]
+	);
 
   const animationsHandler = useAnimationsHandler()
 
@@ -54,7 +72,8 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
       return;
     }
     
-    const actualWidth = pluginRef.current.clientWidth
+    const actualWidth = pluginRef.current.clientWidth 
+
     actualWidth > 0 ? 
       !isPluginActive && setIsPluginActive(true) :
       isPluginActive && setIsPluginActive(false);
@@ -142,10 +161,11 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
         <Pet
           isPluginActive={isPluginActive}
           animation={animationsHandler.animation}
-          app={app}
-          userStats={userStats}
+          petSpritesheet={petSpritesheet}
+          petAccessorySpritesheet={petAccessorySpritesheet}
+          userLevel={0}
           userItems={userItems}
-          animationsHandler={animationsHandler}
+          handleDefaults={animationsHandler.handleDefaults}
           onLevelUp={onLevelUp.current}
         />
         <Expbar exp={userStats.exp} expGoal={userStats.expGoal} />
