@@ -15,9 +15,12 @@ export default function ExpButtons({
 	setUserStats,
 }: Props) {
 	const quantity = useRef(0);
+  const toSum = useRef(false);
 	const isButtonDown = useRef(false);
-	// Meter una variable o algo para saber si se está sumando o restando
+
 	const changeExp = useCallback(() => {
+    toSum.current ? quantity.current += 5 : quantity.current -= 5;
+
 		const newExp = userStats.exp + quantity.current;
 		// Level upgrade
 		if (newExp >= userStats.expGoal) {
@@ -44,24 +47,28 @@ export default function ExpButtons({
 			<h1>Change Exp Buttons</h1>
 			<div className="exp-buttons">
 				<button
-					onClick={() => changeExp()}
 					onMouseDown={() => {
 						isButtonDown.current = true;
-						quantity.current = -5;
 						onButtonPress();
 					}}
-					onMouseUp={() => (isButtonDown.current = false)}
+					onMouseUp={() => {
+            quantity.current = 0;
+            isButtonDown.current = false; 
+          }}
 				>
 					-
 				</button>
 				<button
-					onClick={() => changeExp()}
 					onMouseDown={() => {
 						isButtonDown.current = true;
-						quantity.current = 5;
+            toSum.current = true
 						onButtonPress();
 					}}
-					onMouseUp={() => (isButtonDown.current = false)}
+					onMouseUp={() => {
+            quantity.current = 0;
+            toSum.current = false;
+            isButtonDown.current = false;
+          }}
 				>
 					+
 				</button>

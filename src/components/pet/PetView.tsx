@@ -163,7 +163,7 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
           animation={animationsHandler.animation}
           petSpritesheet={petSpritesheet}
           petAccessorySpritesheet={petAccessorySpritesheet}
-          userLevel={0}
+          userLevel={userStats.level}
           userItems={userItems}
           handleDefaults={animationsHandler.handleDefaults}
           onLevelUp={onLevelUp.current}
