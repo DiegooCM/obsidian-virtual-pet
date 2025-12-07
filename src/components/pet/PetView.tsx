@@ -1,9 +1,9 @@
 import {
 	Ref,
 	RefObject,
+	useContext,
 	useEffect,
 	useImperativeHandle,
-	useMemo,
 	useRef,
 	useState,
 } from "react";
@@ -11,60 +11,29 @@ import { App } from "obsidian";
 import StatsHandler from "src/utils/statsHandler";
 import Expbar from "src/components/pet/ExpBar";
 import { Pet } from "src/components/pet/Pet";
-import { PetViewRef, UserActions, UserStats } from "src/types";
-import { ShopModal } from "src/components/shop/ShopModal";
-import items from "src/items.json";
+import { AssetsContextI, PetViewRef, UserActions, UserStats } from "src/types";
 import { DebugTools } from "src/components/debug-tools/DebugTools";
 import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
+import { AssetsContext } from "../contexts/AssetsContext";
+import { ShopModal } from "../shop/ShopModal";
 
-interface PetView {
+interface PetViewI {
 	statsHandler: StatsHandler;
 	app: App;
 	ref: Ref<PetViewRef>;
 }
 
-export default function PetView({ statsHandler, app, ref }: PetView) {
+export default function PetView({ statsHandler, app, ref }: PetViewI) {
   const [isPluginActive, setIsPluginActive] = useState<boolean>(false);
 	const [userData, setUserData] = useState(statsHandler.getUserData());
 	const [userStats, setUserStats] = useState(statsHandler.getUserStats());
 	const [userItems, setUserItems] = useState(statsHandler.getUserItems());
 	const onLevelUp = useRef<boolean>(false);
   const pluginRef: RefObject<HTMLDivElement | null> = useRef(null);
-
-  // Assets
-  const coinUrl = useMemo(() => 
-    app.vault.adapter.getResourcePath(
-      "./.obsidian/plugins/obsidian-virtual-pet/assets/coin.png"
-    )
-    ,[])
-  
-
-  const petSpritesheet = useMemo(
-		() =>
-			app.vault.adapter.getResourcePath(
-				"./.obsidian/plugins/obsidian-virtual-pet/assets/spritesheet.png"
-			),
-		[]
-	);
-
-	const petAccessorySpritesheet = useMemo(
-		() =>
-			app.vault.adapter.getResourcePath(
-				`./.obsidian/plugins/obsidian-virtual-pet/assets/${userItems.equiped.Accessories}Spritesheet.png`),
-		[userItems.equiped.Accessories]
-	);
+  const coinRef: RefObject<HTMLImageElement | null> = useRef(null)
+  const { getAsset } = useContext<AssetsContextI>(AssetsContext)
 
   const animationsHandler = useAnimationsHandler()
-
-	const getActualBackground = () => {
-		let actualBgUrl = items
-			.find((i) => i.category === "Backgrounds")
-			?.items.find((i) => i.name === userItems.equiped.Backgrounds)?.url;
-		if (!actualBgUrl) actualBgUrl = "assets/background.png";
-		return app.vault.adapter.getResourcePath(
-			`./.obsidian/plugins/obsidian-virtual-pet/${actualBgUrl}`
-		);
-	};
 
   const checkWidth = () => {
     if (!pluginRef.current) {
@@ -86,8 +55,6 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 		const newExp = newUserStats.exp - newUserStats.expGoal;
 		setUserStats(statsHandler.petLevelUp(newExp));
 	};
-
-	const petBackground = useMemo(() => getActualBackground(), [userItems]);
 
 	// Update User info
 	const updateUserInfo = () => {
@@ -129,27 +96,43 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
 		animationsHandler.handleDefaults();
     animationsHandler.handleSleeping();
 		window.setTimeout(() => updateUserInfo(), 100); // The timeout is for giving time to load the data from de data.json
+
+    const getItem = async () => {
+      if (coinRef.current) {
+        coinRef.current.src = await getAsset("Others", "coin")
+      }
+    }
+    getItem()
+
 	}, []);
+
+  useEffect(() => {
+    const getBg = async() => {
+      if(pluginRef.current) {
+        userItems.equiped.Backgrounds ? 
+          pluginRef.current.style.background = `url(${await getAsset("Backgrounds", userItems.equiped.Backgrounds)}) 0% 0% / cover no-repeat` :
+          pluginRef.current.style.background = `url(${await getAsset("Backgrounds", "01")}) 0% 0% / cover no-repeat`
+      }
+    }
+    getBg();
+  }, [userItems.equiped.Backgrounds])
 
   return (
     <>
       <div
         className="plugin"
         ref={pluginRef}
-        style={{
-          background: `url(${petBackground}) 0% 0% / cover no-repeat`,
-        }}
       >
         <div
           className="top-bar"
         >
           <div 
             onClick={() =>
-              new ShopModal(app, statsHandler, setUserItems).open()
+              new ShopModal(app, getAsset, statsHandler, setUserItems).open()
             }
             style={{display: "flex", cursor: "pointer"}}
           >
-            <img className="top-bar-coin"src={coinUrl}/>
+            <img className="top-bar-coin" ref={coinRef}/>
             <p
               className="coins-count"
             >
@@ -161,8 +144,6 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
         <Pet
           isPluginActive={isPluginActive}
           animation={animationsHandler.animation}
-          petSpritesheet={petSpritesheet}
-          petAccessorySpritesheet={petAccessorySpritesheet}
           userLevel={userStats.level}
           userItems={userItems}
           handleDefaults={animationsHandler.handleDefaults}
@@ -170,6 +151,7 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
         />
         <Expbar exp={userStats.exp} expGoal={userStats.expGoal} />
       </div>
+
       <DebugTools 
         userData={userData}
         userStats={userStats}
@@ -179,7 +161,6 @@ export default function PetView({ statsHandler, app, ref }: PetView) {
         levelUp={levelUp}
         setUserStats={setUserStats}
       />
-
     </>
   );
 }

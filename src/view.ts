@@ -6,6 +6,7 @@ import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
 import PetView from "src/components/pet/PetView";
 import StatsHandler from "./utils/statsHandler";
 import { PetViewRef } from "./types";
+import { PetWrapper } from "./components/pet/PetWrapper";
 
 export default class VirualPetView extends ItemView {
 	private reactRoot: Root | null = null;
@@ -51,7 +52,7 @@ export default class VirualPetView extends ItemView {
 
 		this.reactRoot = createRoot(reactContainer);
 		this.reactRoot.render(
-			createElement(PetView, {
+			createElement(PetWrapper, {
 				statsHandler: this.statsHandler,
 				app: this.app,
 				ref: this.petViewRef,

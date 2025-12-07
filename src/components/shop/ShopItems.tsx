@@ -1,48 +1,31 @@
-import { App } from "obsidian";
-import { useMemo } from "react";
+import { memo, useEffect, useState} from "react";
 import StatsHandler from "src/utils/statsHandler";
-import { ItemCategory, ItemJson, ItemsCategory, ItemsJson, UserItems, UserStats } from "src/types";
+import {GetAssetT, ItemCategory, ItemJson, ItemsCategory, ItemsJson, UserItems, UserStats } from "src/types";
 
-interface shopItemsI {
+interface ShopItemsI {
   userItems: UserItems;
-  setUserItems: React.Dispatch<React.SetStateAction<UserItems>>;
   userStats: UserStats;
   statsHandler: StatsHandler;
-  app: App;
+  getAsset: GetAssetT;
   items: ItemsJson;
 }
 
-export function ShopItems({userItems, setUserItems, userStats, statsHandler, app, items}: shopItemsI) {
-  // Checks what is the state of the item ("equiped", "obtained", ""(not buyed))
-  const checkItem = (itemName: string, itemCategory: ItemCategory) => {
-    if (userItems.equiped[itemCategory] === itemName) return "equiped";
-    else if (userItems.obtained[itemCategory].includes(itemName)) return "obtained";
-    else return "";
-  };
-
-  const buyItem = (itemName: string, itemCategory: ItemCategory) => {
-    const itemPrice = items
-      .find((itemsCategory) => itemsCategory.category === itemCategory)
-      ?.items.find((item) => item.name === itemName)?.price;
-
-    if (itemPrice && userStats.coins > itemPrice) {
-      const [newStats, newItems] = statsHandler.addNewItem(itemName, itemCategory, itemPrice);
-      setUserItems(newItems);
-    }
-
-  };
+export const ShopItems = memo(({userItems, userStats, statsHandler, getAsset, items}: ShopItemsI) => {
+  const [shopUserItems, setShopUserItems] = useState(userItems)
 
   const ShopItem = ({item, itemsCategory}: {item:ItemJson, itemsCategory: ItemsCategory}) => {
+    const [itemImage, setItemImage] = useState<string>("#");
+
     const ItemButton = ({itemState}:{itemState: string}) => {
       if (itemState === "equiped") {
         return (
-          <button className="item-equiped" onClick={() => {setUserItems(statsHandler.unequipItem(itemsCategory.category))}}>
+          <button className="item-equiped" onClick={() => {setShopUserItems(statsHandler.unequipItem(itemsCategory.category))}}>
             Unequip
           </button> 
         )
       } else if (itemState === "obtained") {
         return (
-          <button className="item-obtained" onClick={() => {setUserItems(statsHandler.equipItem(item.name, itemsCategory.category))}}>
+          <button className="item-obtained" onClick={() => {setShopUserItems(statsHandler.equipItem(item.name, itemsCategory.category))}}>
             Equip
           </button>
         )
@@ -60,9 +43,12 @@ export function ShopItems({userItems, setUserItems, userStats, statsHandler, app
       itemsCategory.category
     );
 
-    const itemImage = useMemo(() => app.vault.adapter.getResourcePath(
-      "./.obsidian/plugins/obsidian-virtual-pet/" + item.url
-    ),[]); // This useMemo is doing nothing
+    useEffect(() => {
+      const getImage = async() => {
+        setItemImage(await getAsset(itemsCategory.category,item.name))
+      }
+      getImage()
+    }, [])
 
     return (
       <div className="shop-item">
@@ -79,6 +65,23 @@ export function ShopItems({userItems, setUserItems, userStats, statsHandler, app
     )
   }
 
+  // Checks what is the state of the item ("equiped", "obtained", ""(not buyed))
+  const checkItem = (itemName: string, itemCategory: ItemCategory) => {
+    if (shopUserItems.equiped[itemCategory] === itemName) return "equiped";
+      else if (shopUserItems.obtained[itemCategory].includes(itemName)) return "obtained";
+        else return "";
+  };
+
+  const buyItem = (itemName: string, itemCategory: ItemCategory) => {
+    const itemPrice = items
+      .find((itemsCategory) => itemsCategory.category === itemCategory)
+      ?.items.find((item) => item.name === itemName)?.price;
+
+    if (itemPrice && userStats.coins > itemPrice) {
+      const [, newItems] = statsHandler.addNewItem(itemName, itemCategory, itemPrice);
+      setShopUserItems(newItems);
+    }
+  };
 
   return (
     <div className="items-container">
@@ -89,7 +92,7 @@ export function ShopItems({userItems, setUserItems, userStats, statsHandler, app
             <div key={itemsCategory.category}>
               <h2>{itemsCategory.category}</h2>
               <div className="items">
-                {// Map to the items category, is returned each item
+                {// Map to the items of the category, is returned each item
                   itemsCategory.items.map((item) => {
                     return (
                       <ShopItem item={item} itemsCategory={itemsCategory} key={item.name}/>
@@ -104,5 +107,5 @@ export function ShopItems({userItems, setUserItems, userStats, statsHandler, app
     </div>
   )
 
-}
+})
 

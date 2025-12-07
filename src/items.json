@@ -5,12 +5,12 @@
 			{
 				"name": "01",
 				"price": 40,
-				"url": "assets/background.png"
+				"url": "Backgrounds/01.png"
 			},
 			{
 				"name": "02",
 				"price": 80,
-				"url": "assets/background2.png"
+				"url": "Backgrounds/02.png"
 			}
 		]
 	},
@@ -20,7 +20,8 @@
 			{
 				"name": "glasses",
 				"price": 120,
-				"url": "assets/glassesShop.png"
+        "url": "Spritesheets/glasses.png",
+				"urlShop": "Accessories/glasses.png"
 			}
 		]
 	}

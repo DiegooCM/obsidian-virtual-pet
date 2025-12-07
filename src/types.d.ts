@@ -32,6 +32,7 @@ type ItemJson = {
 	name: string;
 	price: number;
 	url: string;
+  urlShop?: string;
 };
 
 export type ItemsCategory = {
@@ -82,3 +83,15 @@ export type Filter = {
   }
 }
 export type Filters = Filter[]
+
+export type AssetCategories = "Backgrounds" | "Accessories" | "Spritesheets" | "Others";
+
+export type Assets = { 
+  [Category in AssetCategories]: Record<string,string>;
+}
+
+export type GetAssetT = (assetCategory: AssetCategories, name: string) => Promise<string>
+  
+export interface AssetsContextI {
+  getAsset: GetAssetT
+}

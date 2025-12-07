@@ -1,19 +1,17 @@
-import { App } from "obsidian";
-import { memo, RefObject, useCallback, useEffect, useMemo, useRef } from "react";
-import { PetAnimation, UserStats, UserItems, AnimationsHandler, HandleDefaults } from "src/types";
+import { memo, RefObject, useContext, useEffect, useRef } from "react";
+import { PetAnimation, UserItems, HandleDefaults, AssetsContextI } from "src/types";
+import { AssetsContext } from "../contexts/AssetsContext";
 
 interface Props {
   isPluginActive: boolean;
 	animation: PetAnimation;
-  petSpritesheet: string;
-  petAccessorySpritesheet: string;
 	userLevel: number;
 	userItems: UserItems;
   handleDefaults: HandleDefaults;
 	onLevelUp: boolean;
 }
 
-export const Pet = memo(({ isPluginActive, animation, petSpritesheet, petAccessorySpritesheet, userLevel, userItems, handleDefaults, onLevelUp }: Props) => {
+export const Pet = memo(({ isPluginActive, animation, userLevel, userItems, handleDefaults, onLevelUp }: Props) => {
 	// Refs
 	const petRef: RefObject<HTMLDivElement | null> = useRef(null);
 	const petAccessoryRef: RefObject<HTMLDivElement | null> = useRef(null);
@@ -29,6 +27,8 @@ export const Pet = memo(({ isPluginActive, animation, petSpritesheet, petAccesso
   const isOutsideTimeoutRef = useRef<number>(0);
 
   const isOutside = useRef<boolean>(false);
+
+  const { getAsset } = useContext<AssetsContextI>(AssetsContext)
 
   const checkIsInside = (windowWidth:number, actualLeft:number, petScale:number) => {
     if (petScale === 0) return; // Preventing bug on leaf open
@@ -125,6 +125,28 @@ export const Pet = memo(({ isPluginActive, animation, petSpritesheet, petAccesso
     animationFrameId.current = requestAnimationFrame(animate) 
   }; 
 
+  useEffect(() => {
+    const getAssets = async () => {
+      if (petRef.current) {
+        petRef.current.style.background = `url(${await getAsset("Spritesheets", "pet")})`
+      }
+    }
+    getAssets()
+  }, [])
+
+  useEffect(() => {
+    const getAssets = async () => {
+      if(petAccessoryRef.current) {
+        userItems.equiped.Accessories ? 
+          petAccessoryRef.current.style.background = `url(${await getAsset("Spritesheets", userItems.equiped.Accessories)})` :
+          petAccessoryRef.current.style.background = "" 
+      }
+    }
+
+    getAssets()
+    
+  }, [userItems.equiped.Accessories])
+
 	return (
 		<div
 			className="pet-animations-container"
@@ -140,12 +162,10 @@ export const Pet = memo(({ isPluginActive, animation, petSpritesheet, petAccesso
 				<div
 					className="pet"
 					ref={petRef}
-					style={{ background: `url(${petSpritesheet})` }}
 				>
 					<div 
 					className="pet-accessory" 
 					ref={petAccessoryRef} 
-					style={{ background: userItems.equiped.Accessories !== '' ? `url(${petAccessorySpritesheet})`: '' }}
 					></div>
 				</div>
 			</div>
