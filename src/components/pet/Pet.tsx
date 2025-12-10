@@ -1,6 +1,6 @@
 import { memo, RefObject, useContext, useEffect, useRef } from "react";
+import { AssetsContext } from "src/contexts/AssetsContext";
 import { PetAnimation, UserItems, HandleDefaults, AssetsContextI } from "src/types";
-import { AssetsContext } from "../contexts/AssetsContext";
 
 interface Props {
   isPluginActive: boolean;
@@ -13,8 +13,8 @@ interface Props {
 
 export const Pet = memo(({ isPluginActive, animation, userLevel, userItems, handleDefaults, onLevelUp }: Props) => {
 	// Refs
-	const petRef: RefObject<HTMLDivElement | null> = useRef(null);
-	const petAccessoryRef: RefObject<HTMLDivElement | null> = useRef(null);
+	const petRef: RefObject<HTMLImageElement | null> = useRef(null);
+	const petAccessoryRef: RefObject<HTMLImageElement | null> = useRef(null);
 	const petContainerRef: RefObject<HTMLDivElement | null> = useRef(null);
 	const petAnimationsContainerRef: RefObject<HTMLDivElement | null> = useRef(null);
 
@@ -30,11 +30,10 @@ export const Pet = memo(({ isPluginActive, animation, userLevel, userItems, hand
 
   const { getAsset } = useContext<AssetsContextI>(AssetsContext)
 
-  const checkIsInside = (windowWidth:number, actualLeft:number, petScale:number) => {
-    if (petScale === 0) return; // Preventing bug on leaf open
+  const checkIsInside = (windowWidth:number, actualLeft:number, petOuterRelWidth:number) => {
+    if (petScale.current === 0) return; // Preventing bug on leaf open
 
-    const petOuterRelWidth = ((petScale - 1) * 64) / 2
-    const margin = petScale * 5;
+    const margin = petScale.current * 5;
 
     // Is left 
     if (actualLeft < petOuterRelWidth - margin) isOutside.current = true 
@@ -71,12 +70,12 @@ export const Pet = memo(({ isPluginActive, animation, userLevel, userItems, hand
 			-${animation.animation[animationIdx][0] * 64}px
 			-${animation.animation[animationIdx][1] * 64 + 2}px`// The +2 is for preventing that the sprite on top of the actual appears
 
-			petRef.current.style.backgroundPosition = newPos; 
-			petAccessoryRef.current.style.backgroundPosition = newPos
+			petRef.current.style.objectPosition = newPos; 
+			petAccessoryRef.current.style.objectPosition = newPos
 
 			// Change pet scale
 			petScale.current = (windowWidth) / 200;
-			petRef.current.style.scale = petScale.current.toString();
+			petContainerRef.current.style.scale = petScale.current.toString();
 
       const petOuterRelWidth = Math.floor(((petScale.current - 1) * 64) / 2);
       
@@ -90,16 +89,19 @@ export const Pet = memo(({ isPluginActive, animation, userLevel, userItems, hand
 				// Touched left border
 				if (actualLeft <= petOuterRelWidth ) {
           petDirecction.current = 1;
-					petRef.current.style.transform = "scaleX(1)";
+          petRef.current.style.transform = "scaleX(1)";
+          petAccessoryRef.current.style.transform = "scaleX(1)";
+
 				}
 				// Touched right border
 				if (windowWidth <= actualLeft + petOuterRelWidth + 64) {
           petDirecction.current = -1;
-					petRef.current.style.transform = "scaleX(-1)";
+          petRef.current.style.transform = "scaleX(-1)";
+          petAccessoryRef.current.style.transform = "scaleX(-1)";
 				}
 			}
 
-      checkIsInside(windowWidth,actualLeft, petScale.current);
+      checkIsInside(windowWidth,actualLeft, petOuterRelWidth);
 		}
 
 		previousAnimationIdx.current = animationIdx;
@@ -126,25 +128,24 @@ export const Pet = memo(({ isPluginActive, animation, userLevel, userItems, hand
   }; 
 
   useEffect(() => {
-    const getAssets = async () => {
-      if (petRef.current) {
-        petRef.current.style.background = `url(${await getAsset("Spritesheets", "pet")})`
-      }
-    }
-    getAssets()
+    getAsset("Spritesheets", "pet").then((asset) => {
+      if (petRef.current) petRef.current.src = asset
+    })
   }, [])
 
   useEffect(() => {
-    const getAssets = async () => {
-      if(petAccessoryRef.current) {
-        userItems.equiped.Accessories ? 
-          petAccessoryRef.current.style.background = `url(${await getAsset("Spritesheets", userItems.equiped.Accessories)})` :
-          petAccessoryRef.current.style.background = "" 
-      }
-    }
+    if (!petAccessoryRef.current) return
+    // Add the user actual accesory 
+    userItems.equiped.Accessories ?
+      (petAccessoryRef.current.removeClass("pet-accessory-hidden"),
+      getAsset("Spritesheets", userItems.equiped.Accessories).then((asset) => { 
+        if (petAccessoryRef.current) petAccessoryRef.current.src = asset 
+      })) : 
+        petAccessoryRef.current.addClass("pet-accessory-hidden")
 
-    getAssets()
-    
+      
+
+
   }, [userItems.equiped.Accessories])
 
 	return (
@@ -159,15 +160,14 @@ export const Pet = memo(({ isPluginActive, animation, userLevel, userItems, hand
 				style={{ left: "30px" }}
 			>
 				<p className="pet-level">Level: {userLevel}</p>
-				<div
+				<img
 					className="pet"
 					ref={petRef}
-				>
-					<div 
-					className="pet-accessory" 
-					ref={petAccessoryRef} 
-					></div>
-				</div>
+				/>
+        <img 
+        className="pet-accessory" 
+        ref={petAccessoryRef} 
+        />
 			</div>
 		</div>
 	);

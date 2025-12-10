@@ -1,4 +1,4 @@
-import { memo, useEffect, useState} from "react";
+import { memo, useEffect, useRef, useState} from "react";
 import StatsHandler from "src/utils/statsHandler";
 import {GetAssetT, ItemCategory, ItemJson, ItemsCategory, ItemsJson, UserItems, UserStats } from "src/types";
 
@@ -14,7 +14,7 @@ export const ShopItems = memo(({userItems, userStats, statsHandler, getAsset, it
   const [shopUserItems, setShopUserItems] = useState(userItems)
 
   const ShopItem = ({item, itemsCategory}: {item:ItemJson, itemsCategory: ItemsCategory}) => {
-    const [itemImage, setItemImage] = useState<string>("#");
+    const itemImageRef = useRef<HTMLImageElement | null>(null);
 
     const ItemButton = ({itemState}:{itemState: string}) => {
       if (itemState === "equiped") {
@@ -44,16 +44,15 @@ export const ShopItems = memo(({userItems, userStats, statsHandler, getAsset, it
     );
 
     useEffect(() => {
-      const getImage = async() => {
-        setItemImage(await getAsset(itemsCategory.category,item.name))
-      }
-      getImage()
+      getAsset(itemsCategory.category,item.name).then((asset) => {
+        if (itemImageRef.current) itemImageRef.current.src = asset
+      })
     }, [])
 
     return (
       <div className="shop-item">
         <div className="item-img">
-          <img src={itemImage}/>
+          <img ref={itemImageRef}/>
         </div>
 
         <div className="item-info">
@@ -61,7 +60,6 @@ export const ShopItems = memo(({userItems, userStats, statsHandler, getAsset, it
           <ItemButton itemState={itemState}/>
         </div>
       </div>
-
     )
   }
 

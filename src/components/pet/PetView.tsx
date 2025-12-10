@@ -14,8 +14,8 @@ import { Pet } from "src/components/pet/Pet";
 import { AssetsContextI, PetViewRef, UserActions, UserStats } from "src/types";
 import { DebugTools } from "src/components/debug-tools/DebugTools";
 import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
-import { AssetsContext } from "../contexts/AssetsContext";
 import { ShopModal } from "../shop/ShopModal";
+import { AssetsContext } from "src/contexts/AssetsContext";
 
 interface PetViewI {
 	statsHandler: StatsHandler;
@@ -97,24 +97,19 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
     animationsHandler.handleSleeping();
 		window.setTimeout(() => updateUserInfo(), 100); // The timeout is for giving time to load the data from de data.json
 
-    const getItem = async () => {
-      if (coinRef.current) {
-        coinRef.current.src = await getAsset("Others", "coin")
-      }
-    }
-    getItem()
+    // Add the coin asset to the coinRef
+    getAsset("Others", "coin").then((asset) => {
+      if (coinRef.current) coinRef.current.src = asset
+    })
 
 	}, []);
 
   useEffect(() => {
-    const getBg = async() => {
-      if(pluginRef.current) {
-        userItems.equiped.Backgrounds ? 
-          pluginRef.current.style.background = `url(${await getAsset("Backgrounds", userItems.equiped.Backgrounds)}) 0% 0% / cover no-repeat` :
-          pluginRef.current.style.background = `url(${await getAsset("Backgrounds", "01")}) 0% 0% / cover no-repeat`
-      }
-    }
-    getBg();
+    // Add the user actual background or the default one to the pluginRef
+    getAsset("Backgrounds", userItems.equiped.Backgrounds || "01").then((asset) => { 
+      if (pluginRef.current) pluginRef.current.style.backgroundImage = `url(${asset})` 
+    })
+    
   }, [userItems.equiped.Backgrounds])
 
   return (

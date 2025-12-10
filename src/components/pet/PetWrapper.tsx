@@ -1,8 +1,8 @@
 import { App } from "obsidian";
 import { Ref } from "react";
+import { AssetsProvider } from "src/contexts/AssetsContext";
 import { PetViewRef } from "src/types";
 import StatsHandler from "src/utils/statsHandler";
-import { AssetsProvider } from "../contexts/AssetsContext";
 import PetView from "./PetView";
 
 interface PetWrapperI {
