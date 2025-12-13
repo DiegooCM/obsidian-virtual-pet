@@ -19,6 +19,15 @@
   background-repeat: no-repeat;
 }
 
+.plugin img {
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
 .debug-tools {
 	height: 40%;
 }
@@ -99,7 +108,8 @@
 }
 
 .animations-text {
-	/* display: none; */
+  position: absolute;
+  top: 40%;
 	color: #000;
 	font-size: 2.5rem;
 	justify-self: center;

@@ -56,13 +56,11 @@ export const AssetsProvider = ({ app, children }:AssetsProviderI) => {
 
   useEffect(() => {
     return () => {
-      window.setTimeout(() => {
-        for (let [,assetCategory] of Object.entries(assets)) {
-          for (let [,blob] of Object.entries(assetCategory)) {
-            URL.revokeObjectURL(blob);
-          }
+      for (let [,assetCategory] of Object.entries(assets)) {
+        for (let [,blob] of Object.entries(assetCategory)) {
+          URL.revokeObjectURL(blob);
         }
-      }, 500)
+      }
     } 
   },[])
 
