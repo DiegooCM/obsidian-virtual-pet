@@ -3,14 +3,12 @@ import { ItemView, Plugin, WorkspaceLeaf } from "obsidian";
 import { createElement, createRef, RefObject } from "react";
 import { Root, createRoot } from "react-dom/client";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
-import PetView from "src/components/pet/PetView";
 import StatsHandler from "./utils/statsHandler";
 import { PetViewRef } from "./types";
 import { PetWrapper } from "./components/pet/PetWrapper";
 
 export default class VirualPetView extends ItemView {
 	private reactRoot: Root | null = null;
-	// private petComponent: React.RefObject<typeof PetView>;
 	public statsHandler: StatsHandler;
 	private plugin: Plugin;
 	private petViewRef: RefObject<PetViewRef | null>;
@@ -68,11 +66,11 @@ export default class VirualPetView extends ItemView {
 
 		this.registerEvent(
 			// When a file is open
-			this.app.workspace.on("file-open", async () => {
+			this.app.workspace.on("file-open", () => {
 				// Save the state userStats in the data.json
 				this.statsHandler.saveUserStats();
 				// Update info
-				await this.statsHandler.onFileOpen();
+				this.statsHandler.onFileOpen();
 				// Sets data and stats in petview
 				this.petViewRef.current?.triggerChild("file-open");
 			})

@@ -9,7 +9,9 @@ export default class StatsHandler {
   private userData: UserData;
   private userStats: UserStats;
   private userItems: UserItems;
-  private actualFilePath: string;
+  private actualTFile: TFile;
+  private prohibitedTagsList = ["excalidraw-plugin"] 
+  private isCounting: boolean;
 
   constructor(vault: Vault, workspace: Workspace, plugin: Plugin) {
     this.vault = vault;
@@ -36,19 +38,25 @@ export default class StatsHandler {
         Accessories: ["glasses"],
       },
     };
+
+    this.changeActualTFile()
   }
 
-  onFileOpen = async() => {
-    if (this.workspace.getActiveFile()?.extension !== "md") return;
+  onFileOpen = () => {
+    this.changeActualTFile()
 
     const oldUserData = { ...this.userData };
+
+    if(this.actualTFile) this.checkIsFileValid(this.actualTFile) 
+
+    // Calc of the files diff
+    if (oldUserData.filesCount === -1) return;
 
     const newFileCount = this.vault.getMarkdownFiles().length
     this.userData.filesCount = newFileCount
     const filesDif = newFileCount - oldUserData.filesCount;
 
-    if (oldUserData.filesCount === -1) return;
-
+    // Update the coins with the filesDif
     const newCoins = this.userStats.coins + (filesDif * 10)
 
     this.userStats = {
@@ -57,21 +65,57 @@ export default class StatsHandler {
     };
   } 
 
-  updateUserDataNStats = () => {
-    const oldFilePath = this.actualFilePath
+  /* 
+   * Checks if the files has changed, and if it was, is updated and return true 
+   * */
+  changeActualTFile = () => {
     const tFile = this.workspace.getActiveFile();
+    if (tFile &&  tFile !== this.actualTFile) {
+      this.actualTFile = tFile
+      this.getFileWordsCount(tFile) 
+      return true
+    }
+  }
 
-    if (!tFile) return;
+  /*
+   * Checks the validity of the file, returns true (is valid) or false (is not valid)
+   * */
+  checkIsFileValid = (tFile: TFile) => {
+    // Check if the file is markdown 
+    if (tFile.extension !== 'md') return false
+     
+    // Get the tags from the file
+    const frontmatter = this.plugin.app.metadataCache.getFileCache(tFile)?.frontmatter
 
-    this.actualFilePath = tFile.path
+    if (!frontmatter) return true // This means that there are no tags in the file
 
-    // Check if is a new file and if the file is .md (markdown)
-    if (oldFilePath !== this.actualFilePath || tFile.extension !== "md") return
+    const fileTagsList = Object.keys(frontmatter)
 
-    // Data Calculation
+    // Check if there is some "prohibited" tag in the file
+    if(this.prohibitedTagsList.some((prohibitedTag) => fileTagsList.includes(prohibitedTag))) return false
+
+    return true
+  }
+
+  /*
+   * Gets the difference of the word count of the current file and updates de exp
+  */
+  updateUserDataNStats = () => {
     const oldUserData = { ...this.userData }; 
 
-    this.getFileWordsCount(tFile).then((newWordsCount) => {
+    // Checks if the file has been changed
+    if (this.changeActualTFile()) return;
+
+    // Checks there is a tFile
+    if (!this.actualTFile) return;
+
+    // Check if the file is valid
+    if(!this.checkIsFileValid(this.actualTFile)) return;
+
+    // Prevents bugs when creating and opening files while getFileWordsCount has not finish
+    if (this.isCounting) return;
+
+    this.getFileWordsCount(this.actualTFile).then((newWordsCount) => {
       const fileWordsDif = newWordsCount - oldUserData.fileWordCount;
 
       // Stats Calculation
@@ -90,13 +134,16 @@ export default class StatsHandler {
 
   };
 
-  getFileWordsCount = async (filePath: TFile): Promise<number> => {
-    const fileWords = await this.vault
-      .cachedRead(filePath)
-      .then((text) => countWords(text));
-    this.userData.fileWordCount = fileWords;
-
-    return fileWords;
+  /*
+  * Gets the words of the tFile given and updates it in the userData
+  */
+  getFileWordsCount = async (tFile: TFile): Promise<number> => {
+    this.isCounting = true
+    return await this.vault.cachedRead(tFile).then((text) => {
+      const words = this.userData.fileWordCount = countWords(text);
+      this.isCounting = false
+      return words
+    })
   };
 
   getUserData = (): UserData => {

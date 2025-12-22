@@ -35,6 +35,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
 
   const animationsHandler = useAnimationsHandler()
 
+  // Checks if the plugin is open and if is not it stops the animation
   const checkWidth = () => {
     if (!pluginRef.current) {
       setIsPluginActive(false)
@@ -56,7 +57,9 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
 		setUserStats(statsHandler.petLevelUp(newExp));
 	};
 
-	// Update User info
+	/*
+   * If changed, stores the user data, stats and items in the useStates
+  */
 	const updateUserInfo = () => {
 		const newUserData = statsHandler.getUserData();
 		const newUserStats = statsHandler.getUserStats();
