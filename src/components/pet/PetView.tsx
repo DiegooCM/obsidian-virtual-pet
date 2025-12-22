@@ -29,6 +29,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
 	const [userStats, setUserStats] = useState(statsHandler.getUserStats());
 	const [userItems, setUserItems] = useState(statsHandler.getUserItems());
 	const onLevelUp = useRef<boolean>(false);
+  const animationsTextRef = useRef<HTMLHeadingElement>(null);
   const pluginRef: RefObject<HTMLDivElement | null> = useRef(null);
   const coinRef: RefObject<HTMLImageElement | null> = useRef(null)
   const { getAsset } = useContext<AssetsContextI>(AssetsContext)
@@ -50,9 +51,15 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   }
 
 	const levelUp = (newUserStats: UserStats) => {
+    // Change the pet animation to celebrate
 		animationsHandler.levelUpAnimation();
-		onLevelUp.current = true;
-		setTimeout(() => (onLevelUp.current = false), 3000);
+
+    // Activate the "Level Up" text, waits 3s and desactivate it  
+    if (animationsTextRef.current) animationsTextRef.current.style.display = 'block'
+    setTimeout(() => {
+      if (animationsTextRef.current) animationsTextRef.current.style.display = 'none'
+    }, 3000);
+    
 		const newExp = newUserStats.exp - newUserStats.expGoal;
 		setUserStats(statsHandler.petLevelUp(newExp));
 	};
@@ -145,9 +152,9 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
           userLevel={userStats.level}
           userItems={userItems}
           handleDefaults={animationsHandler.handleDefaults}
-          onLevelUp={onLevelUp.current}
         />
         <Expbar exp={userStats.exp} expGoal={userStats.expGoal} />
+        <h1 className="animations-text" ref={animationsTextRef} style={{display: 'none'}}>Level Up!</h1>
       </div>
 
       <DebugTools 

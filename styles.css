@@ -296,6 +296,7 @@ body {
 }
 
 .accordion-content {
+  margin: 0;
   padding-left: 10px;
 }
 

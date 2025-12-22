@@ -8,10 +8,9 @@ interface Props {
 	userLevel: number;
 	userItems: UserItems;
   handleDefaults: HandleDefaults;
-	onLevelUp: boolean;
 }
 
-export const Pet = memo(({ isPluginActive, animation, userLevel, userItems, handleDefaults, onLevelUp }: Props) => {
+export const Pet = memo(({ isPluginActive, animation, userLevel, userItems, handleDefaults }: Props) => {
 	// Refs
 	const petRef: RefObject<HTMLImageElement | null> = useRef(null);
 	const petAccessoryRef: RefObject<HTMLImageElement | null> = useRef(null);
@@ -153,7 +152,6 @@ export const Pet = memo(({ isPluginActive, animation, userLevel, userItems, hand
 			className="pet-animations-container"
 			ref={petAnimationsContainerRef}
 		>
-			{onLevelUp && <h1 className="animations-text">Level Up!</h1>}
 			<div
 				className="pet-container"
 				ref={petContainerRef}

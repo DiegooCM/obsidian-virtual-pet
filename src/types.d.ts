@@ -80,7 +80,8 @@ export type Filter = {
   "category": string,
   "options": {
     [key: string]: boolean
-  }
+  },
+  "isOpen": boolean
 }
 export type Filters = Filter[]
 

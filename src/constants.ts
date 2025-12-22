@@ -9,21 +9,24 @@ export const defaultFilters:Filters = [
     "options": {
       "Backgrounds": true,
       "Accessories": true,
-    }
+    },
+    "isOpen": false
   },
   {
     "category": "Purchase Status",
     "options" : {
       "Buyed": true,
       "Not Buyed": true,
-    }
+    },
+    "isOpen": false
   },
   {
     "category": "Equipment Status",
     "options" : {
       "Equiped": true,
       "Not Equiped": true
-    }
+    },
+    "isOpen": false
   } 
 ]
 

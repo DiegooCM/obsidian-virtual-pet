@@ -47,14 +47,12 @@ export default class StatsHandler {
 
     const oldUserData = { ...this.userData };
 
-    if(this.actualTFile) this.checkIsFileValid(this.actualTFile) 
-
     // Calc of the files diff
-    if (oldUserData.filesCount === -1) return;
-
     const newFileCount = this.vault.getMarkdownFiles().length
     this.userData.filesCount = newFileCount
     const filesDif = newFileCount - oldUserData.filesCount;
+
+    if (oldUserData.filesCount === -1) return;
 
     // Update the coins with the filesDif
     const newCoins = this.userStats.coins + (filesDif * 10)
