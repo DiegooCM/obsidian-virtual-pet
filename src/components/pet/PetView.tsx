@@ -14,8 +14,8 @@ import { Pet } from "src/components/pet/Pet";
 import { AssetsContextI, PetViewRef, UserActions, UserStats } from "src/types";
 import { DebugTools } from "src/components/debug-tools/DebugTools";
 import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
-import { ShopModal } from "../shop/ShopModal";
 import { AssetsContext } from "src/contexts/AssetsContext";
+import { PetTopBar } from "./PetTopBar";
 
 interface PetViewI {
 	statsHandler: StatsHandler;
@@ -28,10 +28,8 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
 	const [userData, setUserData] = useState(statsHandler.getUserData());
 	const [userStats, setUserStats] = useState(statsHandler.getUserStats());
 	const [userItems, setUserItems] = useState(statsHandler.getUserItems());
-	const onLevelUp = useRef<boolean>(false);
   const animationsTextRef = useRef<HTMLHeadingElement>(null);
   const pluginRef: RefObject<HTMLDivElement | null> = useRef(null);
-  const coinRef: RefObject<HTMLImageElement | null> = useRef(null)
   const { getAsset } = useContext<AssetsContextI>(AssetsContext)
 
   const animationsHandler = useAnimationsHandler()
@@ -106,12 +104,6 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
 		animationsHandler.handleDefaults();
     animationsHandler.handleSleeping();
 		window.setTimeout(() => updateUserInfo(), 100); // The timeout is for giving time to load the data from de data.json
-
-    // Add the coin asset to the coinRef
-    getAsset("Others", "coin").then((asset) => {
-      if (coinRef.current) coinRef.current.src = asset
-    })
-
 	}, []);
 
   useEffect(() => {
@@ -128,24 +120,8 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         className="plugin"
         ref={pluginRef}
       >
-        <div
-          className="top-bar"
-        >
-          <div 
-            onClick={() =>
-              new ShopModal(app, getAsset, statsHandler, setUserItems).open()
-            }
-            style={{display: "flex", cursor: "pointer"}}
-          >
-            <img className="top-bar-coin" ref={coinRef}/>
-            <p
-              className="coins-count"
-            >
-              {userStats.coins}
-            </p>
-          </div>
-        </div>
         
+        <PetTopBar app={app} statsHandler={statsHandler} setUserItems={setUserItems} coins={userStats.coins} />
         <Pet
           isPluginActive={isPluginActive}
           animation={animationsHandler.animation}

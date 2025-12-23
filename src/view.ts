@@ -6,12 +6,14 @@ import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
 import StatsHandler from "./utils/statsHandler";
 import { PetViewRef } from "./types";
 import { PetWrapper } from "./components/pet/PetWrapper";
+import { calcAndAddPastedText } from "./utils/statsUtils";
 
 export default class VirualPetView extends ItemView {
 	private reactRoot: Root | null = null;
 	public statsHandler: StatsHandler;
 	private plugin: Plugin;
 	private petViewRef: RefObject<PetViewRef | null>;
+  private isPasted: boolean = false;
 
 	constructor(leaf: WorkspaceLeaf, plugin: Plugin) {
 		super(leaf);
@@ -59,7 +61,6 @@ export default class VirualPetView extends ItemView {
 		// Save the state userStats in the data.json when the app is about to quit
 		this.registerEvent(
 			this.app.workspace.on("quit", () => {
-				// Que lo coja de statsHandler y no de aquí
 				this.statsHandler.saveUserStats();
 			})
 		);
@@ -79,7 +80,10 @@ export default class VirualPetView extends ItemView {
 		this.registerEvent(
       // When the user types
 			this.app.workspace.on("editor-change", () => {
-				this.statsHandler.updateUserDataNStats();
+				this.isPasted ? 
+          this.isPasted = false :
+          this.statsHandler.updateUserDataNStats();
+
 				this.petViewRef.current?.triggerChild("editor-change");
 			})
     );
@@ -91,6 +95,16 @@ export default class VirualPetView extends ItemView {
 				this.petViewRef.current?.triggerChild("active-leaf-change");
 			})
     );
+
+    this.registerEvent(
+      // Leaf changes (leaf = filetree, plugins, current-file,...)
+			this.app.workspace.on("editor-paste", (clipboardEvent) => {
+        // Count the words pasted and adding them to the userData
+        calcAndAddPastedText(clipboardEvent, this.statsHandler.addWordsToFileCount)
+        this.isPasted = true
+			})
+    );
+
   }
 
 	async onClose(): Promise<void> {

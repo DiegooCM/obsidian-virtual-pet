@@ -1,6 +1,6 @@
 {
-  "handleDefaults": 20000,
+  "handleDefaults": 30000,
   "coding": 10000,
-  "sleepingAfterInactive": 30000,
+  "sleepingAfterInactive": 60000,
   "levelUp": 3000
 }

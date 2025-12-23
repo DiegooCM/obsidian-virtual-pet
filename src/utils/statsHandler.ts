@@ -70,7 +70,7 @@ export default class StatsHandler {
     const tFile = this.workspace.getActiveFile();
     if (tFile &&  tFile !== this.actualTFile) {
       this.actualTFile = tFile
-      this.getFileWordsCount(tFile) 
+      this.getActualFileWordsCount() 
       return true
     }
   }
@@ -111,9 +111,9 @@ export default class StatsHandler {
     if(!this.checkIsFileValid(this.actualTFile)) return;
 
     // Prevents bugs when creating and opening files while getFileWordsCount has not finish
-    if (this.isCounting) return;
+    if (this.isCounting) return
 
-    this.getFileWordsCount(this.actualTFile).then((newWordsCount) => {
+    this.getActualFileWordsCount().then((newWordsCount) => {
       const fileWordsDif = newWordsCount - oldUserData.fileWordCount;
 
       // Stats Calculation
@@ -135,14 +135,18 @@ export default class StatsHandler {
   /*
   * Gets the words of the tFile given and updates it in the userData
   */
-  getFileWordsCount = async (tFile: TFile): Promise<number> => {
+  getActualFileWordsCount = async (): Promise<number> => {
     this.isCounting = true
-    return await this.vault.cachedRead(tFile).then((text) => {
+    return await this.vault.cachedRead(this.actualTFile).then((text) => {
       const words = this.userData.fileWordCount = countWords(text);
       this.isCounting = false
       return words
     })
   };
+
+  addWordsToFileCount = (wordsCount:number) => {
+    this.userData.fileWordCount += wordsCount
+  }
 
   getUserData = (): UserData => {
     return { ...this.userData };
