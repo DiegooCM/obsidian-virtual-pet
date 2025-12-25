@@ -67,11 +67,13 @@ export default class VirualPetView extends ItemView {
 
 		this.registerEvent(
 			// When a file is open
-			this.app.workspace.on("file-open", () => {
+			this.app.workspace.on("file-open", (tFile) => {
 				// Save the state userStats in the data.json
 				this.statsHandler.saveUserStats();
+        
 				// Update info
-				this.statsHandler.onFileOpen();
+        this.statsHandler.onFileOpen(tFile) 
+        
 				// Sets data and stats in petview
 				this.petViewRef.current?.triggerChild("file-open");
 			})
@@ -79,10 +81,11 @@ export default class VirualPetView extends ItemView {
 
 		this.registerEvent(
       // When the user types
-			this.app.workspace.on("editor-change", () => {
+			this.app.workspace.on("editor-change", (editor) => {
+        const fileText = editor.getValue()
 				this.isPasted ? 
           this.isPasted = false :
-          this.statsHandler.updateUserDataNStats();
+          this.statsHandler.updateUserDataNStats(fileText);
 
 				this.petViewRef.current?.triggerChild("editor-change");
 			})
@@ -91,7 +94,6 @@ export default class VirualPetView extends ItemView {
 		this.registerEvent(
       // Leaf changes (leaf = filetree, plugins, current-file,...)
 			this.app.workspace.on("active-leaf-change", () => {
-				this.statsHandler.updateUserDataNStats();
 				this.petViewRef.current?.triggerChild("active-leaf-change");
 			})
     );

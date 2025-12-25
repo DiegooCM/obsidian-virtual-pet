@@ -9,9 +9,9 @@ export default class StatsHandler {
   private userData: UserData;
   private userStats: UserStats;
   private userItems: UserItems;
-  private actualTFile: TFile;
+  private actualTFile: TFile | null;
+  private isValid: boolean = false;
   private prohibitedTagsList = ["excalidraw-plugin"] 
-  private isCounting: boolean;
 
   constructor(vault: Vault, workspace: Workspace, plugin: Plugin) {
     this.vault = vault;
@@ -39,20 +39,31 @@ export default class StatsHandler {
       },
     };
 
-    this.changeActualTFile()
+    this.onFileOpen(null) 
   }
 
-  onFileOpen = () => {
-    this.changeActualTFile()
+  onFileOpen = (tFile: TFile | null) => {
+    // Gets the tFile from the props or the workspace.getActiveFile
+    tFile ? 
+      this.actualTFile = tFile : 
+      this.actualTFile = this.workspace.getActiveFile()
+    
+    // Counts the words of the new File and checks if the file is Valid
+    if (this.actualTFile) { 
+      this.isValid = this.checkIsFileValid(this.actualTFile)   
+      if (this.isValid) this.getFileWordsCount(this.actualTFile)
+    } else {
+      this.isValid = false
+    }
 
-    const oldUserData = { ...this.userData };
+    const oldFilesCount = this.userData.filesCount;
 
     // Calc of the files diff
     const newFileCount = this.vault.getMarkdownFiles().length
     this.userData.filesCount = newFileCount
-    const filesDif = newFileCount - oldUserData.filesCount;
+    const filesDif = newFileCount - oldFilesCount;
 
-    if (oldUserData.filesCount === -1) return;
+    if (oldFilesCount === -1) return; 
 
     // Update the coins with the filesDif
     const newCoins = this.userStats.coins + (filesDif * 10)
@@ -62,18 +73,6 @@ export default class StatsHandler {
       coins: newCoins
     };
   } 
-
-  /* 
-   * Checks if the files has changed, and if it was, is updated and return true 
-   * */
-  changeActualTFile = () => {
-    const tFile = this.workspace.getActiveFile();
-    if (tFile &&  tFile !== this.actualTFile) {
-      this.actualTFile = tFile
-      this.getActualFileWordsCount() 
-      return true
-    }
-  }
 
   /*
    * Checks the validity of the file, returns true (is valid) or false (is not valid)
@@ -98,48 +97,36 @@ export default class StatsHandler {
   /*
    * Gets the difference of the word count of the current file and updates de exp
   */
-  updateUserDataNStats = () => {
+  updateUserDataNStats = (text: string) => {
     const oldUserData = { ...this.userData }; 
 
-    // Checks if the file has been changed
-    if (this.changeActualTFile()) return;
+    if(!this.isValid) return;
 
-    // Checks there is a tFile
-    if (!this.actualTFile) return;
+    const newWordsCount = countWords(text)
+    this.userData.fileWordCount = newWordsCount
+    const fileWordsDif = newWordsCount - oldUserData.fileWordCount;
 
-    // Check if the file is valid
-    if(!this.checkIsFileValid(this.actualTFile)) return;
+    // Stats Calculation
+    const newExp = fileWordsDif + this.userStats.exp;
 
-    // Prevents bugs when creating and opening files while getFileWordsCount has not finish
-    if (this.isCounting) return
-
-    this.getActualFileWordsCount().then((newWordsCount) => {
-      const fileWordsDif = newWordsCount - oldUserData.fileWordCount;
-
-      // Stats Calculation
-      const newExp = fileWordsDif + this.userStats.exp;
-
-      if (
-        oldUserData.fileWordCount !== -1 &&
-          newExp !== this.userStats.exp
-      ) {
-        this.userStats = {
-          ...this.userStats,
-          exp: newExp > 0 ? newExp : 0,
-        };
-      }
-    });
+    if (
+      oldUserData.fileWordCount !== -1 &&
+        newExp !== this.userStats.exp
+    ) {
+      this.userStats = {
+        ...this.userStats,
+        exp: newExp > 0 ? newExp : 0,
+      };
+    }
 
   };
 
   /*
   * Gets the words of the tFile given and updates it in the userData
   */
-  getActualFileWordsCount = async (): Promise<number> => {
-    this.isCounting = true
-    return await this.vault.cachedRead(this.actualTFile).then((text) => {
+  getFileWordsCount = async (tFile: TFile): Promise<number> => {
+    return await this.vault.cachedRead(tFile).then((text) => {
       const words = this.userData.fileWordCount = countWords(text);
-      this.isCounting = false
       return words
     })
   };

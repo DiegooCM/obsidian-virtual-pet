@@ -8,6 +8,7 @@ export const countWords = (text: string): number => {
 
 export const calcAndAddPastedText = (clipboardEvent: ClipboardEvent, addWordsToFileCount: (words: number) => void) => {
   const pastedText = clipboardEvent.clipboardData?.getData('text')
+ 
   if(pastedText) {
     let wordsCount = countWords(pastedText)
 
