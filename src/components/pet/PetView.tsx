@@ -117,7 +117,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   return (
     <>
       <div
-        className="plugin"
+        className="main"
         ref={pluginRef}
       >
         <PetTopBar app={app} statsHandler={statsHandler} setUserItems={setUserItems} userStats={userStats} />

@@ -51,9 +51,7 @@ export const ShopItems = memo(({userItems, userStats, statsHandler, getAsset, it
 
     return (
       <div className="shop-item">
-        <div className="item-img">
-          <img ref={itemImageRef}/>
-        </div>
+        <img ref={itemImageRef}/>
 
         <div className="item-info">
           <p className="item-name">{item.name}</p>

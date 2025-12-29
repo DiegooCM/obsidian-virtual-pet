@@ -37,7 +37,6 @@ export default class VirualPetView extends ItemView {
 	async onOpen(): Promise<void> {
 		const container = this.containerEl.children[1];
 		container.empty();
-		container.addClass("pet-view-container");
 
 		this.statsHandler = new StatsHandler(
 			this.app.vault,
@@ -48,7 +47,7 @@ export default class VirualPetView extends ItemView {
 		this.statsHandler.getUserStatsFromJson();
 
 		// Pet View
-		const reactContainer = container.createDiv("react-root");
+		const reactContainer = container.createDiv("virtual-pet");
 
 		this.reactRoot = createRoot(reactContainer);
 		this.reactRoot.render(

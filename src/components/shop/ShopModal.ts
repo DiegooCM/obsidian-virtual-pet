@@ -29,7 +29,7 @@ export class ShopModal extends Modal {
   }
 
 	onOpen(): void {
-		this.modalEl.addClass("virtual-pet-shop");
+		this.modalEl.addClass("virtual-pet-shop-modal");
 		this.createShop();
 	}
 
