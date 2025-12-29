@@ -120,8 +120,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         className="plugin"
         ref={pluginRef}
       >
-        
-        <PetTopBar app={app} statsHandler={statsHandler} setUserItems={setUserItems} coins={userStats.coins} />
+        <PetTopBar app={app} statsHandler={statsHandler} setUserItems={setUserItems} userStats={userStats} />
         <Pet
           isPluginActive={isPluginActive}
           animation={animationsHandler.animation}
@@ -129,7 +128,6 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
           userItems={userItems}
           handleDefaults={animationsHandler.handleDefaults}
         />
-        <Expbar exp={userStats.exp} expGoal={userStats.expGoal} />
         <h1 className="animations-text" ref={animationsTextRef} style={{display: 'none'}}>Level Up!</h1>
       </div>
 

@@ -7,7 +7,7 @@ export default function Expbar({ exp, expGoal }: ExpBar) {
 	return (
 		<div className="exp-bar-container">
 			<p className="exp-info">
-				Experience: {exp} / {expGoal}
+				Exp: {exp} / {expGoal}
 			</p>
 			<div className="exp-bar">
 				<div

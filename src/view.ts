@@ -99,7 +99,6 @@ export default class VirualPetView extends ItemView {
     );
 
     this.registerEvent(
-      // Leaf changes (leaf = filetree, plugins, current-file,...)
 			this.app.workspace.on("editor-paste", (clipboardEvent) => {
         // Count the words pasted and adding them to the userData
         calcAndAddPastedText(clipboardEvent, this.statsHandler.addWordsToFileCount)

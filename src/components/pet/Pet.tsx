@@ -70,7 +70,7 @@ export const Pet = memo(({ isPluginActive, animation, userLevel, userItems, hand
 			-${animation.animation[animationIdx][1] * 64 + 2}px`// The +2 is for preventing that the sprite on top of the actual appears
 
 			petRef.current.style.objectPosition = newPos; 
-			petAccessoryRef.current.style.objectPosition = newPos
+      if (userItems.equiped.Accessories) petAccessoryRef.current.style.objectPosition = newPos // Prevent that if there is no accessorie dont change the img pos
 
 			// Change pet scale
 			petScale.current = (windowWidth) / 200;
@@ -89,14 +89,13 @@ export const Pet = memo(({ isPluginActive, animation, userLevel, userItems, hand
 				if (actualLeft <= petOuterRelWidth ) {
           petDirecction.current = 1;
           petRef.current.style.transform = "scaleX(1)";
-          petAccessoryRef.current.style.transform = "scaleX(1)";
-
-				}
+          if (userItems.equiped.Accessories) petAccessoryRef.current.style.transform = "scaleX(1)";
+        }
 				// Touched right border
 				if (windowWidth <= actualLeft + petOuterRelWidth + 64) {
           petDirecction.current = -1;
           petRef.current.style.transform = "scaleX(-1)";
-          petAccessoryRef.current.style.transform = "scaleX(-1)";
+          if (userItems.equiped.Accessories) petAccessoryRef.current.style.transform = "scaleX(-1)";
 				}
 			}
 
@@ -141,11 +140,8 @@ export const Pet = memo(({ isPluginActive, animation, userLevel, userItems, hand
         if (petAccessoryRef.current) petAccessoryRef.current.src = asset 
       })) : 
         petAccessoryRef.current.addClass("pet-accessory-hidden")
-
-      
-
-
   }, [userItems.equiped.Accessories])
+
 
 	return (
 		<div
