@@ -2,53 +2,52 @@ import type { AnimationsHandler, PetAnimation } from "src/types";
 import animations from "src/animations.json";
 
 type PetButtonsType = {
-	animation: PetAnimation;
+  animation: PetAnimation;
   animationsHandler: AnimationsHandler;
 };
 
 export default function PetButtons({
-	animation,
-  animationsHandler
+  animation,
+  animationsHandler,
 }: PetButtonsType) {
-	return (
-		<div className="pet-buttons">
-			<button
-				onClick={() => {
-					animationsHandler.handleDefaults();
-				}}
-				className={
-					animation === animations.stand ||
-					animation === animations.walk
-						? "active"
-						: ""
-				}
-			>
-				Default
-			</button>
-			<button
-				onClick={() => {
-					animationsHandler.changeAnimation(animations.celebrate);
-				}}
-				className={animation === animations.celebrate ? "active" : ""}
-			>
-				Celebrate
-			</button>
-			<button
-				onClick={() => {
-					animationsHandler.changeAnimation(animations.code);
-				}}
-				className={animation === animations.code ? "active" : ""}
-			>
-				Code
-			</button>
-			<button
-				onClick={() => {
-					animationsHandler.changeAnimation(animations.sleep);
-				}}
-				className={animation === animations.sleep ? "active" : ""}
-			>
-				Sleep
-			</button>
-		</div>
-	);
+  return (
+    <div className="pet-buttons">
+      <button
+        onClick={() => {
+          animationsHandler.handleDefaults();
+        }}
+        className={
+          animation === animations.stand || animation === animations.walk
+            ? "active"
+            : ""
+        }
+      >
+        Default
+      </button>
+      <button
+        onClick={() => {
+          animationsHandler.changeAnimation(animations.celebrate);
+        }}
+        className={animation === animations.celebrate ? "active" : ""}
+      >
+        Celebrate
+      </button>
+      <button
+        onClick={() => {
+          animationsHandler.changeAnimation(animations.code);
+        }}
+        className={animation === animations.code ? "active" : ""}
+      >
+        Code
+      </button>
+      <button
+        onClick={() => {
+          animationsHandler.changeAnimation(animations.sleep);
+        }}
+        className={animation === animations.sleep ? "active" : ""}
+      >
+        Sleep
+      </button>
+    </div>
+  );
 }

@@ -11,11 +11,18 @@ interface DebugToolsI {
   animationsHandler: AnimationsHandler;
   statsHandler: StatsHandler;
   levelUp: (newUserStats: UserStats) => void;
-	setUserStats: React.Dispatch<React.SetStateAction<UserStats>>;
+  setUserStats: React.Dispatch<React.SetStateAction<UserStats>>;
 }
 
-export function DebugTools({userData, userStats, userItems, animationsHandler,statsHandler, levelUp, setUserStats}:DebugToolsI) {
-
+export function DebugTools({
+  userData,
+  userStats,
+  userItems,
+  animationsHandler,
+  statsHandler,
+  levelUp,
+  setUserStats,
+}: DebugToolsI) {
   return (
     <div className="debug-tools">
       <h1>Change Pet Animation</h1>
@@ -35,5 +42,5 @@ export function DebugTools({userData, userStats, userItems, animationsHandler,st
         userItems={userItems}
       />
     </div>
-  )
+  );
 }

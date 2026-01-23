@@ -11,7 +11,7 @@ export default class StatsHandler {
   private userItems: UserItems;
   private actualTFile: TFile | null;
   private isValid: boolean = false;
-  private prohibitedTagsList = ["excalidraw-plugin"] 
+  private prohibitedTagsList = ["excalidraw-plugin"];
 
   constructor(vault: Vault, workspace: Workspace, plugin: Plugin) {
     this.vault = vault;
@@ -39,101 +39,103 @@ export default class StatsHandler {
       },
     };
 
-    this.onFileOpen(null) 
+    this.onFileOpen(null);
   }
 
   onFileOpen = (tFile: TFile | null) => {
     // Gets the tFile from the props or the workspace.getActiveFile
-    tFile ? 
-      this.actualTFile = tFile : 
-      this.actualTFile = this.workspace.getActiveFile()
-    
+    tFile
+      ? (this.actualTFile = tFile)
+      : (this.actualTFile = this.workspace.getActiveFile());
+
     // Counts the words of the new File and checks if the file is Valid
-    if (this.actualTFile) { 
-      this.isValid = this.checkIsFileValid(this.actualTFile)   
-      if (this.isValid) this.getFileWordsCount(this.actualTFile)
+    if (this.actualTFile) {
+      this.isValid = this.checkIsFileValid(this.actualTFile);
+      if (this.isValid) this.getFileWordsCount(this.actualTFile);
     } else {
-      this.isValid = false
+      this.isValid = false;
     }
 
     const oldFilesCount = this.userData.filesCount;
 
     // Calc of the files diff
-    const newFileCount = this.vault.getMarkdownFiles().length
-    this.userData.filesCount = newFileCount
+    const newFileCount = this.vault.getMarkdownFiles().length;
+    this.userData.filesCount = newFileCount;
     const filesDif = newFileCount - oldFilesCount;
 
-    if (oldFilesCount === -1) return; 
+    if (oldFilesCount === -1) return;
 
     // Update the coins with the filesDif
-    const newCoins = this.userStats.coins + (filesDif * 10)
+    const newCoins = this.userStats.coins + filesDif * 10;
 
     this.userStats = {
       ...this.userStats,
-      coins: newCoins
+      coins: newCoins,
     };
-  } 
+  };
 
   /*
    * Checks the validity of the file, returns true (is valid) or false (is not valid)
    * */
   checkIsFileValid = (tFile: TFile) => {
-    // Check if the file is markdown 
-    if (tFile.extension !== 'md') return false
-     
+    // Check if the file is markdown
+    if (tFile.extension !== "md") return false;
+
     // Get the tags from the file
-    const frontmatter = this.plugin.app.metadataCache.getFileCache(tFile)?.frontmatter
+    const frontmatter =
+      this.plugin.app.metadataCache.getFileCache(tFile)?.frontmatter;
 
-    if (!frontmatter) return true // This means that there are no tags in the file
+    if (!frontmatter) return true; // This means that there are no tags in the file
 
-    const fileTagsList = Object.keys(frontmatter)
+    const fileTagsList = Object.keys(frontmatter);
 
     // Check if there is some "prohibited" tag in the file
-    if(this.prohibitedTagsList.some((prohibitedTag) => fileTagsList.includes(prohibitedTag))) return false
+    if (
+      this.prohibitedTagsList.some((prohibitedTag) =>
+        fileTagsList.includes(prohibitedTag),
+      )
+    )
+      return false;
 
-    return true
-  }
+    return true;
+  };
 
   /*
    * Gets the difference of the word count of the current file and updates de exp
-  */
+   */
   updateUserDataNStats = (text: string) => {
-    const oldUserData = { ...this.userData }; 
+    const oldUserData = { ...this.userData };
 
-    if(!this.isValid) return;
+    if (!this.isValid) return;
 
-    const newWordsCount = countWords(text)
-    this.userData.fileWordCount = newWordsCount
+    const newWordsCount = countWords(text);
+    this.userData.fileWordCount = newWordsCount;
     const fileWordsDif = newWordsCount - oldUserData.fileWordCount;
 
     // Stats Calculation
     const newExp = fileWordsDif + this.userStats.exp;
 
-    if (
-      oldUserData.fileWordCount !== -1 &&
-        newExp !== this.userStats.exp
-    ) {
+    if (oldUserData.fileWordCount !== -1 && newExp !== this.userStats.exp) {
       this.userStats = {
         ...this.userStats,
         exp: newExp > 0 ? newExp : 0,
       };
     }
-
   };
 
   /*
-  * Gets the words of the tFile given and updates it in the userData
-  */
+   * Gets the words of the tFile given and updates it in the userData
+   */
   getFileWordsCount = async (tFile: TFile): Promise<number> => {
     return await this.vault.cachedRead(tFile).then((text) => {
-      const words = this.userData.fileWordCount = countWords(text);
-      return words
-    })
+      const words = (this.userData.fileWordCount = countWords(text));
+      return words;
+    });
   };
 
-  addWordsToFileCount = (wordsCount:number) => {
-    this.userData.fileWordCount += wordsCount
-  }
+  addWordsToFileCount = (wordsCount: number) => {
+    this.userData.fileWordCount += wordsCount;
+  };
 
   getUserData = (): UserData => {
     return { ...this.userData };
@@ -196,21 +198,21 @@ export default class StatsHandler {
   addNewItem = (
     itemName: string,
     itemCategory: ItemCategory,
-    itemPrice: number
-  ):[UserStats,UserItems] => {
+    itemPrice: number,
+  ): [UserStats, UserItems] => {
     this.userStats.coins = this.userStats.coins - itemPrice;
     this.userItems.obtained[itemCategory].push(itemName);
 
-    return [{...this.userStats}, {...this.userItems}]
+    return [{ ...this.userStats }, { ...this.userItems }];
   };
 
-  equipItem = (itemName: string, itemCategory: ItemCategory):UserItems => {
+  equipItem = (itemName: string, itemCategory: ItemCategory): UserItems => {
     this.userItems.equiped[itemCategory] = itemName;
-    return {...this.userItems};
+    return { ...this.userItems };
   };
 
-  unequipItem = (itemCategory: ItemCategory):UserItems => {
+  unequipItem = (itemCategory: ItemCategory): UserItems => {
     this.userItems.equiped[itemCategory] = "";
-    return {...this.userItems}
+    return { ...this.userItems };
   };
 }

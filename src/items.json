@@ -1,28 +1,28 @@
 [
-	{
-		"category": "Backgrounds",
-		"items": [
-			{
-				"name": "01",
-				"price": 40,
-				"url": "Backgrounds/01.png"
-			},
-			{
-				"name": "02",
-				"price": 80,
-				"url": "Backgrounds/02.png"
-			}
-		]
-	},
-	{
-		"category": "Accessories",
-		"items": [
-			{
-				"name": "glasses",
-				"price": 120,
+  {
+    "category": "Backgrounds",
+    "items": [
+      {
+        "name": "01",
+        "price": 40,
+        "url": "Backgrounds/01.png"
+      },
+      {
+        "name": "02",
+        "price": 80,
+        "url": "Backgrounds/02.png"
+      }
+    ]
+  },
+  {
+    "category": "Accessories",
+    "items": [
+      {
+        "name": "glasses",
+        "price": 120,
         "url": "Spritesheets/glasses.png",
-				"urlShop": "Accessories/glasses.png"
-			}
-		]
-	}
+        "urlShop": "Accessories/glasses.png"
+      }
+    ]
+  }
 ]

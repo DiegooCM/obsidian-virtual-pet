@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap");
 
-.view-content > .virtual-pet {
-  width: 100%; 
+.view-content>.virtual-pet {
+  width: 100%;
   height: 100%;
   container-type: size;
 }
@@ -92,8 +92,7 @@
     justify-self: center;
     z-index: 10;
     text-shadow: 0px 0px 4px #fff;
-    animation: 400ms cubic-bezier(0.55, 0.09, 0.68, 0.53) infinite alternate
-      pop-in-out;
+    animation: 400ms cubic-bezier(0.55, 0.09, 0.68, 0.53) infinite alternate pop-in-out;
   }
 
   /* Top Bar */
@@ -106,7 +105,7 @@
     background-color: #0007;
   }
 
-  .top-bar-coins{
+  .top-bar-coins {
     display: flex;
     cursor: pointer;
 
@@ -119,7 +118,7 @@
 
   .coins-count {
     height: 100%;
-    margin:0;
+    margin: 0;
     align-content: center;
     color: #ccc;
   }
@@ -203,6 +202,7 @@
     from {
       opacity: 100%;
     }
+
     to {
       opacity: 0%;
     }
@@ -212,6 +212,7 @@
     * {
       --vp-top-bar-height: 25px;
     }
+
     /* Top Bar */
     .top-bar {
       padding-inline: 5px;
@@ -225,7 +226,8 @@
       bottom: 0;
     }
 
-    .coins-count, .exp-info {
+    .coins-count,
+    .exp-info {
       font-size: 0.8rem
     }
   }
@@ -234,6 +236,7 @@
     * {
       --vp-top-bar-height: 41px;
     }
+
     /* Top Bar */
     .top-bar {
       grid-template-columns: 73% 27%;
@@ -247,11 +250,13 @@
       bottom: 10%;
     }
 
-    .coins-count, .exp-info {
+    .coins-count,
+    .exp-info {
       font-size: 1.2rem
     }
   }
 }
+
 /* Shop */
 
 .virtual-pet-shop-modal {
@@ -267,12 +272,12 @@
 .virtual-pet-shop-modal {
 
   .modal-header {
-    position:relative;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #555;
-    margin:0;
+    margin: 0;
     border: 2px solid #000;
   }
 
@@ -285,12 +290,12 @@
     background-color: #777;
   }
 
-  .modal-content > * {
+  .modal-content>* {
     border: 2px solid #000;
   }
 
   .coins-container {
-    position:absolute;
+    position: absolute;
     right: 50px;
     display: flex;
     align-items: center;
@@ -300,6 +305,7 @@
   .coins-container span {
     text-align: center;
   }
+
   .coins-container img {
     height: 43px;
   }
@@ -315,6 +321,7 @@
   .accordion {
     margin-bottom: 10px;
   }
+
   .accordion-info {
     display: flex;
     align-items: center;
@@ -335,7 +342,7 @@
     padding-left: 10px;
   }
 
-  .accordion-closed { 
+  .accordion-closed {
     height: 0;
     overflow: hidden;
   }
@@ -381,7 +388,7 @@
   }
 
   .item-name {
-    margin:0;
+    margin: 0;
     font-size: 1.2rem;
   }
 

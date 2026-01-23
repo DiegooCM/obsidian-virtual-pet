@@ -13,16 +13,21 @@ interface ShopI {
   getAsset: GetAssetT;
 }
 
-export function Shop({userItems, userStats, statsHandler, getAsset}: ShopI) {
-  const [filters, setFilters] = useState(defaultFilters)
+export function Shop({ userItems, userStats, statsHandler, getAsset }: ShopI) {
+  const [filters, setFilters] = useState(defaultFilters);
 
   const itemsJsonFiltered = filterItems(filters, userItems);
 
   return (
     <>
-      <ShopFilter filters={filters} setFilters={setFilters}/>
-      <ShopItems userItems={userItems} userStats={userStats} statsHandler={statsHandler} getAsset={getAsset} items={itemsJsonFiltered} />
+      <ShopFilter filters={filters} setFilters={setFilters} />
+      <ShopItems
+        userItems={userItems}
+        userStats={userStats}
+        statsHandler={statsHandler}
+        getAsset={getAsset}
+        items={itemsJsonFiltered}
+      />
     </>
-  )
+  );
 }
-

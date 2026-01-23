@@ -2,97 +2,104 @@ import { View } from "obsidian";
 import statsHandler from "./utils/statsHandler";
 
 export interface UserData {
-	fileWordCount: number;
-	filesCount: number;
+  fileWordCount: number;
+  filesCount: number;
 }
 
 export interface UserStats {
-	exp: number;
-	expGoal: number;
-	level: number;
-	coins: number;
+  exp: number;
+  expGoal: number;
+  level: number;
+  coins: number;
 }
 
 export type ItemCategory = "Backgrounds" | "Accessories";
 
 export type UserItem = {
-	[K in ItemCategory]: string;
+  [K in ItemCategory]: string;
 };
 
 type UserItemsObtained = {
-	[K in ItemCategory]: string[];
+  [K in ItemCategory]: string[];
 };
 
 export interface UserItems {
-	equiped: UserItem;
-	obtained: UserItemsObtained;
+  equiped: UserItem;
+  obtained: UserItemsObtained;
 }
 
 type ItemJson = {
-	name: string;
-	price: number;
-	url: string;
+  name: string;
+  price: number;
+  url: string;
   urlShop?: string;
 };
 
 export type ItemsCategory = {
-	category: ItemCategory;
-	items: ItemJson[];
+  category: ItemCategory;
+  items: ItemJson[];
 };
 
 export type ItemsJson = ItemsCategory[];
 
 export interface UserInfo {
-	exp: number;
+  exp: number;
 }
 
 export type PetViewT = View & { statsHandler: statsHandler };
 
 export interface PetState {
-	userData: UserData;
-	userStats: UserStats;
+  userData: UserData;
+  userStats: UserStats;
 }
 
 export interface PetAnimation {
-	name: string;
-	animation: number[][];
-	speed: number;
-	fps: number;
+  name: string;
+  animation: number[][];
+  speed: number;
+  fps: number;
 }
 
-export type HandleDefaults = (next?:string) => void;
+export type HandleDefaults = (next?: string) => void;
 
 export interface AnimationsHandler {
-	animation: PetAnimation;
-	handleSleeping: () => void;
+  animation: PetAnimation;
+  handleSleeping: () => void;
   handleDefaults: HandleDefaults;
-	changeAnimation: (newAnimation: PetAnimation) => void;
-	levelUpAnimation: () => void;
+  changeAnimation: (newAnimation: PetAnimation) => void;
+  levelUpAnimation: () => void;
 }
 
 export type PetViewRef = {
-	triggerChild: (action: string) => void;
+  triggerChild: (action: string) => void;
 };
 
 export type UserActions = "file-open" | "editor-change" | "active-leaf-change";
 
 export type Filter = {
-  "category": string,
-  "options": {
-    [key: string]: boolean
-  },
-  "isOpen": boolean
-}
-export type Filters = Filter[]
+  category: string;
+  options: {
+    [key: string]: boolean;
+  };
+  isOpen: boolean;
+};
+export type Filters = Filter[];
 
-export type AssetCategories = "Backgrounds" | "Accessories" | "Spritesheets" | "Others";
+export type AssetCategories =
+  | "Backgrounds"
+  | "Accessories"
+  | "Spritesheets"
+  | "Others";
 
-export type Assets = { 
-  [Category in AssetCategories]: Record<string,string>;
-}
+export type Assets = {
+  [Category in AssetCategories]: Record<string, string>;
+};
 
-export type GetAssetT = (assetCategory: AssetCategories, name: string) => Promise<string>
-  
+export type GetAssetT = (
+  assetCategory: AssetCategories,
+  name: string,
+) => Promise<string>;
+
 export interface AssetsContextI {
-  getAsset: GetAssetT
+  getAsset: GetAssetT;
 }
