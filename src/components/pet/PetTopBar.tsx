@@ -38,7 +38,7 @@ export function PetTopBar({
           new ShopModal(app, getAsset, statsHandler, setUserItems).open()
         }
       >
-        <img ref={coinRef} />
+        <img ref={coinRef} alt="Coin icon" />
         <p className="coins-count">{userStats.coins}</p>
       </div>
     </div>

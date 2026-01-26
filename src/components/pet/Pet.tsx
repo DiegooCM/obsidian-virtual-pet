@@ -174,8 +174,8 @@ export const Pet = memo(function Pet({
         style={{ left: "30px" }}
       >
         <p className="pet-level">Level: {userLevel}</p>
-        <img className="pet" ref={petRef} />
-        <img className="pet-accessory" ref={petAccessoryRef} />
+        <img className="pet" ref={petRef} alt="Pet sprites" />
+        <img className="pet-accessory" ref={petAccessoryRef} alt="Pet accessory sprites" />
       </div>
     </div>
   );

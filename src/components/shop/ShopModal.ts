@@ -44,7 +44,7 @@ export class ShopModal extends Modal {
     const coinsContainer = this.headerEl.createDiv("coins-container");
     // When the coin asset is fetched then it creates the content in the coins-container
     this.getAsset("Others", "coin").then((blob) => {
-      coinsContainer.createEl("img", { attr: { src: blob } });
+      coinsContainer.createEl("img", { attr: { src: blob, alt: "Coin icon" } });
       coinsContainer.createEl("span", {
         text: this.userStats.coins.toString(),
       });
