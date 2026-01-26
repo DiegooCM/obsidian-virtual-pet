@@ -102,7 +102,8 @@ export const Pet = memo(function Pet({
 
       // Movement animation
       if (animation.speed !== 0) {
-        actualLeft = actualLeft + animation.speed * petDirecction.current;
+        const actualSpeed = windowWidth * 5 / 300; // Relative speed to the window size
+        actualLeft = actualLeft + actualSpeed * petDirecction.current;
         petContainerRef.current.style.left = `${actualLeft}px`;
 
         // Touched left border
