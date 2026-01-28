@@ -75,7 +75,7 @@ export default class VirualPetView extends ItemView {
         this.statsHandler.onFileOpen(tFile);
 
         // Sets data and stats in petview
-        this.petViewRef.current?.triggerChild("file-open");
+        this.petViewRef.current?.triggerChild(["update-info"]);
       }),
     );
 
@@ -87,25 +87,24 @@ export default class VirualPetView extends ItemView {
           ? (this.isPasted = false)
           : this.statsHandler.updateUserDataNStats(fileText);
 
-        this.petViewRef.current?.triggerChild("editor-change");
-      }),
-    );
-
-    this.registerEvent(
-      // Leaf changes (leaf = filetree, plugins, current-file,...)
-      this.app.workspace.on("active-leaf-change", () => {
-        this.petViewRef.current?.triggerChild("active-leaf-change");
+        this.petViewRef.current?.triggerChild(["handle-sleep", "update-info"]);
       }),
     );
 
     this.registerEvent(
       this.app.workspace.on("editor-paste", (clipboardEvent) => {
-        // Count the words pasted and adding them to the userData
+        // Count the pasted words and add them to the userData
         calcAndAddPastedText(
           clipboardEvent,
           this.statsHandler.addWordsToFileCount,
         );
         this.isPasted = true;
+      }),
+    );
+
+    this.registerEvent(
+      this.app.workspace.on("resize", () => {
+        this.petViewRef.current?.triggerChild(["check-width"]);
       }),
     );
   }

@@ -71,10 +71,10 @@ export interface AnimationsHandler {
 }
 
 export type PetViewRef = {
-  triggerChild: (action: string) => void;
+  triggerChild: (actions: UserActions) => void;
 };
 
-export type UserActions = "file-open" | "editor-change" | "active-leaf-change";
+export type UserActions = ("check-width" | "handle-sleep" | "update-info")[];
 
 export type Filter = {
   category: string;

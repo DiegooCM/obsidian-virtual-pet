@@ -82,6 +82,7 @@ export const Pet = memo(function Pet({
       animation.animation.length;
 
     if (animationIdx !== previousAnimationIdx.current) {
+
       let actualLeft = parseInt(petContainerRef.current.style.left);
       const windowWidth = petAnimationsContainerRef.current.clientWidth;
 

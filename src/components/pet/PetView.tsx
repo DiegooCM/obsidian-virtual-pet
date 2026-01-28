@@ -33,7 +33,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
 
   const animationsHandler = useAnimationsHandler();
 
-  // Checks if the plugin is open and if is not it stops the animation
+  // Checks if the plugin is open, and if is not it stops the animation
   const checkWidth = () => {
     if (!pluginRef.current) {
       setIsPluginActive(false);
@@ -45,6 +45,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
     actualWidth > 0
       ? !isPluginActive && setIsPluginActive(true)
       : isPluginActive && setIsPluginActive(false);
+
   };
 
   const levelUp = (newUserStats: UserStats) => {
@@ -93,10 +94,12 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   // To expose the onUserAction function on the ref
   useImperativeHandle<PetViewRef, PetViewRef>(ref, () => {
     return {
-      triggerChild(action: UserActions) {
-        if (action === "editor-change") animationsHandler.handleSleeping();
-        if (action === "active-leaf-change") checkWidth();
-        updateUserInfo();
+      triggerChild(actions: UserActions) {
+        actions.forEach((action) => {
+          if (action === "check-width") { checkWidth(); return; };
+          if (action === "handle-sleep") { animationsHandler.handleSleeping(); return; };
+          if (action === "update-info") { updateUserInfo(); return; };
+        });
       },
     };
   });
