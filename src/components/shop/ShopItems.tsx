@@ -87,7 +87,10 @@ export const ShopItems = memo(function ShopItems({
 
     return (
       <div className="shop-item">
-        <img ref={itemImageRef} alt={`${item.name} ${itemsCategory.category} image Item`} />
+        <img
+          ref={itemImageRef}
+          alt={`${item.name} ${itemsCategory.category} image Item`}
+        />
 
         <div className="item-info">
           <p className="item-name">{item.name}</p>

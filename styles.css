@@ -19,6 +19,7 @@
     background-position: 0 0;
     background-size: cover;
     background-repeat: no-repeat;
+    overflow: hidden;
   }
 
   .main img {
@@ -228,7 +229,7 @@
 
     .coins-count,
     .exp-info {
-      font-size: 0.8rem
+      font-size: 0.8rem;
     }
   }
 
@@ -252,7 +253,7 @@
 
     .coins-count,
     .exp-info {
-      font-size: 1.2rem
+      font-size: 1.2rem;
     }
   }
 }
@@ -270,7 +271,6 @@
 }
 
 .virtual-pet-shop-modal {
-
   .modal-header {
     position: relative;
     display: flex;

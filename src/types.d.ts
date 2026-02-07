@@ -64,7 +64,7 @@ export type HandleDefaults = (next?: string) => void;
 
 export interface AnimationsHandler {
   animation: PetAnimation;
-  handleSleeping: () => void;
+  handleSleeping: (toWalk?: boolean) => void;
   handleDefaults: HandleDefaults;
   changeAnimation: (newAnimation: PetAnimation) => void;
   levelUpAnimation: () => void;

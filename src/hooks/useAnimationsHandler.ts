@@ -33,20 +33,24 @@ export function useAnimationsHandler() {
     [nextDefault.current],
   );
 
-  const handleSleeping = () => {
-    clearTimeout(sleepingTimeoutId.current);
+  const handleSleeping = (toWalk?: boolean) => {
+    window.clearTimeout(sleepingTimeoutId.current);
 
-    // Checks if it sleeping makes it coding during 10 seconds
+    // Stops sleeping
     if (animationRef.current === animations.sleep) {
-      changeAnimation(animations.code);
-      setTimeout(() => {
-        handleDefaults();
-      }, animationsTimes.coding); // 10 seconds
+      if (toWalk) {
+        handleDefaults("walk");
+      } else {
+        changeAnimation(animations.code);
+        setTimeout(() => {
+          handleDefaults();
+        }, animationsTimes.coding);
+      }
     }
 
     sleepingTimeoutId.current = window.setTimeout(() => {
       changeAnimation(animations.sleep);
-    }, animationsTimes.sleepingAfterInactive); // 30 secs
+    }, animationsTimes.sleepingAfterInactive);
   };
 
   const changeAnimation = (newAnimation: PetAnimation) => {

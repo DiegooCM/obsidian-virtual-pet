@@ -45,7 +45,6 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
     actualWidth > 0
       ? !isPluginActive && setIsPluginActive(true)
       : isPluginActive && setIsPluginActive(false);
-
   };
 
   const levelUp = (newUserStats: UserStats) => {
@@ -96,9 +95,18 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
     return {
       triggerChild(actions: UserActions) {
         actions.forEach((action) => {
-          if (action === "check-width") { checkWidth(); return; };
-          if (action === "handle-sleep") { animationsHandler.handleSleeping(); return; };
-          if (action === "update-info") { updateUserInfo(); return; };
+          if (action === "check-width") {
+            checkWidth();
+            return;
+          }
+          if (action === "handle-sleep") {
+            animationsHandler.handleSleeping();
+            return;
+          }
+          if (action === "update-info") {
+            updateUserInfo();
+            return;
+          }
         });
       },
     };
@@ -135,6 +143,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
           userLevel={userStats.level}
           userItems={userItems}
           handleDefaults={animationsHandler.handleDefaults}
+          animationsHandler={animationsHandler}
         />
         <h1
           className="animations-text"

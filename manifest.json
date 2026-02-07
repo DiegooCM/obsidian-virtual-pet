@@ -1,11 +1,11 @@
 {
-	"id": ".virtual-pet",
-	"name": ".Virtual Pet",
-	"version": "0.0.0",
-	"minAppVersion": "0.0.0",
-	"description": "",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
-	"isDesktopOnly": false
+  "id": ".virtual-pet",
+  "name": ".Virtual Pet",
+  "version": "0.0.0",
+  "minAppVersion": "0.0.0",
+  "description": "",
+  "author": "Obsidian",
+  "authorUrl": "https://obsidian.md",
+  "fundingUrl": "https://obsidian.md/pricing",
+  "isDesktopOnly": false
 }

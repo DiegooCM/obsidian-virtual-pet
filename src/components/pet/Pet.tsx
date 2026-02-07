@@ -5,6 +5,7 @@ import {
   UserItems,
   HandleDefaults,
   AssetsContextI,
+  AnimationsHandler,
 } from "src/types";
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
   userLevel: number;
   userItems: UserItems;
   handleDefaults: HandleDefaults;
+  animationsHandler: AnimationsHandler;
 }
 
 export const Pet = memo(function Pet({
@@ -21,6 +23,7 @@ export const Pet = memo(function Pet({
   userLevel,
   userItems,
   handleDefaults,
+  animationsHandler
 }: Props) {
   // Refs
   const petRef: RefObject<HTMLImageElement | null> = useRef(null);
@@ -60,7 +63,7 @@ export const Pet = memo(function Pet({
 
     if (isOutside.current && !isOutsideTimeoutRef.current) {
       isOutsideTimeoutRef.current = window.setTimeout(() => {
-        handleDefaults("walk");
+        animationsHandler.handleSleeping(true); // Stops sleeping and starts walking
         isOutsideTimeoutRef.current = 0;
       }, 1000);
     }
@@ -82,7 +85,6 @@ export const Pet = memo(function Pet({
       animation.animation.length;
 
     if (animationIdx !== previousAnimationIdx.current) {
-
       let actualLeft = parseInt(petContainerRef.current.style.left);
       const windowWidth = petAnimationsContainerRef.current.clientWidth;
 
@@ -96,14 +98,15 @@ export const Pet = memo(function Pet({
         petAccessoryRef.current.style.objectPosition = newPos; // Prevent that if there is no accessorie dont change the img pos
 
       // Change pet scale
-      petScale.current = windowWidth / 200;
+      const scaleCalc = windowWidth / 200;
+      petScale.current = scaleCalc < 1 ? 1 : scaleCalc; // Scale  = 1 (64px) is the minimum
       petContainerRef.current.style.scale = petScale.current.toString();
 
       const petOuterRelWidth = Math.floor(((petScale.current - 1) * 64) / 2);
 
       // Movement animation
       if (animation.speed !== 0) {
-        const actualSpeed = windowWidth * 5 / 300; // Relative speed to the window size
+        const actualSpeed = (windowWidth * animation.speed) / 300; // Relative speed to the window size
         actualLeft = actualLeft + actualSpeed * petDirecction.current;
         petContainerRef.current.style.left = `${actualLeft}px`;
 
@@ -177,7 +180,11 @@ export const Pet = memo(function Pet({
       >
         <p className="pet-level">Level: {userLevel}</p>
         <img className="pet" ref={petRef} alt="Pet sprites" />
-        <img className="pet-accessory" ref={petAccessoryRef} alt="Pet accessory sprites" />
+        <img
+          className="pet-accessory"
+          ref={petAccessoryRef}
+          alt="Pet accessory sprites"
+        />
       </div>
     </div>
   );

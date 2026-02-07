@@ -11,7 +11,7 @@ const assetsDefault: Assets = {
   Backgrounds: {},
   Accessories: {},
   Spritesheets: {},
-  Others: {}
+  Others: {},
 };
 
 export const AssetsContext = createContext<AssetsContextI | null>(null);
@@ -29,12 +29,10 @@ export const AssetsProvider = ({ app, children }: AssetsProviderI) => {
       const blobUrl = URL.createObjectURL(blob);
 
       return blobUrl;
-
     } catch (error) {
       console.error(`Error loading image ${name}: ${error}`);
       throw new Error(error);
     }
-
   };
 
   const getAsset = async (assetCategory: AssetCategories, name: string) => {
@@ -44,7 +42,11 @@ export const AssetsProvider = ({ app, children }: AssetsProviderI) => {
 
     // If is not already added
     const path = app.vault.adapter.getResourcePath(
-      "./.obsidian/plugins/obsidian-virtual-pet/assets/" + assetCategory + "/" + name + ".png"
+      "./.obsidian/plugins/obsidian-virtual-pet/assets/" +
+        assetCategory +
+        "/" +
+        name +
+        ".png",
     );
 
     const blobUrl = await loadImage(name, path);
@@ -64,9 +66,5 @@ export const AssetsProvider = ({ app, children }: AssetsProviderI) => {
     };
   }, []);
 
-  return (
-    <AssetsContext value={{ getAsset }}>
-      {children}
-    </AssetsContext>
-  );
+  return <AssetsContext value={{ getAsset }}>{children}</AssetsContext>;
 };
