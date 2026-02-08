@@ -3,9 +3,8 @@ import { AssetsContext } from "src/contexts/AssetsContext";
 import {
   PetAnimation,
   UserItems,
-  HandleDefaults,
   AssetsContextI,
-  AnimationsHandler,
+  AnimationsHandlerI,
 } from "src/types";
 
 interface Props {
@@ -13,8 +12,7 @@ interface Props {
   animation: PetAnimation;
   userLevel: number;
   userItems: UserItems;
-  handleDefaults: HandleDefaults;
-  animationsHandler: AnimationsHandler;
+  animationsHandler: AnimationsHandlerI;
 }
 
 export const Pet = memo(function Pet({
@@ -22,7 +20,6 @@ export const Pet = memo(function Pet({
   animation,
   userLevel,
   userItems,
-  handleDefaults,
   animationsHandler
 }: Props) {
   // Refs
@@ -62,8 +59,10 @@ export const Pet = memo(function Pet({
     else isOutside.current = false;
 
     if (isOutside.current && !isOutsideTimeoutRef.current) {
+      // Stops sleeping and starts walking
       isOutsideTimeoutRef.current = window.setTimeout(() => {
-        animationsHandler.handleSleeping(true); // Stops sleeping and starts walking
+        animationsHandler.toDefaults("walk");
+        animationsHandler.triggerSleeping(() => animationsHandler.toDefaults());
         isOutsideTimeoutRef.current = 0;
       }, 1000);
     }
@@ -91,7 +90,7 @@ export const Pet = memo(function Pet({
       // Change sprite
       const newPos = `
 			-${animation.animation[animationIdx][0] * 64}px
-			-${animation.animation[animationIdx][1] * 64 + 2}px`; // The +2 is for preventing that the sprite on top of the actual appears
+			-${animation.animation[animationIdx][1] * 64 + 0}px`;
 
       petRef.current.style.objectPosition = newPos;
       if (userItems.equiped.Accessories)

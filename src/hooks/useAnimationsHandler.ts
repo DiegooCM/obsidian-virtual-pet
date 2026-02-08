@@ -1,51 +1,34 @@
-import { PetAnimation } from "src/types";
+import { AnimationsHandlerI, DefaultsNext, PetAnimation } from "src/types";
 import animations from "../animations.json";
 import animationsTimes from "../animationsTimes.json";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export function useAnimationsHandler() {
+export function useAnimationsHandler(): AnimationsHandlerI {
   const sleepingTimeoutId = useRef(0);
-  const defaultTimeoutId = useRef(0);
+  const animationTimeoutId = useRef(0);
   const nextDefault = useRef<PetAnimation>(animations.stand);
   const [animation, setAnimation] = useState<PetAnimation>(animations.stand);
   const animationRef = useRef(animation);
 
   // Rotates defaults animations
-  const handleDefaults = useCallback(
-    (next?: string) => {
-      if (next === "walk") nextDefault.current = animations.walk;
+  const toDefaults = (next?: DefaultsNext) => {
+    if (next === "walk") nextDefault.current = animations.walk;
 
-      window.clearTimeout(defaultTimeoutId.current);
+    if (animationRef.current === animations.sleep && !next) return;
 
-      if (animationRef.current === animations.sleep && !next) return;
+    changeAnimation(nextDefault.current, animationsTimes.default);
 
-      changeAnimation(nextDefault.current);
+    nextDefault.current === animations.stand
+      ? (nextDefault.current = animations.walk)
+      : (nextDefault.current = animations.stand);
+  };
 
-      nextDefault.current === animations.stand
-        ? (nextDefault.current = animations.walk)
-        : (nextDefault.current = animations.stand);
-
-      defaultTimeoutId.current = window.setTimeout(
-        () => handleDefaults(),
-        animationsTimes.handleDefaults,
-      ); // 20 seconds
-    },
-    [nextDefault.current],
-  );
-
-  const handleSleeping = (toWalk?: boolean) => {
+  const triggerSleeping = (ifSleeping: () => void) => {
     window.clearTimeout(sleepingTimeoutId.current);
 
     // Stops sleeping
     if (animationRef.current === animations.sleep) {
-      if (toWalk) {
-        handleDefaults("walk");
-      } else {
-        changeAnimation(animations.code);
-        setTimeout(() => {
-          handleDefaults();
-        }, animationsTimes.coding);
-      }
+      ifSleeping();
     }
 
     sleepingTimeoutId.current = window.setTimeout(() => {
@@ -53,17 +36,17 @@ export function useAnimationsHandler() {
     }, animationsTimes.sleepingAfterInactive);
   };
 
-  const changeAnimation = (newAnimation: PetAnimation) => {
+  const changeAnimation = (newAnimation: PetAnimation, duration?: number) => {
+    window.clearTimeout(animationTimeoutId.current);
+    // Finished the duration of the animation is changed to default
+    if (duration) {
+      animationTimeoutId.current = window.setTimeout(() => {
+        toDefaults();
+      }, duration);
+    }
+
     if (animationRef.current === newAnimation) return;
     setAnimation(newAnimation);
-  };
-
-  const levelUpAnimation = () => {
-    // Animation changes
-    changeAnimation(animations.celebrate);
-    window.setTimeout(() => {
-      handleDefaults();
-    }, animationsTimes.levelUp); // 3 seconds
   };
 
   useEffect(() => {
@@ -72,9 +55,8 @@ export function useAnimationsHandler() {
 
   return {
     animation,
-    handleSleeping,
-    handleDefaults,
+    triggerSleeping,
+    toDefaults,
     changeAnimation,
-    levelUpAnimation,
   };
 }

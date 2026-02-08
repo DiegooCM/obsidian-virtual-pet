@@ -1,9 +1,9 @@
-import type { AnimationsHandler, PetAnimation } from "src/types";
+import type { AnimationsHandlerI, PetAnimation } from "src/types";
 import animations from "src/animations.json";
 
 type PetButtonsType = {
   animation: PetAnimation;
-  animationsHandler: AnimationsHandler;
+  animationsHandler: AnimationsHandlerI;
 };
 
 export default function PetButtons({
@@ -14,7 +14,7 @@ export default function PetButtons({
     <div className="pet-buttons">
       <button
         onClick={() => {
-          animationsHandler.handleSleeping(true);
+          animationsHandler.toDefaults("next");
         }}
         className={
           animation === animations.stand || animation === animations.walk

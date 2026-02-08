@@ -60,14 +60,13 @@ export interface PetAnimation {
   fps: number;
 }
 
-export type HandleDefaults = (next?: string) => void;
+export type DefaultsNext = "walk" | "stand" | "next";
 
-export interface AnimationsHandler {
+export interface AnimationsHandlerI {
   animation: PetAnimation;
-  handleSleeping: (toWalk?: boolean) => void;
-  handleDefaults: HandleDefaults;
-  changeAnimation: (newAnimation: PetAnimation) => void;
-  levelUpAnimation: () => void;
+  triggerSleeping: (ifSleeping: () => void) => void;
+  toDefaults: (next?: DefaultsNext) => void;
+  changeAnimation: (newAnimation: PetAnimation, duration?: number) => void;
 }
 
 export type PetViewRef = {

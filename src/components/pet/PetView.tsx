@@ -15,6 +15,8 @@ import { DebugTools } from "src/components/debug-tools/DebugTools";
 import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
 import { AssetsContext } from "src/contexts/AssetsContext";
 import { PetTopBar } from "./PetTopBar";
+import animations from "src/animations.json";
+import animationsTimes from "src/animationsTimes.json";
 
 interface PetViewI {
   statsHandler: StatsHandler;
@@ -49,7 +51,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
 
   const levelUp = (newUserStats: UserStats) => {
     // Change the pet animation to celebrate
-    animationsHandler.levelUpAnimation();
+    animationsHandler.changeAnimation(animations.celebrate, animationsTimes.levelUp);
 
     // Activate the "Level Up" text, waits 3s and desactivate it
     if (animationsTextRef.current)
@@ -100,7 +102,9 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
             return;
           }
           if (action === "handle-sleep") {
-            animationsHandler.handleSleeping();
+            animationsHandler.triggerSleeping(() => {
+              animationsHandler.changeAnimation(animations.code, animationsTimes.coding);
+            });
             return;
           }
           if (action === "update-info") {
@@ -113,8 +117,8 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   });
 
   useEffect(() => {
-    animationsHandler.handleDefaults();
-    animationsHandler.handleSleeping();
+    animationsHandler.toDefaults();
+    animationsHandler.triggerSleeping(() => animationsHandler.toDefaults());
     window.setTimeout(() => updateUserInfo(), 100); // The timeout is for giving time to load the data from de data.json
   }, []);
 
@@ -142,7 +146,6 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
           animation={animationsHandler.animation}
           userLevel={userStats.level}
           userItems={userItems}
-          handleDefaults={animationsHandler.handleDefaults}
           animationsHandler={animationsHandler}
         />
         <h1

@@ -1,14 +1,14 @@
 import UserInfo from "src/components/debug-tools/UserInfo";
 import PetButtons from "src/components/debug-tools/PetButtons";
 import ExpButtons from "src/components/debug-tools/ExpButtons";
-import { AnimationsHandler, UserData, UserItems, UserStats } from "src/types";
+import { AnimationsHandlerI, UserData, UserItems, UserStats } from "src/types";
 import StatsHandler from "src/utils/statsHandler";
 
 interface DebugToolsI {
   userData: UserData;
   userStats: UserStats;
   userItems: UserItems;
-  animationsHandler: AnimationsHandler;
+  animationsHandler: AnimationsHandlerI;
   statsHandler: StatsHandler;
   levelUp: (newUserStats: UserStats) => void;
   setUserStats: React.Dispatch<React.SetStateAction<UserStats>>;
