@@ -2,6 +2,7 @@ import { Plugin, WorkspaceLeaf } from "obsidian";
 import VirualPetView from "src/view";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
 import { UserInfo } from "./types";
+import { SettingsTab } from "./components/config/SettingsTab";
 
 export default class VirtualPet extends Plugin {
   async onload() {
@@ -13,6 +14,9 @@ export default class VirtualPet extends Plugin {
     if (this.app.workspace.layoutReady) {
       this.activateView();
     }
+
+    // Meter en el nombre "VirtualPet"
+    this.addSettingTab(new SettingsTab(this.app, this));
   }
 
   onunload() {}

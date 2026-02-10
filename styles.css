@@ -396,3 +396,72 @@
     font-size: 1rem;
   }
 }
+
+/* Settings */
+.vpet-info-banner {
+  color: #fff;
+  font-family: Pixelify Sans;
+  font-size: 1.2rem;
+  text-shadow: 0px 0px 5px #000;
+  width: 500px;
+  justify-self: center;
+  position: relative;
+
+  .wood-plank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-repeat: repeat;
+    background-size: 120px 120px;
+    image-rendering: pixelated;
+
+    border: 0px solid #000;
+    box-shadow: inset #863500 -9px -9px 0px 0px, inset #ffbc7e 7px 7px 0px 0px;
+
+    position: relative;
+    padding: 10px 0;
+    margin-bottom: 10px;
+  }
+
+  .iron-separations {
+    position: absolute;
+    left: 100px;
+    bottom: -20px;
+    display: flex;
+    justify-content: space-between;
+    height: 35px;
+  }
+
+  .iron-separator {
+    width: 15px;
+    height: 100%;
+    background-color: #ccc;
+    box-shadow: inset 4px 4px 0px 0px #eee, inset -4px -4px 0px 0px #999;
+    margin-right: 300px;
+
+    z-index: 10;
+  }
+
+  .tap-img {
+    display: flex;
+    align-items: center;
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    list-style: square;
+    margin-left: 30px;
+    --list-marker-color: #fff;
+  }
+
+  img {
+    image-rendering: pixelated;
+    height: 43px;
+  }
+
+}
