@@ -153,7 +153,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
           ref={animationsTextRef}
           style={{ display: "none" }}
         >
-          Level Up!
+          LEVEL UP!
         </h1>
       </div>
 

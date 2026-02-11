@@ -65,6 +65,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
+    top: -16px;
 
     object-fit: none;
 
@@ -88,17 +89,18 @@
   .animations-text {
     position: absolute;
     top: 20%;
-    color: #000;
+    color: #fff;
     font-size: 2.5rem;
     justify-self: center;
     z-index: 10;
-    text-shadow: 0px 0px 4px #fff;
-    animation: 400ms cubic-bezier(0.55, 0.09, 0.68, 0.53) infinite alternate pop-in-out;
+    text-shadow: 0px 0px 5px #000;
+    animation: 400ms linear infinite alternate pop-in-out;
   }
 
   /* Top Bar */
   .top-bar {
     display: grid;
+    position: relative;
     grid-template-columns: 70% 30%;
     width: 100%;
     height: var(--vp-top-bar-height);
@@ -127,7 +129,6 @@
   /* Experience Bar */
 
   .exp-bar-container {
-    /*position: relative;*/
     color: #fff;
     margin-block: 5px;
   }
@@ -146,7 +147,7 @@
     top: 0px;
     opacity: 0%;
 
-    transition: top 0.3s ease-out;
+    transition: all 0.3s ease-out;
   }
 
   .exp-bar {
@@ -199,15 +200,6 @@
     font-size: 1.7rem;
   }
 
-  @keyframes pop-in-out {
-    from {
-      opacity: 100%;
-    }
-
-    to {
-      opacity: 0%;
-    }
-  }
 
   @container (max-width: 200px) {
     * {
@@ -262,9 +254,11 @@
 
 .virtual-pet-shop-modal {
   width: 75%;
+  max-width: 1100px;
   height: 100%;
   font-family: Pixelify Sans;
   color: #000;
+  background-color: #777;
   padding: 0;
   border: 2px solid #000;
   border-radius: 0;
@@ -286,7 +280,9 @@
   }
 
   .modal-content {
-    display: flex;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    height: 100%;
     background-color: #777;
   }
 
@@ -299,7 +295,7 @@
     right: 50px;
     display: flex;
     align-items: center;
-    font-size: 1.3rem;
+    font-size: 1.6rem;
   }
 
   .coins-container span {
@@ -313,7 +309,6 @@
   /* Filter */
 
   .filter {
-    width: 20%;
     font-size: 1.5rem;
     padding: 10px;
   }
@@ -356,15 +351,20 @@
 
   /* Items */
   .items-container {
-    width: calc(100% - 150px);
-    padding-left: 30px;
+    padding-inline: 30px;
   }
 
   .items {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    word-break: break-word;
     gap: 20px;
   }
+
+  >h2 {
+    font-size: 1.5rem;
+  }
+
 
   .shop-item {
     border: 2px solid #000;
@@ -395,6 +395,7 @@
   .item-price {
     font-size: 1rem;
   }
+
 }
 
 /* Settings */
@@ -406,6 +407,7 @@
   width: 500px;
   justify-self: center;
   position: relative;
+  filter: grayscale(1);
 
   .wood-plank {
     display: flex;
@@ -417,7 +419,7 @@
     image-rendering: pixelated;
 
     border: 0px solid #000;
-    box-shadow: inset #863500 -9px -9px 0px 0px, inset #ffbc7e 7px 7px 0px 0px;
+    box-shadow: inset #692900 -9px -9px 0px 0px, inset #c99565 7px 7px 0px 0px;
 
     position: relative;
     padding: 10px 0;
@@ -431,6 +433,7 @@
     display: flex;
     justify-content: space-between;
     height: 35px;
+    gap: 300px;
   }
 
   .iron-separator {
@@ -438,7 +441,6 @@
     height: 100%;
     background-color: #ccc;
     box-shadow: inset 4px 4px 0px 0px #eee, inset -4px -4px 0px 0px #999;
-    margin-right: 300px;
 
     z-index: 10;
   }
@@ -464,4 +466,14 @@
     height: 43px;
   }
 
+}
+
+@keyframes pop-in-out {
+  from {
+    opacity: 100%;
+  }
+
+  to {
+    opacity: 0%;
+  }
 }

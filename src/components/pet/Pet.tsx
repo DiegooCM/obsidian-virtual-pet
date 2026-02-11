@@ -94,10 +94,10 @@ export const Pet = memo(function Pet({
 
       petRef.current.style.objectPosition = newPos;
       if (userItems.equiped.Accessories)
-        petAccessoryRef.current.style.objectPosition = newPos; // Prevent that if there is no accessorie dont change the img pos
+        petAccessoryRef.current.style.objectPosition = newPos; // Prevent that if there is no accessory dont change the img pos
 
       // Change pet scale
-      const scaleCalc = windowWidth / 200;
+      const scaleCalc = windowWidth / 180;
       petScale.current = scaleCalc < 1 ? 1 : scaleCalc; // Scale  = 1 (64px) is the minimum
       petContainerRef.current.style.scale = petScale.current.toString();
 
