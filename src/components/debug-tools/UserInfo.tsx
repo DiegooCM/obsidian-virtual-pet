@@ -21,7 +21,7 @@ export default function UserInfo({ userData, userStats, userItems }: UserInfo) {
         <h1>User Stats</h1>
         <p>Exp: {userStats.exp}</p>
         <p>Exp Goal: {userStats.expGoal}</p>
-        <p>Level: {userStats.level}</p>
+        <p>Level:{userStats.level}</p>
         <p>Coins: {userStats.coins}</p>
       </div>
       <div className="div user-items">

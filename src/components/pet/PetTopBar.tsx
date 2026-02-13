@@ -39,7 +39,7 @@ export function PetTopBar({
         }
       >
         <img ref={coinRef} alt="Coin icon" />
-        <p className="coins-count">{userStats.coins}</p>
+        <span className="coins-count">{userStats.coins}</span>
       </div>
     </div>
   );

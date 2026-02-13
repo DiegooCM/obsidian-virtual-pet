@@ -36,9 +36,8 @@ export default class VirtualPet extends Plugin {
     if (leaf) {
       await leaf.setViewState({
         type: VIEW_TYPE_VIRTUAL_PET,
-        active: true,
       });
-      workspace.revealLeaf(leaf);
+      workspace.revealLeaf(leaf); // Opens my plugin on the leaf when activated
     }
   }
 
