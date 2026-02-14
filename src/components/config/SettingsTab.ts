@@ -52,10 +52,10 @@ export class SettingsTab extends PluginSettingTab {
       cls: "wood-plank",
       attr: { style: `background-image: url(${woodUrl})` },
     });
-    const ul2 = woodPlank2.createEl("ul");
-    ul2.createEl("span", { text: "Experience:" });
-    ul2.createEl("li", { text: "Write a word: +1 Exp" });
-    ul2.createEl("li", { text: "Delete a word: -1 Exp" });
+    const dl2 = woodPlank2.createEl("dl");
+    dl2.createEl("dt", { text: "Experience:" });
+    dl2.createEl("dd", { text: "Write a word: +1 Exp" });
+    dl2.createEl("dd", { text: "Delete a word: -1 Exp" });
 
     const ironSeparations2 = woodPlank2.createEl("div", {
       cls: "iron-separations",
@@ -67,10 +67,10 @@ export class SettingsTab extends PluginSettingTab {
       cls: "wood-plank",
       attr: { style: `background-image: url(${woodUrl})` },
     });
-    const ul3 = woodPlank3.createEl("ul");
-    ul3.createEl("span", { text: "Coins:" });
-    ul3.createEl("li", { text: "Level up: +50 Coins" });
-    ul3.createEl("li", { text: "Create a file: +10 Coins" });
-    ul3.createEl("li", { text: "Delete a file: -10 Coins" });
+    const dl3 = woodPlank3.createEl("dl");
+    dl3.createEl("dt", { text: "Coins:" });
+    dl3.createEl("dd", { text: "Level up: +50 Coins" });
+    dl3.createEl("dd", { text: "Create a file: +10 Coins" });
+    dl3.createEl("dd", { text: "Delete a file: -10 Coins" });
   }
 }

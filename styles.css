@@ -62,7 +62,7 @@
     color: #fff;
     font-size: 1rem;
 
-    bottom: 5%;
+    bottom: 7%;
   }
 
   .pet {
@@ -231,7 +231,7 @@
     }
 
     .pet-container {
-      bottom: 0;
+      bottom: 5px;
     }
 
     .coins-count,
@@ -430,7 +430,7 @@
 .vpet-info-banner {
   color: #fff;
   font-family: var(--vpet-font);
-  font-size: 1.2rem;
+  font-size: 2rem;
   text-shadow: 0px 0px 5px #000;
   width: 500px;
   justify-self: center;
@@ -450,7 +450,7 @@
     box-shadow: inset #692900 -9px -9px 0px 0px, inset #c99565 7px 7px 0px 0px;
 
     position: relative;
-    padding: 10px 0;
+    padding-block: 20px;
     margin-bottom: 10px;
   }
 
@@ -478,15 +478,14 @@
     align-items: center;
   }
 
-  ul {
+  dl {
     padding: 0;
     margin: 0;
   }
 
-  li {
-    list-style: square;
-    margin-left: 30px;
-    --list-marker-color: #fff;
+  dt,
+  dd {
+    line-height: 35px;
   }
 
   img {
