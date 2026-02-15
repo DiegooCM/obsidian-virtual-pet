@@ -11,15 +11,14 @@ import { calcAndAddPastedText } from "./utils/statsUtils";
 export default class VirualPetView extends ItemView {
   private reactRoot: Root | null = null;
   public statsHandler: StatsHandler;
-  private plugin: Plugin;
   private petViewRef: RefObject<PetViewRef | null>;
   private isPasted = false;
 
-  constructor(leaf: WorkspaceLeaf, plugin: Plugin) {
+  constructor(leaf: WorkspaceLeaf, statsHandler: StatsHandler) {
     super(leaf);
 
-    this.plugin = plugin;
     this.petViewRef = createRef();
+    this.statsHandler = statsHandler;
   }
 
   getViewType() {
@@ -38,12 +37,6 @@ export default class VirualPetView extends ItemView {
     const container = this.containerEl.children[1];
     container.empty();
 
-    this.statsHandler = new StatsHandler(
-      this.app.vault,
-      this.app.workspace,
-      this.plugin,
-    );
-    // Gets the userStats from the data.json and save them in the state
     this.statsHandler.getUserStatsFromJson();
 
     // Pet View
@@ -58,19 +51,15 @@ export default class VirualPetView extends ItemView {
       }),
     );
 
-    // Save the state userStats in the data.json when the app is about to quit
     this.registerEvent(
       this.app.workspace.on("quit", () => {
-        this.statsHandler.saveUserStats();
+        this.statsHandler.saveUserData();
       }),
     );
 
     this.registerEvent(
       // When a file is open
       this.app.workspace.on("file-open", (tFile) => {
-        // Save the state userStats in the data.json
-        this.statsHandler.saveUserStats();
-
         // Update info
         this.statsHandler.onFileOpen(tFile);
 
@@ -107,10 +96,15 @@ export default class VirualPetView extends ItemView {
         this.petViewRef.current?.triggerChild(["check-width"]);
       }),
     );
+
+    this.registerEvent(
+      this.app.workspace.on("active-leaf-change", () => {
+        this.statsHandler.saveUserData();
+      }),
+    );
   }
 
   async onClose(): Promise<void> {
-    this.statsHandler.saveUserStats();
     if (this.reactRoot) {
       this.reactRoot.unmount();
       this.reactRoot = null;

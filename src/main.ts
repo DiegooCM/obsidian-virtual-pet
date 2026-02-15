@@ -1,25 +1,36 @@
 import { Plugin, WorkspaceLeaf } from "obsidian";
 import VirualPetView from "src/view";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
-import { UserInfo } from "./types";
 import { SettingsTab } from "./components/config/SettingsTab";
+import StatsHandler from "./utils/statsHandler";
 
 export default class VirtualPet extends Plugin {
+  statsHandler: StatsHandler;
   async onload() {
+    this.statsHandler = new StatsHandler(
+      this.app.vault,
+      this.app.workspace,
+      this,
+    );
+
     this.registerView(
       VIEW_TYPE_VIRTUAL_PET,
-      (leaf: WorkspaceLeaf) => new VirualPetView(leaf, this),
+      (leaf: WorkspaceLeaf) => new VirualPetView(leaf, this.statsHandler),
     );
 
     if (this.app.workspace.layoutReady) {
       this.activateView();
     }
 
-    // Meter en el nombre "VirtualPet"
     this.addSettingTab(new SettingsTab(this.app, this));
   }
 
-  onunload() {}
+  onunload() {
+    this.statsHandler.saveUserData();
+    this.app.workspace
+      .getLeavesOfType(VIEW_TYPE_VIRTUAL_PET)
+      .forEach((leaf) => leaf.detach());
+  }
 
   async activateView(): Promise<void> {
     const { workspace } = this.app;
@@ -39,9 +50,5 @@ export default class VirtualPet extends Plugin {
       });
       workspace.revealLeaf(leaf); // Opens my plugin on the leaf when activated
     }
-  }
-
-  async saveUserInfo(data: UserInfo) {
-    await this.saveData(data);
   }
 }

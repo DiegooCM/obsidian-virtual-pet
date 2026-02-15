@@ -25,8 +25,8 @@ export default class StatsHandler {
     this.userStats = {
       exp: 0,
       expGoal: 10,
-      level: 0,
-      coins: 1000,
+      level: 1,
+      coins: 0,
     };
     this.userItems = {
       equiped: {
@@ -35,7 +35,7 @@ export default class StatsHandler {
       },
       obtained: {
         Backgrounds: ["01"],
-        Accessories: ["glasses"],
+        Accessories: [""],
       },
     };
 
@@ -149,6 +149,7 @@ export default class StatsHandler {
     return { ...this.userItems };
   };
 
+  // Gets the userStats from the data.json and save them in the state
   getUserStatsFromJson = async (): Promise<void> => {
     try {
       const data = await this.plugin.loadData();
@@ -166,7 +167,7 @@ export default class StatsHandler {
     }
   };
 
-  saveUserStats = (): void => {
+  saveUserData = (): void => {
     if (this.userStats) {
       this.plugin.saveData({
         userStats: this.userStats,

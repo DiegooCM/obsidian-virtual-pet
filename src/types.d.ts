@@ -1,6 +1,11 @@
 import { View } from "obsidian";
 import statsHandler from "./utils/statsHandler";
 
+export interface UserDataJson {
+  userData: UserData;
+  userStats: UserStats;
+}
+
 export interface UserData {
   fileWordCount: number;
   filesCount: number;
@@ -13,20 +18,20 @@ export interface UserStats {
   coins: number;
 }
 
-export type ItemCategory = "Backgrounds" | "Accessories";
+export interface UserItems {
+  equiped: UserItem;
+  obtained: UserItemsObtained;
+}
 
 export type UserItem = {
   [K in ItemCategory]: string;
 };
 
+export type ItemCategory = "Backgrounds" | "Accessories";
+
 type UserItemsObtained = {
   [K in ItemCategory]: string[];
 };
-
-export interface UserItems {
-  equiped: UserItem;
-  obtained: UserItemsObtained;
-}
 
 type ItemJson = {
   name: string;
@@ -42,16 +47,7 @@ export type ItemsCategory = {
 
 export type ItemsJson = ItemsCategory[];
 
-export interface UserInfo {
-  exp: number;
-}
-
 export type PetViewT = View & { statsHandler: statsHandler };
-
-export interface PetState {
-  userData: UserData;
-  userStats: UserStats;
-}
 
 export interface PetAnimation {
   name: string;
