@@ -40,7 +40,7 @@ export const ShopItems = memo(function ShopItems({
       if (itemState === "equiped") {
         return (
           <button
-            className="item-equiped"
+            className="vpet-category-item__button-equiped"
             onClick={() => {
               setShopUserItems(
                 statsHandler.unequipItem(itemsCategory.category),
@@ -53,7 +53,7 @@ export const ShopItems = memo(function ShopItems({
       } else if (itemState === "obtained") {
         return (
           <button
-            className="item-obtained"
+            className="vpet-category-item__button-obtained"
             onClick={() => {
               setShopUserItems(
                 statsHandler.equipItem(item.name, itemsCategory.category),
@@ -66,7 +66,7 @@ export const ShopItems = memo(function ShopItems({
       } else {
         return (
           <button
-            className="item-price"
+            className="vpet-category-item__button-price"
             onClick={() => {
               buyItem(item.name, itemsCategory.category);
             }}
@@ -86,14 +86,14 @@ export const ShopItems = memo(function ShopItems({
     }, []);
 
     return (
-      <div className="shop-item">
+      <div className="vpet-category-item">
         <img
           ref={itemImageRef}
           alt={`${item.name} ${itemsCategory.category} image Item`}
         />
 
-        <div className="item-info">
-          <p className="item-name">{item.name}</p>
+        <div className="vpet-category-item__info">
+          <p className="vpet-category-item__name">{item.name}</p>
           <ItemButton itemState={itemState} />
         </div>
       </div>
@@ -124,14 +124,14 @@ export const ShopItems = memo(function ShopItems({
   };
 
   return (
-    <div className="items-container">
+    <div className="vpet-items">
       {
         // Map to items.json, is returned the categories of the items.json
         items.map((itemsCategory: ItemsCategory) => {
           return (
             <div key={itemsCategory.category}>
               <h2>{itemsCategory.category}</h2>
-              <div className="items">
+              <div className="vpet-category-items">
                 {
                   // Map to the items of the category, is returned each item
                   itemsCategory.items.map((item) => {

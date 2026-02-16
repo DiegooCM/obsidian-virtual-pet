@@ -10,15 +10,16 @@ export default function PetButtons({
   animation,
   animationsHandler,
 }: PetButtonsType) {
+  const activeClassName = "vpet-debug__animations-buttons_active";
   return (
-    <div className="pet-buttons">
+    <div className="vpet-debug__animations-buttons">
       <button
         onClick={() => {
           animationsHandler.toDefaults("next");
         }}
         className={
           animation === animations.stand || animation === animations.walk
-            ? "active"
+            ? activeClassName
             : ""
         }
       >
@@ -28,7 +29,7 @@ export default function PetButtons({
         onClick={() => {
           animationsHandler.changeAnimation(animations.celebrate);
         }}
-        className={animation === animations.celebrate ? "active" : ""}
+        className={animation === animations.celebrate ? activeClassName : ""}
       >
         Celebrate
       </button>
@@ -36,7 +37,7 @@ export default function PetButtons({
         onClick={() => {
           animationsHandler.changeAnimation(animations.code);
         }}
-        className={animation === animations.code ? "active" : ""}
+        className={animation === animations.code ? activeClassName : ""}
       >
         Code
       </button>
@@ -44,7 +45,7 @@ export default function PetButtons({
         onClick={() => {
           animationsHandler.changeAnimation(animations.sleep);
         }}
-        className={animation === animations.sleep ? "active" : ""}
+        className={animation === animations.sleep ? activeClassName : ""}
       >
         Sleep
       </button>

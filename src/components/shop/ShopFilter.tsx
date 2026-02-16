@@ -16,7 +16,7 @@ type AccordionItemI = AccordionFilterT & {
 
 export function ShopFilter({ filters, setFilters }: ShopFilterT) {
   return (
-    <div className="filter">
+    <div className="vpet-shop-filter">
       {filters?.map((filter) => {
         return (
           <AccordionFilter
@@ -33,9 +33,9 @@ export function ShopFilter({ filters, setFilters }: ShopFilterT) {
 
 const AccordionFilter = ({ filter, filters, setFilters }: AccordionFilterT) => {
   return (
-    <div className="accordion">
+    <div className="vpet-accordion">
       <div
-        className="accordion-info"
+        className="vpet-accordion__info"
         onClick={() => {
           // Set the isOpen value in the filter to the opposite
           const newFilters = filters.map((filterMapped) =>
@@ -52,8 +52,8 @@ const AccordionFilter = ({ filter, filters, setFilters }: AccordionFilterT) => {
       <ul
         className={
           filter.isOpen
-            ? "accordion-content"
-            : "accordion-content accordion-closed"
+            ? "vpet-accordion__content"
+            : "vpet-accordion__content vpet-accordion__content_closed"
         }
       >
         {Object.entries(filter.options).map(([optionKey, optionVal]) => (
@@ -79,7 +79,7 @@ const AccordionItem = ({
   optionVal,
 }: AccordionItemI) => {
   return (
-    <li className="accordion-item" key={optionKey}>
+    <li className="vpet-accordion__item" key={optionKey}>
       <input
         type={"checkbox"}
         checked={optionVal}

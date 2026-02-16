@@ -13,6 +13,7 @@ interface Props {
   userLevel: number;
   userItems: UserItems;
   animationsHandler: AnimationsHandlerI;
+  mainRef: RefObject<HTMLDivElement | null>;
 }
 
 export const Pet = memo(function Pet({
@@ -20,14 +21,14 @@ export const Pet = memo(function Pet({
   animation,
   userLevel,
   userItems,
-  animationsHandler
+  animationsHandler,
+  mainRef
 }: Props) {
   // Refs
   const petRef: RefObject<HTMLImageElement | null> = useRef(null);
   const petAccessoryRef: RefObject<HTMLImageElement | null> = useRef(null);
   const petContainerRef: RefObject<HTMLDivElement | null> = useRef(null);
-  const petAnimationsContainerRef: RefObject<HTMLDivElement | null> =
-    useRef(null);
+  const petAccessoryHiddenClassName = "vpet-pet__accessory_hidden";
 
   const petScale = useRef<number>(1.5);
   const petDirecction = useRef<number>(1); // 1 = right, -1 = left
@@ -75,7 +76,7 @@ export const Pet = memo(function Pet({
       !petRef.current ||
       !petContainerRef.current ||
       !petAccessoryRef.current ||
-      !petAnimationsContainerRef.current
+      !mainRef.current
     )
       return;
 
@@ -85,7 +86,7 @@ export const Pet = memo(function Pet({
 
     if (animationIdx !== previousAnimationIdx.current) {
       let actualLeft = parseInt(petContainerRef.current.style.left);
-      const windowWidth = petAnimationsContainerRef.current.clientWidth;
+      const windowWidth = mainRef.current.clientWidth;
 
       // Change sprite
       const newPos = `
@@ -161,30 +162,28 @@ export const Pet = memo(function Pet({
     if (!petAccessoryRef.current) return;
     // Add the user actual accesory
     userItems.equiped.Accessories
-      ? (petAccessoryRef.current.removeClass("pet-accessory-hidden"),
+      ? (petAccessoryRef.current.removeClass(petAccessoryHiddenClassName),
         getAsset("Spritesheets", userItems.equiped.Accessories).then(
           (asset) => {
             if (petAccessoryRef.current) petAccessoryRef.current.src = asset;
           },
         ))
-      : petAccessoryRef.current.addClass("pet-accessory-hidden");
+      : petAccessoryRef.current.addClass(petAccessoryHiddenClassName);
   }, [userItems.equiped.Accessories]);
 
   return (
-    <div className="pet-animations-container" ref={petAnimationsContainerRef}>
-      <div
-        className="pet-container"
-        ref={petContainerRef}
-        style={{ left: "30px" }}
-      >
-        <p className="pet-level">Level: {userLevel}</p>
-        <img className="pet" ref={petRef} alt="Pet sprites" />
-        <img
-          className="pet-accessory"
-          ref={petAccessoryRef}
-          alt="Pet accessory sprites"
-        />
-      </div>
+    <div
+      className="vpet-pet"
+      ref={petContainerRef}
+      style={{ left: "30px" }}
+    >
+      <p className="vpet-pet__level">Level: {userLevel}</p>
+      <img className="vpet-pet__pet-sprite" ref={petRef} alt="Pet sprite" />
+      <img
+        className="vpet-pet__accessory"
+        ref={petAccessoryRef}
+        alt="Pet accessory sprites"
+      />
     </div>
   );
 });

@@ -1,7 +1,7 @@
 import UserInfo from "src/components/debug-tools/UserInfo";
 import PetButtons from "src/components/debug-tools/PetButtons";
 import ExpButtons from "src/components/debug-tools/ExpButtons";
-import { AnimationsHandlerI, UserData, UserItems, UserStats } from "src/types";
+import { AnimationsHandlerI, UserItems, UserStats } from "src/types";
 import StatsHandler from "src/utils/statsHandler";
 
 interface DebugToolsI {
@@ -22,7 +22,7 @@ export function DebugTools({
   setUserStats,
 }: DebugToolsI) {
   return (
-    <div className="debug-tools">
+    <div className="vpet-debug">
       <h1>Change Pet Animation</h1>
       <PetButtons
         animation={animationsHandler.animation}

@@ -45,7 +45,7 @@ export default function ExpButtons({
   return (
     <>
       <h1>Change Exp Buttons</h1>
-      <div className="exp-buttons">
+      <div className="vpet-debug__exp-buttons">
         <button
           onMouseDown={() => {
             isButtonDown.current = true;

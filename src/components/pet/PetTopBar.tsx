@@ -30,16 +30,16 @@ export function PetTopBar({
   }, []);
 
   return (
-    <div className="top-bar">
+    <div className="vpet-top-bar">
       <Expbar exp={userStats.exp} expGoal={userStats.expGoal} />
       <div
-        className="top-bar-coins"
+        className="vpet-top-bar-coins"
         onClick={() =>
           new ShopModal(app, getAsset, statsHandler, setUserItems).open()
         }
       >
         <img ref={coinRef} alt="Coin icon" />
-        <span className="coins-count">{userStats.coins}</span>
+        <span className="vpet-top-bar-coins__count">{userStats.coins}</span>
       </div>
     </div>
   );

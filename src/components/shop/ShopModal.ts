@@ -29,7 +29,7 @@ export class ShopModal extends Modal {
   }
 
   onOpen(): void {
-    this.modalEl.addClass("virtual-pet-shop-modal");
+    this.modalEl.addClass("vpet-shop-modal");
     this.createShop();
   }
 
@@ -41,7 +41,7 @@ export class ShopModal extends Modal {
     // Header
     this.headerEl.createEl("h1", { text: "Shop" });
 
-    const coinsContainer = this.headerEl.createDiv("coins-container");
+    const coinsContainer = this.headerEl.createDiv("vpet-shop__coins");
     // When the coin asset is fetched then it creates the content in the coins-container
     this.getAsset("Others", "coin").then((blob) => {
       coinsContainer.createEl("img", { attr: { src: blob, alt: "Coin icon" } });

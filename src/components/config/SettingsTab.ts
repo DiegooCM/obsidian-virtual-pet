@@ -23,17 +23,21 @@ export class SettingsTab extends PluginSettingTab {
     const banner = containerEl.createEl("div", { cls: "vpet-info-banner" });
 
     const ironSeparations0 = banner.createEl("div", {
-      cls: "iron-separations",
+      cls: "vpet-iron-separations",
       attr: { style: "height: 70px; top: -60px" },
     });
-    ironSeparations0.createEl("span", { cls: "iron-separator" });
-    ironSeparations0.createEl("span", { cls: "iron-separator" });
+    ironSeparations0.createEl("span", {
+      cls: "vpet-iron-separations__separator",
+    });
+    ironSeparations0.createEl("span", {
+      cls: "vpet-iron-separations__separator",
+    });
 
     const woodPlank1 = banner.createEl("div", {
-      cls: "wood-plank",
+      cls: "vpet-info-banner__wood-plank",
       attr: { style: `background-image: url(${woodUrl})` },
     });
-    woodPlank1.createEl("span", { cls: "tap-img", text: "Tap " });
+    woodPlank1.createEl("span", { text: "Tap " });
     const coinImg = woodPlank1.createEl("img", {
       attr: {
         src: coinUrl,
@@ -43,13 +47,17 @@ export class SettingsTab extends PluginSettingTab {
     woodPlank1.createEl("span", { text: " to access the shop." });
 
     const ironSeparations1 = woodPlank1.createEl("div", {
-      cls: "iron-separations",
+      cls: "vpet-iron-separations",
     });
-    ironSeparations1.createEl("span", { cls: "iron-separator" });
-    ironSeparations1.createEl("span", { cls: "iron-separator" });
+    ironSeparations1.createEl("span", {
+      cls: "vpet-iron-separations__separator",
+    });
+    ironSeparations1.createEl("span", {
+      cls: "vpet-iron-separations__separator",
+    });
 
     const woodPlank2 = banner.createEl("div", {
-      cls: "wood-plank",
+      cls: "vpet-info-banner__wood-plank",
       attr: { style: `background-image: url(${woodUrl})` },
     });
     const dl2 = woodPlank2.createEl("dl");
@@ -58,13 +66,17 @@ export class SettingsTab extends PluginSettingTab {
     dl2.createEl("dd", { text: "Delete a word: -1 Exp" });
 
     const ironSeparations2 = woodPlank2.createEl("div", {
-      cls: "iron-separations",
+      cls: "vpet-iron-separations",
     });
-    ironSeparations2.createEl("span", { cls: "iron-separator" });
-    ironSeparations2.createEl("span", { cls: "iron-separator" });
+    ironSeparations2.createEl("span", {
+      cls: "vpet-iron-separations__separator",
+    });
+    ironSeparations2.createEl("span", {
+      cls: "vpet-iron-separations__separator",
+    });
 
     const woodPlank3 = banner.createEl("div", {
-      cls: "wood-plank",
+      cls: "vpet-info-banner__wood-plank",
       attr: { style: `background-image: url(${woodUrl})` },
     });
     const dl3 = woodPlank3.createEl("dl");

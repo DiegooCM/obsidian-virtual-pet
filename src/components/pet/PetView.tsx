@@ -29,19 +29,19 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   const [userStats, setUserStats] = useState(statsHandler.getUserStats());
   const [userItems, setUserItems] = useState(statsHandler.getUserItems());
   const animationsTextRef = useRef<HTMLHeadingElement>(null);
-  const pluginRef: RefObject<HTMLDivElement | null> = useRef(null);
+  const mainRef: RefObject<HTMLDivElement | null> = useRef(null);
   const { getAsset } = useContext<AssetsContextI>(AssetsContext);
 
   const animationsHandler = useAnimationsHandler();
 
   // Checks if the plugin is open, and if is not it stops the animation
   const checkWidth = () => {
-    if (!pluginRef.current) {
+    if (!mainRef.current) {
       setIsPluginActive(false);
       return;
     }
 
-    const actualWidth = pluginRef.current.clientWidth;
+    const actualWidth = mainRef.current.clientWidth;
 
     actualWidth > 0
       ? !isPluginActive && setIsPluginActive(true)
@@ -117,18 +117,18 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   }, []);
 
   useEffect(() => {
-    // Add the user actual background or the default one to the pluginRef
+    // Add the user actual background or the default one to the mainRef
     getAsset("Backgrounds", userItems.equiped.Backgrounds || "01").then(
       (asset) => {
-        if (pluginRef.current)
-          pluginRef.current.style.backgroundImage = `url(${asset})`;
+        if (mainRef.current)
+          mainRef.current.style.backgroundImage = `url(${asset})`;
       },
     );
   }, [userItems.equiped.Backgrounds]);
 
   return (
     <>
-      <div className="main" ref={pluginRef}>
+      <div className="vpet-main" ref={mainRef}>
         <PetTopBar
           app={app}
           statsHandler={statsHandler}
@@ -141,14 +141,15 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
           userLevel={userStats.level}
           userItems={userItems}
           animationsHandler={animationsHandler}
+          mainRef={mainRef}
         />
-        <h1
-          className="animations-text"
+        <span
+          className="vpet-main__level-up-text"
           ref={animationsTextRef}
           style={{ display: "none" }}
         >
           LEVEL UP!
-        </h1>
+        </span>
       </div>
 
       <DebugTools

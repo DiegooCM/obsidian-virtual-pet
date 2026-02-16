@@ -8,14 +8,14 @@ interface UserInfo {
 export default function UserInfo({ userStats, userItems }: UserInfo) {
   return (
     <>
-      <div className="user-stats">
+      <div>
         <h1>User Stats</h1>
         <p>Exp: {userStats.exp}</p>
         <p>Exp Goal: {userStats.expGoal}</p>
         <p>Level:{userStats.level}</p>
         <p>Coins: {userStats.coins}</p>
       </div>
-      <div className="div user-items">
+      <div>
         <h2>Equiped</h2>
         <p>Background: {userItems.equiped.Backgrounds}</p>
         <p>Accesory: {userItems.equiped.Accessories}</p>
