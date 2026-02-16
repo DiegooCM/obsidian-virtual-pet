@@ -48,7 +48,7 @@ export default class StatsHandler {
       ? (this.actualTFile = tFile)
       : (this.actualTFile = this.workspace.getActiveFile());
 
-    // Counts the words of the new File and checks if the file is Valid
+    // Counts the words of the new file and checks if the file is Valid
     if (this.actualTFile) {
       this.isValid = this.checkIsFileValid(this.actualTFile);
       if (this.isValid) this.getFileWordsCount(this.actualTFile);
@@ -63,7 +63,7 @@ export default class StatsHandler {
     this.userData.filesCount = newFileCount;
     const filesDif = newFileCount - oldFilesCount;
 
-    if (oldFilesCount === -1) return;
+    if (!filesDif || oldFilesCount === -1) return;
 
     // Update the coins with the filesDif
     const newCoins = this.userStats.coins + filesDif * 10;

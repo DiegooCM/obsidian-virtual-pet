@@ -114,9 +114,8 @@
 
   /* Top Bar */
   .top-bar {
-    display: grid;
+    display: flex;
     position: relative;
-    grid-template-columns: 70% 30%;
     width: 100%;
     height: var(--vp-top-bar-height);
     padding-inline: 10px;
@@ -139,12 +138,13 @@
     margin: 0;
     align-content: center;
     color: #ccc;
-    font-size: 1.5rem;
+    font-size: 1.7rem;
   }
 
   /* Experience Bar */
 
   .exp-bar-container {
+    flex: 1;
     color: #fff;
     margin-block: 5px;
   }
@@ -281,6 +281,10 @@
 }
 
 .virtual-pet-shop-modal {
+  .modal-close-button {
+    z-index: 10;
+  }
+
   .modal-header {
     position: relative;
     display: flex;
@@ -292,18 +296,20 @@
   }
 
   .modal-header h1 {
+    font-family: Monaco;
     font-size: 3rem;
-    letter-spacing: 2px;
+    font-weight: 100;
   }
 
   h2 {
-    font-size: 2rem;
-    letter-spacing: 1px;
+    font-family: Monaco;
+    font-size: 2.3rem;
+    font-weight: 100;
   }
 
   .modal-content {
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 220px 1fr;
     height: 100%;
     background-color: #777;
   }
@@ -347,13 +353,13 @@
 
   .accordion-info h3 {
     margin: 0;
-    font-size: 1.7rem;
-    letter-spacing: 2px;
+    font-size: 2rem;
+    font-weight: 100;
   }
 
   /* > */
   .accordion-info span {
-    font-size: 1rem;
+    font-size: 2rem;
   }
 
   .accordion-content {
@@ -375,7 +381,7 @@
 
   /* Items */
   .items-container {
-    padding-inline: 30px;
+    padding: 0px 30px 30px 30px;
   }
 
   .items {
@@ -392,6 +398,8 @@
 
   .shop-item {
     border: 2px solid #000;
+    display: flex;
+    flex-direction: column;
 
     img {
       padding: 12px;

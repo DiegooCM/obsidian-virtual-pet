@@ -26,7 +26,6 @@ interface PetViewI {
 
 export default function PetView({ statsHandler, app, ref }: PetViewI) {
   const [isPluginActive, setIsPluginActive] = useState<boolean>(false);
-  const [userData, setUserData] = useState(statsHandler.getUserData());
   const [userStats, setUserStats] = useState(statsHandler.getUserStats());
   const [userItems, setUserItems] = useState(statsHandler.getUserItems());
   const animationsTextRef = useRef<HTMLHeadingElement>(null);
@@ -69,14 +68,9 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
    * If changed, stores the user data, stats and items in the useStates
    */
   const updateUserInfo = () => {
-    const newUserData = statsHandler.getUserData();
     const newUserStats = statsHandler.getUserStats();
     const newUserItems = statsHandler.getUserItems();
 
-    if (JSON.stringify(newUserData) !== JSON.stringify(userData)) {
-      // Update the data
-      setUserData(newUserData);
-    }
     if (JSON.stringify(newUserStats) !== JSON.stringify(userStats)) {
       // Level up
       if (newUserStats.exp >= newUserStats.expGoal) {
@@ -119,7 +113,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   useEffect(() => {
     animationsHandler.toDefaults();
     animationsHandler.triggerSleeping(() => animationsHandler.toDefaults());
-    window.setTimeout(() => updateUserInfo(), 100); // The timeout is for giving time to load the data from de data.json
+    window.setTimeout(() => updateUserInfo(), 200); // The timeout is for giving time to load the data from de data.json
   }, []);
 
   useEffect(() => {
@@ -157,9 +151,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         </h1>
       </div>
 
-      {/*
       <DebugTools
-        userData={userData}
         userStats={userStats}
         userItems={userItems}
         animationsHandler={animationsHandler}
@@ -167,7 +159,6 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         levelUp={levelUp}
         setUserStats={setUserStats}
       />
-      */}
     </>
   );
 }

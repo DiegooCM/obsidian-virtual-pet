@@ -1,22 +1,13 @@
-import { UserData, UserItems, UserStats } from "src/types";
+import { UserItems, UserStats } from "src/types";
 
 interface UserInfo {
-  userData: UserData;
   userStats: UserStats;
   userItems: UserItems;
 }
 
-export default function UserInfo({ userData, userStats, userItems }: UserInfo) {
+export default function UserInfo({ userStats, userItems }: UserInfo) {
   return (
     <>
-      <div className="actual-Data">
-        <h1>User Data</h1>
-        <p>Files Count: {userData.filesCount}</p>
-        <p>
-          Actual File Word Count:
-          {userData.fileWordCount}
-        </p>
-      </div>
       <div className="user-stats">
         <h1>User Stats</h1>
         <p>Exp: {userStats.exp}</p>

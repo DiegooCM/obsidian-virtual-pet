@@ -105,7 +105,7 @@ export const Pet = memo(function Pet({
 
       // Movement animation
       if (animation.speed !== 0) {
-        const actualSpeed = (windowWidth * animation.speed) / 300; // Relative speed to the window size
+        const actualSpeed = (windowWidth * animation.speed) / 800; // Relative speed to the window size
         actualLeft = actualLeft + actualSpeed * petDirecction.current;
         petContainerRef.current.style.left = `${actualLeft}px`;
 

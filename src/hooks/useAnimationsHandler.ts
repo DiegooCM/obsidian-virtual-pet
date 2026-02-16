@@ -6,8 +6,8 @@ import { useEffect, useRef, useState } from "react";
 export function useAnimationsHandler(): AnimationsHandlerI {
   const sleepingTimeoutId = useRef(0);
   const animationTimeoutId = useRef(0);
-  const nextDefault = useRef<PetAnimation>(animations.stand);
-  const [animation, setAnimation] = useState<PetAnimation>(animations.stand);
+  const nextDefault = useRef<PetAnimation>(animations.walk);
+  const [animation, setAnimation] = useState<PetAnimation>(animations.walk);
   const animationRef = useRef(animation);
 
   // Rotates defaults animations

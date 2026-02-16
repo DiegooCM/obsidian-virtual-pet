@@ -5,7 +5,6 @@ import { AnimationsHandlerI, UserData, UserItems, UserStats } from "src/types";
 import StatsHandler from "src/utils/statsHandler";
 
 interface DebugToolsI {
-  userData: UserData;
   userStats: UserStats;
   userItems: UserItems;
   animationsHandler: AnimationsHandlerI;
@@ -15,7 +14,6 @@ interface DebugToolsI {
 }
 
 export function DebugTools({
-  userData,
   userStats,
   userItems,
   animationsHandler,
@@ -37,7 +35,6 @@ export function DebugTools({
         setUserStats={setUserStats}
       />
       <UserInfo
-        userData={userData}
         userStats={userStats}
         userItems={userItems}
       />
