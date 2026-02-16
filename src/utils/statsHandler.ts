@@ -38,8 +38,6 @@ export default class StatsHandler {
         Accessories: [""],
       },
     };
-
-    this.onFileOpen(null);
   }
 
   onFileOpen = (tFile: TFile | null) => {
@@ -63,7 +61,8 @@ export default class StatsHandler {
     this.userData.filesCount = newFileCount;
     const filesDif = newFileCount - oldFilesCount;
 
-    if (!filesDif || oldFilesCount === -1) return;
+    // Is very strange that there is not actualTFile so I decided to not do the count if there is not
+    if (!filesDif || oldFilesCount === -1 || !this.actualTFile) return;
 
     // Update the coins with the filesDif
     const newCoins = this.userStats.coins + filesDif * 10;
@@ -104,9 +103,11 @@ export default class StatsHandler {
    * Gets the difference of the word count of the current file and updates de exp
    */
   updateUserDataNStats = (text: string) => {
-    const oldUserData = { ...this.userData };
+    if (this.workspace.getActiveFile() !== this.actualTFile) return; // Prevents strange bugs
 
     if (!this.isValid) return;
+
+    const oldUserData = { ...this.userData };
 
     const newWordsCount = countWords(text);
     this.userData.fileWordCount = newWordsCount;

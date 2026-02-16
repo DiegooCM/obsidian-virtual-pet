@@ -1,5 +1,5 @@
 // https://docs.obsidian.md/Plugins/User+interface/Views
-import { ItemView, Plugin, WorkspaceLeaf } from "obsidian";
+import { ItemView, WorkspaceLeaf } from "obsidian";
 import { createElement, createRef, RefObject } from "react";
 import { Root, createRoot } from "react-dom/client";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
@@ -62,6 +62,7 @@ export default class VirualPetView extends ItemView {
       this.app.workspace.on("file-open", (tFile) => {
         // Update info
         this.statsHandler.onFileOpen(tFile);
+        //this.isPasted = true;
 
         // Sets data and stats in petview
         this.petViewRef.current?.triggerChild(["update-info"]);
