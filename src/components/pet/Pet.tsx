@@ -114,15 +114,13 @@ export const Pet = memo(function Pet({
         if (actualLeft <= petOuterRelWidth) {
           petDirecction.current = 1;
           petRef.current.style.transform = "scaleX(1)";
-          if (userItems.equiped.Accessories)
-            petAccessoryRef.current.style.transform = "scaleX(1)";
+          petAccessoryRef.current.style.transform = "scaleX(1)";
         }
         // Touched right border
         if (windowWidth <= actualLeft + petOuterRelWidth + 64) {
           petDirecction.current = -1;
           petRef.current.style.transform = "scaleX(-1)";
-          if (userItems.equiped.Accessories)
-            petAccessoryRef.current.style.transform = "scaleX(-1)";
+          petAccessoryRef.current.style.transform = "scaleX(-1)";
         }
       }
 

@@ -111,9 +111,11 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   });
 
   useEffect(() => {
+    statsHandler.getUserDataFromJson().then(() => {
+      updateUserInfo();
+    });
     animationsHandler.toDefaults();
     animationsHandler.triggerSleeping(() => animationsHandler.toDefaults());
-    window.setTimeout(() => updateUserInfo(), 200); // The timeout is for giving time to load the data from de data.json
   }, []);
 
   useEffect(() => {

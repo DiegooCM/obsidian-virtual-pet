@@ -11,6 +11,7 @@ export default class StatsHandler {
   private userItems: UserItems;
   private actualTFile: TFile | null;
   private isValid: boolean = false;
+  private isDataLoaded: boolean = false;
   private prohibitedTagsList = ["excalidraw-plugin"];
 
   constructor(vault: Vault, workspace: Workspace, plugin: Plugin) {
@@ -42,14 +43,12 @@ export default class StatsHandler {
 
   onFileOpen = (tFile: TFile | null) => {
     // Gets the tFile from the props or the workspace.getActiveFile
-    tFile
-      ? (this.actualTFile = tFile)
-      : (this.actualTFile = this.workspace.getActiveFile());
+    const openedFile = tFile || this.workspace.getActiveFile();
 
     // Counts the words of the new file and checks if the file is Valid
-    if (this.actualTFile) {
-      this.isValid = this.checkIsFileValid(this.actualTFile);
-      if (this.isValid) this.getFileWordsCount(this.actualTFile);
+    if (openedFile) {
+      this.isValid = this.checkIsFileValid(openedFile);
+      if (this.isValid) this.getFileWordsCount(openedFile);
     } else {
       this.isValid = false;
     }
@@ -103,7 +102,8 @@ export default class StatsHandler {
    * Gets the difference of the word count of the current file and updates de exp
    */
   updateUserDataNStats = (text: string) => {
-    if (this.workspace.getActiveFile() !== this.actualTFile) return; // Prevents strange bugs
+    // Prevents strange bugs
+    if (this.workspace.getActiveFile() !== this.actualTFile) return;
 
     if (!this.isValid) return;
 
@@ -130,6 +130,7 @@ export default class StatsHandler {
   getFileWordsCount = async (tFile: TFile): Promise<number> => {
     return await this.vault.cachedRead(tFile).then((text) => {
       const words = (this.userData.fileWordCount = countWords(text));
+      this.actualTFile = tFile;
       return words;
     });
   };
@@ -150,8 +151,8 @@ export default class StatsHandler {
     return { ...this.userItems };
   };
 
-  // Gets the userStats from the data.json and save them in the state
-  getUserStatsFromJson = async (): Promise<void> => {
+  // Gets the userData from the data.json and save them in the state
+  getUserDataFromJson = async (): Promise<void> => {
     try {
       const data = await this.plugin.loadData();
       if (Object.keys(data).length === 0) return;
@@ -165,11 +166,13 @@ export default class StatsHandler {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      this.isDataLoaded = true;
     }
   };
 
   saveUserData = (): void => {
-    if (this.userStats) {
+    if (this.isDataLoaded) {
       this.plugin.saveData({
         userStats: this.userStats,
         userItems: this.userItems,

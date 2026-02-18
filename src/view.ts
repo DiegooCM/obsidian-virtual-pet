@@ -37,8 +37,6 @@ export default class VirualPetView extends ItemView {
     const container = this.containerEl.children[1];
     container.empty();
 
-    this.statsHandler.getUserStatsFromJson();
-
     // Pet View
     const reactContainer = container.createDiv("vpet-leaf-container");
 
@@ -72,6 +70,7 @@ export default class VirualPetView extends ItemView {
     this.registerEvent(
       // When the user types
       this.app.workspace.on("editor-change", (editor) => {
+        // Update info
         const fileText = editor.getValue();
         this.isPasted
           ? (this.isPasted = false)
