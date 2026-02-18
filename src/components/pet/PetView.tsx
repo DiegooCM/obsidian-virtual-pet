@@ -152,6 +152,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         </span>
       </div>
 
+      {/*
       <DebugTools
         userStats={userStats}
         userItems={userItems}
@@ -160,6 +161,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         levelUp={levelUp}
         setUserStats={setUserStats}
       />
+      */}
     </>
   );
 }

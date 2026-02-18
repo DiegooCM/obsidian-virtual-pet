@@ -30,11 +30,11 @@ export default class StatsHandler {
     };
     this.userItems = {
       equiped: {
-        Backgrounds: "01",
+        Backgrounds: "Light Default",
         Accessories: "",
       },
       obtained: {
-        Backgrounds: ["01"],
+        Backgrounds: ["Light Default"],
         Accessories: [""],
       },
     };

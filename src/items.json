@@ -3,14 +3,16 @@
     "category": "Backgrounds",
     "items": [
       {
-        "name": "01",
-        "price": 40,
-        "url": "Backgrounds/01.png"
+        "name": "Light Default",
+        "price": 40
       },
       {
-        "name": "02",
-        "price": 80,
-        "url": "Backgrounds/02.png"
+        "name": "Dark Default",
+        "price": 40
+      },
+      {
+        "name": "Bedroom",
+        "price": 80
       }
     ]
   },
@@ -18,16 +20,12 @@
     "category": "Accessories",
     "items": [
       {
-        "name": "glasses",
-        "price": 120,
-        "url": "Spritesheets/glasses.png",
-        "urlShop": "Accessories/glasses.png"
+        "name": "Glasses",
+        "price": 120
       },
       {
-        "name": "christmasHat",
-        "price": 200,
-        "url": "Spritesheets/christmasHat.png",
-        "urlShop": "Accessories/christmasHat.png"
+        "name": "Christmas Hat",
+        "price": 200
       }
     ]
   }

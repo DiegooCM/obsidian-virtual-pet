@@ -26,11 +26,11 @@ export default class VirualPetView extends ItemView {
   }
 
   getDisplayText() {
-    return "Example view";
+    return "Virtual Pet";
   }
 
   getIcon(): string {
-    return "layout";
+    return "paw-print";
   }
 
   async onOpen(): Promise<void> {
