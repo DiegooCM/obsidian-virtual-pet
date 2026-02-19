@@ -1,9 +1,9 @@
 {
   "id": "virtual-pet",
   "name": "Virtual Pet",
-  "version": "0.0.0",
-  "minAppVersion": "0.0.0",
-  "description": "A virtual pet that makes you company. Check settings for more info.",
+  "version": "0.1.0",
+  "minAppVersion": "0.1.0",
+  "description": "A pet that makes you company in your vault. Check settings for more info.",
   "author": "DiegoCM",
   "authorUrl": "https://github.com/DiegooCM",
   "isDesktopOnly": true
