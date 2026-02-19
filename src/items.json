@@ -4,15 +4,15 @@
     "items": [
       {
         "name": "Light Default",
-        "price": 40
+        "price": 0
       },
       {
         "name": "Dark Default",
-        "price": 40
+        "price": 50
       },
       {
         "name": "Bedroom",
-        "price": 80
+        "price": 300
       }
     ]
   },
@@ -25,7 +25,7 @@
       },
       {
         "name": "Christmas Hat",
-        "price": 200
+        "price": 170
       }
     ]
   }

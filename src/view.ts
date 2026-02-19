@@ -60,7 +60,6 @@ export default class VirualPetView extends ItemView {
       this.app.workspace.on("file-open", (tFile) => {
         // Update info
         this.statsHandler.onFileOpen(tFile);
-        //this.isPasted = true;
 
         // Sets data and stats in petview
         this.petViewRef.current?.triggerChild(["update-info"]);

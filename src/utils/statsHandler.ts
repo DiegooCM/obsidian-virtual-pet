@@ -25,7 +25,7 @@ export default class StatsHandler {
     };
     this.userStats = {
       exp: 0,
-      expGoal: 10,
+      expGoal: 100,
       level: 1,
       coins: 0,
     };
@@ -64,7 +64,7 @@ export default class StatsHandler {
     if (!filesDif || oldFilesCount === -1 || !this.actualTFile) return;
 
     // Update the coins with the filesDif
-    const newCoins = this.userStats.coins + filesDif * 10;
+    const newCoins = this.userStats.coins + filesDif * 5;
 
     this.userStats = {
       ...this.userStats,
@@ -183,7 +183,9 @@ export default class StatsHandler {
   petLevelUp = (expRemaining: number): UserStats => {
     this.userStats = {
       exp: expRemaining,
-      expGoal: Math.floor(this.userStats.expGoal * 1.2),
+      expGoal: Math.round(
+        this.userStats.expGoal + 30000 / this.userStats.expGoal,
+      ),
       level: this.userStats.level + 1,
       coins: this.userStats.coins + 50,
     };

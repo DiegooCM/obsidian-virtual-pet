@@ -113,7 +113,7 @@ export const ShopItems = memo(function ShopItems({
       .find((itemsCategory) => itemsCategory.category === itemCategory)
       ?.items.find((item) => item.name === itemName)?.price;
 
-    if (itemPrice && userStats.coins > itemPrice) {
+    if (itemPrice && userStats.coins >= itemPrice) {
       const [, newItems] = statsHandler.addNewItem(
         itemName,
         itemCategory,

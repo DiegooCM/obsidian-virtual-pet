@@ -82,7 +82,7 @@ export class SettingsTab extends PluginSettingTab {
     const dl3 = woodPlank3.createEl("dl");
     dl3.createEl("dt", { text: "Coins:" });
     dl3.createEl("dd", { text: "Level up: +50 Coins" });
-    dl3.createEl("dd", { text: "Create a file: +10 Coins" });
-    dl3.createEl("dd", { text: "Delete a file: -10 Coins" });
+    dl3.createEl("dd", { text: "Create a file: +5 Coins" });
+    dl3.createEl("dd", { text: "Delete a file: -5 Coins" });
   }
 }
