@@ -1,5 +1,6 @@
 import { App, PluginSettingTab } from "obsidian";
 import VirtualPet from "src/main";
+import Assets from "src/jsons/assets.json";
 
 export class SettingsTab extends PluginSettingTab {
   constructor(app: App, plugin: VirtualPet) {
@@ -10,12 +11,8 @@ export class SettingsTab extends PluginSettingTab {
     const { containerEl } = this;
 
     // Assets
-    const coinUrl = this.app.vault.adapter.getResourcePath(
-      "./.obsidian/plugins/obsidian-virtual-pet/assets/Others/coin.png",
-    );
-    const woodUrl = this.app.vault.adapter.getResourcePath(
-      "./.obsidian/plugins/obsidian-virtual-pet/assets/Others/wood.png",
-    );
+    const coinUrl = "data:image/png;base64," + Assets.Others.coin;
+    const woodUrl = "data:image/png;base64," + Assets.Others.wood;
 
     // Html
     containerEl.empty();
