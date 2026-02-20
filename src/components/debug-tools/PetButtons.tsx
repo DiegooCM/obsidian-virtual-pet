@@ -1,5 +1,5 @@
 import type { AnimationsHandlerI, PetAnimation } from "src/types";
-import animations from "src/animations.json";
+import animations from "src/jsons/animations.json";
 
 type PetButtonsType = {
   animation: PetAnimation;
