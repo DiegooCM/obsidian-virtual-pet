@@ -31,6 +31,6 @@ function processDirectory(directoryPath, json) {
 
 let outputJson = {};
 
-processDirectory("./assets", outputJson);
+processDirectory("./assets/plugin", outputJson);
 
 fs.writeFileSync("src/jsons/assets.json", JSON.stringify(outputJson, null, 2));
