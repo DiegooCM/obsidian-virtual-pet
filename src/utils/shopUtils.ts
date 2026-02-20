@@ -1,4 +1,4 @@
-import Items from "src/items.json";
+import Items from "src/jsons/items.json";
 import { Filter, Filters, ItemsJson, UserItems } from "src/types";
 
 export function filterItems(filters: Filters, userItems: UserItems): ItemsJson {

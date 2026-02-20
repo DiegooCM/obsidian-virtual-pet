@@ -13,7 +13,7 @@ interface PetWrapperI {
 
 export function PetWrapper({ statsHandler, app, ref }: PetWrapperI) {
   return (
-    <AssetsProvider app={app}>
+    <AssetsProvider>
       <PetView statsHandler={statsHandler} app={app} ref={ref} />
     </AssetsProvider>
   );

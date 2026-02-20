@@ -1,13 +1,12 @@
-import { App } from "obsidian";
 import { createContext, ReactNode, useEffect } from "react";
-import { AssetCategories, Assets, AssetsContextI } from "src/types";
+import { AssetCategoriesT, AssetsT, AssetsContextI } from "src/types";
+import AssetsJson from "src/jsons/assets.json";
 
 interface AssetsProviderI {
-  app: App;
   children: ReactNode;
 }
 
-const assetsDefault: Assets = {
+const assetsDefault: AssetsT = {
   Backgrounds: {},
   Accessories: {},
   Spritesheets: {},
@@ -16,8 +15,9 @@ const assetsDefault: Assets = {
 
 export const AssetsContext = createContext<AssetsContextI | null>(null);
 
-export const AssetsProvider = ({ app, children }: AssetsProviderI) => {
-  const assets = assetsDefault;
+export const AssetsProvider = ({ children }: AssetsProviderI) => {
+  const assetsStored = assetsDefault;
+  const assets: AssetsT = AssetsJson;
 
   const loadImage = async (name: string, path: string) => {
     try {
@@ -35,30 +35,24 @@ export const AssetsProvider = ({ app, children }: AssetsProviderI) => {
     }
   };
 
-  const getAsset = async (assetCategory: AssetCategories, name: string) => {
+  const getAsset = async (assetCategory: AssetCategoriesT, name: string) => {
     // Checks if the asset has already been fetched
-    const assetToAdd = assets[assetCategory][name];
+    const assetToAdd = assetsStored[assetCategory][name];
     if (assetToAdd) return assetToAdd;
 
     // If is not already added
-    const path = app.vault.adapter.getResourcePath(
-      "./.obsidian/plugins/obsidian-virtual-pet/assets/" +
-        assetCategory +
-        "/" +
-        name +
-        ".png",
-    );
+    const path = `data:image/png;base64,${assets[assetCategory][name]}`;
 
     const blobUrl = await loadImage(name, path);
 
-    assets[assetCategory][name] = blobUrl;
+    assetsStored[assetCategory][name] = blobUrl;
 
     return blobUrl;
   };
 
   useEffect(() => {
     return () => {
-      for (const [, assetCategory] of Object.entries(assets)) {
+      for (const [, assetCategory] of Object.entries(assetsStored)) {
         for (const [, blob] of Object.entries(assetCategory)) {
           URL.revokeObjectURL(blob);
         }

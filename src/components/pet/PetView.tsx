@@ -15,8 +15,8 @@ import { DebugTools } from "src/components/debug-tools/DebugTools";
 import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
 import { AssetsContext } from "src/contexts/AssetsContext";
 import { PetTopBar } from "./PetTopBar";
-import animations from "src/animations.json";
-import animationsTimes from "src/animationsTimes.json";
+import animations from "src/jsons/animations.json";
+import animationsTimes from "src/jsons/animationsTimes.json";
 
 interface PetViewI {
   statsHandler: StatsHandler;

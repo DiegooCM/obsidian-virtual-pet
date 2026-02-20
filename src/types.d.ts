@@ -80,18 +80,18 @@ export type Filter = {
 };
 export type Filters = Filter[];
 
-export type AssetCategories =
+export type AssetCategoriesT =
   | "Backgrounds"
   | "Accessories"
   | "Spritesheets"
   | "Others";
 
-export type Assets = {
-  [Category in AssetCategories]: Record<string, string>;
+export type AssetsT = {
+  [Category in AssetCategoriesT]: Record<string, string>;
 };
 
 export type GetAssetT = (
-  assetCategory: AssetCategories,
+  assetCategory: AssetCategoriesT,
   name: string,
 ) => Promise<string>;
 

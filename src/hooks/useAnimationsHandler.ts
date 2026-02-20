@@ -1,6 +1,6 @@
 import { AnimationsHandlerI, DefaultsNext, PetAnimation } from "src/types";
-import animations from "../animations.json";
-import animationsTimes from "../animationsTimes.json";
+import animations from "../jsons/animations.json";
+import animationsTimes from "../jsons/animationsTimes.json";
 import { useEffect, useRef, useState } from "react";
 
 export function useAnimationsHandler(): AnimationsHandlerI {
