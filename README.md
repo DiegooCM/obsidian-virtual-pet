@@ -6,7 +6,7 @@ Earn coins and level up your virtual pet as you write, unlocking accessories and
 
 ## Screenshots
 
-| ![Pet in leaf](https://github.com/DiegooCM/obsidian-virtual-pet/tree/main/assets/readMe/petInLeaf01.png) | ![Pet in leaf](https://github.com/DiegooCM/obsidian-virtual-pet/tree/main/assets/readMe/petInLeaf02.png) |
+| ![Pet in leaf](https://github.com/DiegooCM/obsidian-virtual-pet/blob/main/assets/readMe/petInLeaf01.png) | ![Pet in leaf](https://github.com/DiegooCM/obsidian-virtual-pet/blob/main/assets/readMe/petInLeaf02.png) |
 | -------------------- | -------------------- |
 
 ## Usage
@@ -30,17 +30,17 @@ Earn coins and level up your virtual pet as you write, unlocking accessories and
 - **Earn Coins:** Gain coins by creating `.md` files (+5 coins) or leveling up (+50 coins). Deleting files deducts 5 coins.
 - **Level Up:** Gain experience as you write (+1 exp) per word. Deleting words reduces 1 exp per word, and copying/pasting text doesn’t count ;)
 - **Shop:** Access the shop by clicking the coin icon in the top bar.
-![Arrow pointing coin on top bar](https://github.com/DiegooCM/obsidian-virtual-pet/tree/main/assets/readMe/coinTap.png)
+![Arrow pointing coin on top bar](https://github.com/DiegooCM/obsidian-virtual-pet/blob/main/assets/readMe/coinTap.png)
 
 Spend your coins in the shop to buy accessories and backgrounds. And equip or unequip your items
-![Shop](https://github.com/DiegooCM/obsidian-virtual-pet/tree/main/assets/readMe/shop.png)
+![Shop](https://github.com/DiegooCM/obsidian-virtual-pet/blob/main/assets/readMe/shop.png)
 
 - **Pet Animations:** Your pet reacts to your activity:
     - **Default animations** (standing/walking) while you write.
     - **Sleeping** when idle.
     - **Celebrating** when you level up.
     - **Typing** after long writing sessions.
-![Pet Animations](https://github.com/DiegooCM/obsidian-virtual-pet/tree/main/assets/readMe/petAnimations.png)
+![Pet Animations](https://github.com/DiegooCM/obsidian-virtual-pet/blob/main/assets/readMe/petAnimations.png)
 
 
 ## Contributing
