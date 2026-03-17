@@ -120,7 +120,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
 
   useEffect(() => {
     // Add the user actual background or the default one to the mainRef
-    getAsset("Backgrounds", userItems.equiped.Backgrounds || "01").then(
+    getAsset("Backgrounds", userItems.equiped.Backgrounds || "Light Default").then(
       (asset) => {
         if (mainRef.current)
           mainRef.current.style.backgroundImage = `url(${asset})`;

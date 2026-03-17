@@ -6,7 +6,7 @@ import StatsHandler from "./utils/statsHandler";
 
 export default class VirtualPet extends Plugin {
   statsHandler: StatsHandler;
-  async onload() {
+  onload() {
     this.statsHandler = new StatsHandler(
       this.app.vault,
       this.app.workspace,

@@ -26,7 +26,7 @@ export default class VirualPetView extends ItemView {
   }
 
   getDisplayText() {
-    return "Virtual Pet";
+    return "Virtual pet";
   }
 
   getIcon(): string {
@@ -103,10 +103,11 @@ export default class VirualPetView extends ItemView {
     );
   }
 
-  async onClose(): Promise<void> {
+  onClose(): Promise<void> {
     if (this.reactRoot) {
       this.reactRoot.unmount();
       this.reactRoot = null;
     }
+    return Promise.resolve();
   }
 }

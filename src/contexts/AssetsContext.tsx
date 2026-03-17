@@ -19,19 +19,33 @@ export const AssetsProvider = ({ children }: AssetsProviderI) => {
   const assetsStored = assetsDefault;
   const assets: AssetsT = AssetsJson;
 
+
+  // Turns the Base 64 to a blob url
   const loadImage = async (name: string, path: string) => {
     try {
-      const res = await fetch(path);
-      if (!res.ok) {
-        throw new Error(`Error ${res.status}: ${res.statusText}`);
+      const contentType = '';
+      const sliceSize = 512;
+      const byteCharacters = atob(path);
+      const byteArrays = [];
+
+      for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
       }
-      const blob = await res.blob();
+
+      const blob = new Blob(byteArrays, { type: contentType });
       const blobUrl = URL.createObjectURL(blob);
 
       return blobUrl;
     } catch (error) {
-      console.error(`Error loading image ${name}: ${error}`);
-      throw new Error(error);
+      throw new Error(`Error loading image ${name}: ${error}`);
     }
   };
 
@@ -41,7 +55,8 @@ export const AssetsProvider = ({ children }: AssetsProviderI) => {
     if (assetToAdd) return assetToAdd;
 
     // If is not already added
-    const path = `data:image/png;base64,${assets[assetCategory][name]}`;
+    //data:image/png;base64,
+    const path = `${assets[assetCategory][name]}`;
 
     const blobUrl = await loadImage(name, path);
 

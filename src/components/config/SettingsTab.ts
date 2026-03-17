@@ -41,7 +41,7 @@ export class SettingsTab extends PluginSettingTab {
         alt: "coin",
       },
     });
-    woodPlank1.createEl("span", { text: " to access the shop." });
+    woodPlank1.createEl("span", { text: "To access the shop." });
 
     const ironSeparations1 = woodPlank1.createEl("div", {
       cls: "vpet-iron-separations",
@@ -59,8 +59,8 @@ export class SettingsTab extends PluginSettingTab {
     });
     const dl2 = woodPlank2.createEl("dl");
     dl2.createEl("dt", { text: "Experience:" });
-    dl2.createEl("dd", { text: "Write a word: +1 Exp" });
-    dl2.createEl("dd", { text: "Delete a word: -1 Exp" });
+    dl2.createEl("dd", { text: "Write a word: +1 exp" });
+    dl2.createEl("dd", { text: "Delete a word: -1 exp" });
 
     const ironSeparations2 = woodPlank2.createEl("div", {
       cls: "vpet-iron-separations",
@@ -78,8 +78,8 @@ export class SettingsTab extends PluginSettingTab {
     });
     const dl3 = woodPlank3.createEl("dl");
     dl3.createEl("dt", { text: "Coins:" });
-    dl3.createEl("dd", { text: "Level up: +50 Coins" });
-    dl3.createEl("dd", { text: "Create a file: +5 Coins" });
-    dl3.createEl("dd", { text: "Delete a file: -5 Coins" });
+    dl3.createEl("dd", { text: "Level up: +50 coins" });
+    dl3.createEl("dd", { text: "Create a file: +5 coins" });
+    dl3.createEl("dd", { text: "Delete a file: -5 coins" });
   }
 }

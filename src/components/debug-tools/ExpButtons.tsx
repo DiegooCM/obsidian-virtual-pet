@@ -7,7 +7,7 @@ interface Props {
   levelUp: (newUserStats: UserStats) => void;
   setUserStats: React.Dispatch<React.SetStateAction<UserStats>>;
 }
-// Podría pasarle el setUserStats. IMPORTANTE
+
 export default function ExpButtons({
   petChangeExp,
   userStats,
