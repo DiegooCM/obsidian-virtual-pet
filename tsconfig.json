@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "baseUrl": ".",
+    "baseUrl": "./",
     "inlineSourceMap": true,
     "inlineSources": true,
     "module": "ESNext",
