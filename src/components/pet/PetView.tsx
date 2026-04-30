@@ -11,7 +11,7 @@ import { App } from "obsidian";
 import StatsHandler from "src/utils/statsHandler";
 import { Pet } from "src/components/pet/Pet";
 import { AssetsContextI, PetViewRef, UserActions, UserStats } from "src/types";
-import { DebugTools } from "src/components/debug-tools/DebugTools";
+//import { DebugTools } from "src/components/debug-tools/DebugTools";
 import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
 import { AssetsContext } from "src/contexts/AssetsContext";
 import { PetTopBar } from "./PetTopBar";
@@ -43,9 +43,8 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
 
     const actualWidth = mainRef.current.clientWidth;
 
-    actualWidth > 0
-      ? !isPluginActive && setIsPluginActive(true)
-      : isPluginActive && setIsPluginActive(false);
+    if (actualWidth > 0 && !isPluginActive) setIsPluginActive(true);
+    if (actualWidth < 0 && isPluginActive) setIsPluginActive(false);
   };
 
   const levelUp = (newUserStats: UserStats) => {

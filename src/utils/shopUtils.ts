@@ -8,7 +8,7 @@ export function filterItems(filters: Filters, userItems: UserItems): ItemsJson {
     if (!Object.values(filter.options).contains(false)) return;
     // Gets the categories to filter (category: false), from the filter.
     const toFilter = Object.entries(filter.options)
-      .filter(([key, val]) => !val)
+      .filter(([, val]) => !val)
       .map((f) => f[0]);
 
     // Filter the itemsJson with the toFilter.
@@ -22,7 +22,7 @@ export function filterItems(filters: Filters, userItems: UserItems): ItemsJson {
     if (!Object.values(filter.options).contains(false)) return;
 
     const toFilter = Object.entries(filter.options)
-      .filter(([key, val]) => !val)
+      .filter(([, val]) => !val)
       .map((f) => f[0]);
 
     itemsJsonFiltered.map((itemsCategory) => {
@@ -44,7 +44,7 @@ export function filterItems(filters: Filters, userItems: UserItems): ItemsJson {
     if (!Object.values(filter.options).contains(false)) return;
 
     const toFilter = Object.entries(filter.options)
-      .filter(([key, val]) => !val)
+      .filter(([, val]) => !val)
       .map((f) => f[0]);
 
     itemsJsonFiltered.map((itemsCategory) => {

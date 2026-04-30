@@ -19,7 +19,7 @@ export default function ExpButtons({
   const isButtonDown = useRef(false);
 
   const changeExp = useCallback(() => {
-    toSum.current ? (quantity.current += 5) : (quantity.current -= 5);
+    quantity.current = toSum.current ? quantity.current + 5 : quantity.current - 5;
 
     const newExp = userStats.exp + quantity.current;
     // Level upgrade

@@ -18,9 +18,10 @@ export function useAnimationsHandler(): AnimationsHandlerI {
 
     changeAnimation(nextDefault.current, animationsTimes.default);
 
-    nextDefault.current === animations.stand
-      ? (nextDefault.current = animations.walk)
-      : (nextDefault.current = animations.stand);
+    nextDefault.current =
+      nextDefault.current === animations.stand
+        ? animations.walk
+        : animations.stand;
   };
 
   const triggerSleeping = (ifSleeping: () => void) => {

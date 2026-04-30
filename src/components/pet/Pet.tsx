@@ -159,14 +159,17 @@ export const Pet = memo(function Pet({
   useEffect(() => {
     if (!petAccessoryRef.current) return;
     // Add the user actual accessory
-    userItems.equiped.Accessories
-      ? (petAccessoryRef.current.removeClass(petAccessoryHiddenClassName),
-        getAsset("Spritesheets", userItems.equiped.Accessories).then(
-          (asset) => {
-            if (petAccessoryRef.current) petAccessoryRef.current.src = asset;
-          },
-        ))
-      : petAccessoryRef.current.addClass(petAccessoryHiddenClassName);
+    if (userItems.equiped.Accessories) {
+      petAccessoryRef.current.removeClass(petAccessoryHiddenClassName);
+      getAsset("Spritesheets", userItems.equiped.Accessories).then(
+        (asset) => {
+          if (petAccessoryRef.current) petAccessoryRef.current.src = asset;
+        },
+      );
+    }
+    else {
+      petAccessoryRef.current.addClass(petAccessoryHiddenClassName);
+    }
   }, [userItems.equiped.Accessories]);
 
   return (

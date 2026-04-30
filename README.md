@@ -54,7 +54,7 @@ If you want to help doing pixel art, there is a folder in the project with most 
 To add the assets is needed to:
 - Add the new assets in assets/plugin/[category]/[name].png.
 - Add the item into src/jsons/items.json
-- Run the assetsToJson.cjs so the assets/plugin folder is converted into a json with the images in base64. Run it with `node assetsToJson.cjs` (remember to be in the project folder).
+- Run the assetsToJson.cjs so the assets/plugin folder is converted into a json with the images in base64. Run it with `npm run assets` (remember to be in the project folder).
 
 ## License
 This plugin is licensed under the [MIT License](https://github.com/DiegooCM/obsidian-virtual-pet/blob/main/LICENSE)

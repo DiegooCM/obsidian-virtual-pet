@@ -1,5 +1,5 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
 function imageToBase64(filePath) {
   const imageBuffer = fs.readFileSync(filePath);
@@ -29,8 +29,10 @@ function processDirectory(directoryPath, json) {
   });
 }
 
-let outputJson = {};
+const outputJson = {};
 
 processDirectory("./assets/plugin", outputJson);
 
 fs.writeFileSync("src/jsons/assets.json", JSON.stringify(outputJson, null, 2));
+
+console.log("Assets converted to JSON successfully");

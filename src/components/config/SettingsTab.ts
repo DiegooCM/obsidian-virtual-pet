@@ -35,7 +35,7 @@ export class SettingsTab extends PluginSettingTab {
       attr: { style: `background-image: url(${woodUrl})` },
     });
     woodPlank1.createEl("span", { text: "Tap " });
-    const coinImg = woodPlank1.createEl("img", {
+    woodPlank1.createEl("img", {
       attr: {
         src: coinUrl,
         alt: "coin",

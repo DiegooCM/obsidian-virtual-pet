@@ -71,9 +71,8 @@ export default class VirualPetView extends ItemView {
       this.app.workspace.on("editor-change", (editor) => {
         // Update info
         const fileText = editor.getValue();
-        this.isPasted
-          ? (this.isPasted = false)
-          : this.statsHandler.updateUserDataNStats(fileText);
+        if (this.isPasted) this.isPasted = false;
+        else this.statsHandler.updateUserDataNStats(fileText);
 
         this.petViewRef.current?.triggerChild(["handle-sleep", "update-info"]);
       }),
