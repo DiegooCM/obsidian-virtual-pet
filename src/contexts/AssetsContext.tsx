@@ -21,7 +21,7 @@ export const AssetsProvider = ({ children }: AssetsProviderI) => {
 
 
   // Turns the Base 64 to a blob url
-  const loadImage = async (name: string, path: string) => {
+  const loadImage = (name: string, path: string) => {
     try {
       const contentType = '';
       const sliceSize = 512;

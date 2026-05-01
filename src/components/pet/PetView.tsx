@@ -53,10 +53,10 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
 
     // Activate the "Level Up" text, waits 3s and desactivate it
     if (animationsTextRef.current)
-      animationsTextRef.current.style.display = "block";
+      animationsTextRef.current.style.setProperty("display", "block");
     setTimeout(() => {
       if (animationsTextRef.current)
-        animationsTextRef.current.style.display = "none";
+        animationsTextRef.current.style.setProperty("display", "none");
     }, 3000);
 
     const newExp = newUserStats.exp - newUserStats.expGoal;
@@ -112,7 +112,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   useEffect(() => {
     statsHandler.getUserDataFromJson().then(() => {
       updateUserInfo();
-    });
+    }).catch(() => console.error("Virtual Pet: Error while getting user data"));
     animationsHandler.toDefaults();
     animationsHandler.triggerSleeping(() => animationsHandler.toDefaults());
   }, []);
@@ -123,8 +123,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
       (asset) => {
         if (mainRef.current)
           mainRef.current.style.backgroundImage = `url(${asset})`;
-      },
-    );
+      }).catch(() => console.error("Virtual Pet: An error ocurred while loading assets"));
   }, [userItems.equiped.Backgrounds]);
 
   return (

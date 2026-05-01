@@ -82,7 +82,7 @@ export const ShopItems = memo(function ShopItems({
     useEffect(() => {
       getAsset(itemsCategory.category, item.name).then((asset) => {
         if (itemImageRef.current) itemImageRef.current.src = asset;
-      });
+      }).catch(() => console.error("Virtual Pet: An error ocurred while loading assets"));
     }, []);
 
     return (

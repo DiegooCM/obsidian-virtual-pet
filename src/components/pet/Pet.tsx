@@ -113,14 +113,14 @@ export const Pet = memo(function Pet({
         // Touched left border
         if (actualLeft <= petOuterRelWidth) {
           petDirecction.current = 1;
-          petRef.current.style.transform = "scaleX(1)";
-          petAccessoryRef.current.style.transform = "scaleX(1)";
+          petRef.current.style.setProperty("transform", "scaleX(1)");
+          petAccessoryRef.current.style.setProperty("transform", "scaleX(1)");
         }
         // Touched right border
         if (windowWidth <= actualLeft + petOuterRelWidth + 64) {
           petDirecction.current = -1;
-          petRef.current.style.transform = "scaleX(-1)";
-          petAccessoryRef.current.style.transform = "scaleX(-1)";
+          petRef.current.style.setProperty("transform", "scaleX(-1)");
+          petAccessoryRef.current.style.setProperty("transform", "scaleX(-1)");
         }
       }
 
@@ -151,9 +151,10 @@ export const Pet = memo(function Pet({
   }
 
   useEffect(() => {
-    getAsset("Spritesheets", "Pet").then((asset) => {
-      if (petRef.current) petRef.current.src = asset;
-    });
+    getAsset("Spritesheets", "Pet")
+      .then((asset) => {
+        if (petRef.current) petRef.current.src = asset;
+      }).catch(() => console.error("Virtual Pet: An error ocurred while loading assets"));
   }, []);
 
   useEffect(() => {
@@ -164,8 +165,7 @@ export const Pet = memo(function Pet({
       getAsset("Spritesheets", userItems.equiped.Accessories).then(
         (asset) => {
           if (petAccessoryRef.current) petAccessoryRef.current.src = asset;
-        },
-      );
+        }).catch(() => console.error("Virtual Pet: An error ocurred while loading assets"));
     }
     else {
       petAccessoryRef.current.addClass(petAccessoryHiddenClassName);

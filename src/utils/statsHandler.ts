@@ -48,7 +48,7 @@ export default class StatsHandler {
     // Counts the words of the new file and checks if the file is Valid
     if (openedFile) {
       this.isValid = this.checkIsFileValid(openedFile);
-      if (this.isValid) this.getFileWordsCount(openedFile);
+      if (this.isValid) void this.getFileWordsCount(openedFile);
     } else {
       this.isValid = false;
     }
@@ -171,9 +171,9 @@ export default class StatsHandler {
     }
   };
 
-  saveUserData = (): void => {
+  saveUserData = async (): Promise<void> => {
     if (this.isDataLoaded) {
-      this.plugin.saveData({
+      await this.plugin.saveData({
         userStats: this.userStats,
         userItems: this.userItems,
       });

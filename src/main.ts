@@ -6,7 +6,7 @@ import StatsHandler from "./utils/statsHandler";
 
 export default class VirtualPet extends Plugin {
   statsHandler: StatsHandler;
-  onload() {
+  async onload() {
     this.statsHandler = new StatsHandler(
       this.app.vault,
       this.app.workspace,
@@ -19,14 +19,14 @@ export default class VirtualPet extends Plugin {
     );
 
     if (this.app.workspace.layoutReady) {
-      this.activateView();
+      await this.activateView();
     }
 
     this.addSettingTab(new SettingsTab(this.app, this));
   }
 
-  onunload() {
-    this.statsHandler.saveUserData();
+  async onunload() {
+    await this.statsHandler.saveUserData();
     this.app.workspace
       .getLeavesOfType(VIEW_TYPE_VIRTUAL_PET)
       .forEach((leaf) => leaf.detach());
@@ -38,7 +38,7 @@ export default class VirtualPet extends Plugin {
     // Check if view is already open
     const existingLeaves = workspace.getLeavesOfType(VIEW_TYPE_VIRTUAL_PET);
     if (existingLeaves.length > 0) {
-      workspace.revealLeaf(existingLeaves[0]);
+      await workspace.revealLeaf(existingLeaves[0]);
       return;
     }
 
@@ -48,7 +48,7 @@ export default class VirtualPet extends Plugin {
       await leaf.setViewState({
         type: VIEW_TYPE_VIRTUAL_PET,
       });
-      workspace.revealLeaf(leaf); // Opens my plugin on the leaf when activated
+      await workspace.revealLeaf(leaf); // Opens my plugin on the leaf when activated
     }
   }
 }

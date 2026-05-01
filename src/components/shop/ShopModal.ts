@@ -43,12 +43,18 @@ export class ShopModal extends Modal {
 
     const coinsContainer = this.headerEl.createDiv("vpet-shop__coins");
     // When the coin asset is fetched then it creates the content in the coins-container
-    this.getAsset("Others", "coin").then((blob) => {
-      coinsContainer.createEl("img", { attr: { src: blob, alt: "Coin icon" } });
-      coinsContainer.createEl("span", {
-        text: this.userStats.coins.toString(),
-      });
-    });
+    this.getAsset("Others", "coin")
+      .then((blob) => {
+        coinsContainer.createEl("img", {
+          attr: { src: blob, alt: "Coin icon" },
+        });
+        coinsContainer.createEl("span", {
+          text: this.userStats.coins.toString(),
+        });
+      })
+      .catch(() =>
+        console.error("Virtual Pet: An error ocurred while loading assets"),
+      );
 
     this.reactRoot = createRoot(this.contentEl);
     this.reactRoot.render(

@@ -26,7 +26,7 @@ export function PetTopBar({
     // Add the coin asset to the coinRef
     getAsset("Others", "coin").then((asset) => {
       if (coinRef.current) coinRef.current.src = asset;
-    });
+    }).catch(() => console.error("Virtual Pet: An error ocurred while loading assets"));
   }, []);
 
   return (

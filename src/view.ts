@@ -33,7 +33,7 @@ export default class VirualPetView extends ItemView {
     return "paw-print";
   }
 
-  async onOpen(): Promise<void> {
+  onOpen(): Promise<void> {
     const container = this.containerEl.children[1];
     container.empty();
 
@@ -50,8 +50,8 @@ export default class VirualPetView extends ItemView {
     );
 
     this.registerEvent(
-      this.app.workspace.on("quit", () => {
-        this.statsHandler.saveUserData();
+      this.app.workspace.on("quit", async () => {
+        await this.statsHandler.saveUserData();
       }),
     );
 
@@ -96,10 +96,12 @@ export default class VirualPetView extends ItemView {
     );
 
     this.registerEvent(
-      this.app.workspace.on("active-leaf-change", () => {
-        this.statsHandler.saveUserData();
+      this.app.workspace.on("active-leaf-change", async () => {
+        await this.statsHandler.saveUserData();
       }),
     );
+
+    return Promise.resolve();
   }
 
   onClose(): Promise<void> {
