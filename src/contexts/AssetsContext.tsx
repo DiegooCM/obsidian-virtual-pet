@@ -58,7 +58,7 @@ export const AssetsProvider = ({ children }: AssetsProviderI) => {
     //data:image/png;base64,
     const path = `${assets[assetCategory][name]}`;
 
-    const blobUrl = await loadImage(name, path);
+    const blobUrl = loadImage(name, path);
 
     assetsStored[assetCategory][name] = blobUrl;
 

@@ -113,14 +113,14 @@ export const Pet = memo(function Pet({
         // Touched left border
         if (actualLeft <= petOuterRelWidth) {
           petDirecction.current = 1;
-          petRef.current.style.setProperty("transform", "scaleX(1)");
-          petAccessoryRef.current.style.setProperty("transform", "scaleX(1)");
+          petRef.current.setCssProps({ transform: "scaleX(1)" });
+          petAccessoryRef.current.setCssProps({ transform: "scaleX(1)" });
         }
         // Touched right border
         if (windowWidth <= actualLeft + petOuterRelWidth + 64) {
           petDirecction.current = -1;
-          petRef.current.style.setProperty("transform", "scaleX(-1)");
-          petAccessoryRef.current.style.setProperty("transform", "scaleX(-1)");
+          petRef.current.setCssProps({ transform: "scaleX(-1)" });
+          petAccessoryRef.current.setCssProps({ transform: "scaleX(-1)" });
         }
       }
 

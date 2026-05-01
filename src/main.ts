@@ -25,6 +25,7 @@ export default class VirtualPet extends Plugin {
     this.addSettingTab(new SettingsTab(this.app, this));
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async onunload() {
     await this.statsHandler.saveUserData();
     this.app.workspace
