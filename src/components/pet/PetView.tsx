@@ -53,10 +53,12 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
 
     // Activate the "Level Up" text, waits 3s and desactivate it
     if (animationsTextRef.current)
-      animationsTextRef.current.setCssProps({ display: "block" });
+      //animationsTextRef.current.setCssProps({ display: "block" });
+      animationsTextRef.current.style.display = "block";
+
     setTimeout(() => {
       if (animationsTextRef.current)
-        animationsTextRef.current.setCssProps({ display: "none" });
+        animationsTextRef.current.style.display = "none";
     }, 3000);
 
     const newExp = newUserStats.exp - newUserStats.expGoal;
