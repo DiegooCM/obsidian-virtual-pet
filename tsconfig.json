@@ -24,7 +24,8 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "./assetsToJson.js"
+    "./assetsToJson.js",
+    "eslint.config.js"
   ],
   "sourceMap": true
 }

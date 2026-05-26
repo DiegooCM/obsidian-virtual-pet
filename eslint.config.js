@@ -3,7 +3,7 @@ import { FlatCompat } from "@eslint/eslintrc";
 import { fileURLToPath } from "url";
 import path from "path";
 import tseslint from "typescript-eslint";
-import pluginReact from "eslint-plugin-react";
+import eslintReact from "@eslint-react/eslint-plugin";
 import globals from "globals";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -13,8 +13,6 @@ const compat = new FlatCompat({ baseDirectory: __dirname });
 
 export default defineConfig([
   ...compat.plugins("eslint-plugin-obsidianmd"),
-  pluginReact.configs.flat.recommended,
-  ...tseslint.configs.recommended,
   {
     files: ["**/*.{js,ts,jsx,tsx}"],
     languageOptions: {
@@ -28,18 +26,23 @@ export default defineConfig([
     },
     plugins: {
       "@typescript-eslint": tseslint.plugin,
-      react: pluginReact,
+      "@eslint-react": eslintReact,
     },
     rules: {
       semi: "error",
       "prefer-const": "error",
-      "react/react-in-jsx-scope": "off",
       "obsidianmd/sample-names": "off",
-      "react/display-name": "off",
+      "@eslint-react/dom/display-name": "off",
+      "@eslint-react/dom/react-in-jsx-scope": "off",
+      ...eslintReact.configs.recommended.rules,
     },
     settings: {
       react: { version: "detect" },
     },
   },
+  ...tseslint.configs.recommended.map((config) => ({
+    ...config,
+    files: ["**/*.{js,ts,jsx,tsx}"],
+  })),
   globalIgnores(["node_modules/", "main.js"]),
 ]);
