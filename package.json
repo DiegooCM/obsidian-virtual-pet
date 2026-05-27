@@ -19,7 +19,6 @@
     "@types/node": "^16.11.6",
     "@types/react": "19.1.15",
     "@types/react-dom": "19.1.9",
-    "builtin-modules": "3.3.0",
     "esbuild": "0.17.3",
     "eslint": "^10.4.0",
     "eslint-plugin-obsidianmd": "^0.2.9",
