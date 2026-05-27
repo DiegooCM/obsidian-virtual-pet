@@ -2,8 +2,8 @@ import { View } from "obsidian";
 import statsHandler from "./utils/statsHandler";
 
 export interface UserDataJson {
-  userData: UserData;
   userStats: UserStats;
+  userItems: UserItems;
 }
 
 export interface UserData {
@@ -98,3 +98,4 @@ export type GetAssetT = (
 export interface AssetsContextI {
   getAsset: GetAssetT;
 }
+export type ItemState = "equiped" | "obtained" | "";

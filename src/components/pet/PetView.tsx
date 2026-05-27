@@ -49,14 +49,17 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
 
   const levelUp = (newUserStats: UserStats) => {
     // Change the pet animation to celebrate
-    animationsHandler.changeAnimation(animations.celebrate, animationsTimes.levelUp);
+    animationsHandler.changeAnimation(
+      animations.celebrate,
+      animationsTimes.levelUp,
+    );
 
     // Activate the "Level Up" text, waits 3s and desactivate it
     if (animationsTextRef.current)
       //animationsTextRef.current.setCssProps({ display: "block" });
       animationsTextRef.current.style.display = "block";
 
-    setTimeout(() => {
+    activeWindow.setTimeout(() => {
       if (animationsTextRef.current)
         animationsTextRef.current.style.display = "none";
     }, 3000);
@@ -98,7 +101,10 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
           }
           if (action === "handle-sleep") {
             animationsHandler.triggerSleeping(() => {
-              animationsHandler.changeAnimation(animations.code, animationsTimes.coding);
+              animationsHandler.changeAnimation(
+                animations.code,
+                animationsTimes.coding,
+              );
             });
             return;
           }
@@ -112,20 +118,26 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   });
 
   useEffect(() => {
-    statsHandler.getUserDataFromJson().then(() => {
-      updateUserInfo();
-    }).catch(() => console.error("Virtual Pet: Error while getting user data"));
+    statsHandler
+      .getUserDataFromJson()
+      .then(() => {
+        updateUserInfo();
+      })
+      .catch(() => console.error("Virtual Pet: Error while getting user data"));
     animationsHandler.toDefaults();
     animationsHandler.triggerSleeping(() => animationsHandler.toDefaults());
   }, []);
 
   useEffect(() => {
     // Add the user actual background or the default one to the mainRef
-    getAsset("Backgrounds", userItems.equiped.Backgrounds || "Light Default").then(
-      (asset) => {
+    getAsset("Backgrounds", userItems.equiped.Backgrounds || "Light Default")
+      .then((asset) => {
         if (mainRef.current)
           mainRef.current.style.backgroundImage = `url(${asset})`;
-      }).catch(() => console.error("Virtual Pet: An error ocurred while loading assets"));
+      })
+      .catch(() =>
+        console.error("Virtual Pet: An error ocurred while loading assets"),
+      );
   }, [userItems.equiped.Backgrounds]);
 
   return (

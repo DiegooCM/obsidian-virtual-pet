@@ -1,6 +1,12 @@
 import { Plugin, TFile, Vault, Workspace } from "obsidian";
 import { countWords } from "../utils/statsUtils";
-import { ItemCategory, UserData, UserItems, UserStats } from "../types";
+import {
+  ItemCategory,
+  UserData,
+  UserDataJson,
+  UserItems,
+  UserStats,
+} from "../types";
 
 export default class StatsHandler {
   private vault: Vault;
@@ -9,7 +15,7 @@ export default class StatsHandler {
   private userData: UserData;
   private userStats: UserStats;
   private userItems: UserItems;
-  private actualTFile: TFile | null;
+  private actualTFile: TFile | undefined;
   private isValid: boolean = false;
   private isDataLoaded: boolean = false;
   private prohibitedTagsList = ["excalidraw-plugin"];
@@ -154,7 +160,7 @@ export default class StatsHandler {
   // Gets the userData from the data.json and save them in the state
   getUserDataFromJson = async (): Promise<void> => {
     try {
-      const data = await this.plugin.loadData();
+      const data: UserDataJson = await this.plugin.loadData();
       if (Object.keys(data).length === 0) return;
 
       // Checks if the user has stats

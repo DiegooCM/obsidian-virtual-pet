@@ -19,7 +19,9 @@ export default function ExpButtons({
   const isButtonDown = useRef(false);
 
   const changeExp = useCallback(() => {
-    quantity.current = toSum.current ? quantity.current + 5 : quantity.current - 5;
+    quantity.current = toSum.current
+      ? quantity.current + 5
+      : quantity.current - 5;
 
     const newExp = userStats.exp + quantity.current;
     // Level upgrade
@@ -39,7 +41,11 @@ export default function ExpButtons({
   }, [changeExp]);
 
   useEffect(() => {
-    setTimeout(() => onButtonPress(), 100);
+    const btnTimeout = activeWindow.setTimeout(() => onButtonPress(), 100);
+
+    return () => {
+      activeWindow.clearTimeout(btnTimeout);
+    };
   }, [userStats.exp, onButtonPress]);
 
   return (
