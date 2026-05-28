@@ -26,6 +26,8 @@ export const ShopItems = memo(function ShopItems({
   getAsset,
   items,
 }: ShopItemsI) {
+  const [shopUserItems, setShopUserItems] = useState(userItems);
+
   return (
     <div className="vpet-items">
       {
@@ -40,7 +42,8 @@ export const ShopItems = memo(function ShopItems({
                   itemsCategory.items.map((item) => {
                     return (
                       <ShopItem
-                        userItems={userItems}
+                        shopUserItems={shopUserItems}
+                        setShopUserItems={setShopUserItems}
                         userStats={userStats}
                         statsHandler={statsHandler}
                         getAsset={getAsset}
@@ -62,24 +65,24 @@ export const ShopItems = memo(function ShopItems({
 });
 
 const ShopItem = ({
+  shopUserItems,
+  setShopUserItems,
   userStats,
   statsHandler,
   getAsset,
-  userItems,
   item,
   items,
   itemsCategory,
 }: {
+  shopUserItems: UserItems;
+  setShopUserItems: React.Dispatch<React.SetStateAction<UserItems>>;
   userStats: UserStats;
   statsHandler: StatsHandler;
   getAsset: GetAssetT;
-  userItems: UserItems;
   item: ItemJson;
   items: ItemsJson;
   itemsCategory: ItemsCategory;
 }) => {
-  const [shopUserItems, setShopUserItems] = useState(userItems);
-
   const itemImageRef = useRef<HTMLImageElement | null>(null);
 
   // Checks what is the state of the item ("equiped", "obtained", ""(not buyed))
@@ -93,6 +96,8 @@ const ShopItem = ({
     else return "";
   };
 
+  console.log("shopitem");
+
   const itemState = checkItem(item.name, itemsCategory.category);
 
   useEffect(() => {
@@ -103,7 +108,7 @@ const ShopItem = ({
       .catch(() =>
         console.error("Virtual Pet: An error ocurred while loading assets"),
       );
-  }, [getAsset, item.name, itemsCategory.category]);
+  }, []);
 
   return (
     <div className="vpet-category-item">

@@ -1,7 +1,6 @@
 import {
   Ref,
   RefObject,
-  useContext,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -10,10 +9,10 @@ import {
 import { App } from "obsidian";
 import StatsHandler from "src/utils/statsHandler";
 import { Pet } from "src/components/pet/Pet";
-import { AssetsContextI, PetViewRef, UserActions, UserStats } from "src/types";
+import { PetViewRef, UserActions, UserStats } from "src/types";
 //import { DebugTools } from "src/components/debug-tools/DebugTools";
 import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
-import { AssetsContext } from "src/contexts/AssetsContext";
+import { useAssets } from "src/contexts/AssetsContext";
 import { PetTopBar } from "./PetTopBar";
 import animations from "src/jsons/animations.json";
 import animationsTimes from "src/jsons/animationsTimes.json";
@@ -30,7 +29,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   const [userItems, setUserItems] = useState(statsHandler.getUserItems());
   const animationsTextRef = useRef<HTMLHeadingElement>(null);
   const mainRef: RefObject<HTMLDivElement | null> = useRef(null);
-  const { getAsset } = useContext<AssetsContextI>(AssetsContext);
+  const { getAsset } = useAssets();
 
   const animationsHandler = useAnimationsHandler();
 
@@ -138,7 +137,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
       .catch(() =>
         console.error("Virtual Pet: An error ocurred while loading assets"),
       );
-  }, [userItems.equiped.Backgrounds]);
+  }, [getAsset, userItems.equiped.Backgrounds]);
 
   return (
     <>

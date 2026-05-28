@@ -14,16 +14,16 @@ export default function ExpButtons({
   levelUp,
   setUserStats,
 }: Props) {
-  const quantity = useRef(0);
-  const toSum = useRef(false);
-  const isButtonDown = useRef(false);
+  const quantityRef = useRef(0);
+  const toSumRef = useRef(false);
+  const isButtonDownRef = useRef(false);
 
   const changeExp = useCallback(() => {
-    quantity.current = toSum.current
-      ? quantity.current + 5
-      : quantity.current - 5;
+    quantityRef.current = toSumRef.current
+      ? quantityRef.current + 5
+      : quantityRef.current - 5;
 
-    const newExp = userStats.exp + quantity.current;
+    const newExp = userStats.exp + quantityRef.current;
     // Level upgrade
     if (newExp >= userStats.expGoal) {
       levelUp({ ...userStats, exp: newExp });
@@ -33,10 +33,10 @@ export default function ExpButtons({
       const newUserStats = petChangeExp(newExp <= 0 ? 0 : newExp);
       setUserStats(newUserStats);
     }
-  }, [userStats.exp, levelUp]);
+  }, [userStats, levelUp, petChangeExp, setUserStats]);
 
   const onButtonPress = useCallback(() => {
-    if (!isButtonDown.current) return;
+    if (!isButtonDownRef.current) return;
     changeExp();
   }, [changeExp]);
 
@@ -54,26 +54,26 @@ export default function ExpButtons({
       <div className="vpet-debug__exp-buttons">
         <button
           onMouseDown={() => {
-            isButtonDown.current = true;
+            isButtonDownRef.current = true;
             onButtonPress();
           }}
           onMouseUp={() => {
-            quantity.current = 0;
-            isButtonDown.current = false;
+            quantityRef.current = 0;
+            isButtonDownRef.current = false;
           }}
         >
           -
         </button>
         <button
           onMouseDown={() => {
-            isButtonDown.current = true;
-            toSum.current = true;
+            isButtonDownRef.current = true;
+            toSumRef.current = true;
             onButtonPress();
           }}
           onMouseUp={() => {
-            quantity.current = 0;
-            toSum.current = false;
-            isButtonDown.current = false;
+            quantityRef.current = 0;
+            toSumRef.current = false;
+            isButtonDownRef.current = false;
           }}
         >
           +

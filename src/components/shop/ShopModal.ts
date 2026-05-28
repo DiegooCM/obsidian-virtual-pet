@@ -9,7 +9,6 @@ export class ShopModal extends Modal {
   private userStats: UserStats;
   private userItems: UserItems;
   private statsHandler: StatsHandler;
-  private headerEl: HTMLElement; // Idk why the modal class don't recognize headerEl. I declare it for removing the error on my editor
   private setUserItems: (value: React.SetStateAction<UserItems>) => void;
   private reactRoot: Root | null = null;
   private getAsset: GetAssetT;
@@ -38,10 +37,11 @@ export class ShopModal extends Modal {
   }
 
   createShop = () => {
+    const { headerEl } = this;
     // Header
-    this.headerEl.createEl("h1", { text: "Shop" });
+    headerEl.createEl("h1", { text: "Shop" });
 
-    const coinsContainer = this.headerEl.createDiv("vpet-shop__coins");
+    const coinsContainer = headerEl.createDiv("vpet-shop__coins");
     // When the coin asset is fetched then it creates the content in the coins-container
     this.getAsset("Others", "coin")
       .then((blob) => {

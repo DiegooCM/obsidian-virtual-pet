@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useEffect } from "react";
+import { createContext, ReactNode, use, useEffect } from "react";
 import { AssetCategoriesT, AssetsT, AssetsContextI } from "src/types";
 import AssetsJson from "src/jsons/assets.json";
 
@@ -13,22 +13,25 @@ const assetsDefault: AssetsT = {
   Others: {},
 };
 
-export const AssetsContext = createContext<AssetsContextI | null>(null);
+const AssetsContext = createContext<AssetsContextI | undefined>(undefined);
 
 export const AssetsProvider = ({ children }: AssetsProviderI) => {
   const assetsStored = assetsDefault;
   const assets: AssetsT = AssetsJson;
 
-
   // Turns the Base 64 to a blob url
   const loadImage = (name: string, path: string) => {
     try {
-      const contentType = '';
+      const contentType = "";
       const sliceSize = 512;
       const byteCharacters = atob(path);
       const byteArrays = [];
 
-      for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      for (
+        let offset = 0;
+        offset < byteCharacters.length;
+        offset += sliceSize
+      ) {
         const slice = byteCharacters.slice(offset, offset + sliceSize);
 
         const byteNumbers = new Array(slice.length);
@@ -73,7 +76,15 @@ export const AssetsProvider = ({ children }: AssetsProviderI) => {
         }
       }
     };
-  }, []);
+  }, [assetsStored]);
 
   return <AssetsContext value={{ getAsset }}>{children}</AssetsContext>;
+};
+
+export const useAssets = () => {
+  const context = use(AssetsContext);
+  if (context === undefined) {
+    throw new Error("useTab must be used within a TabProvider");
+  }
+  return context;
 };

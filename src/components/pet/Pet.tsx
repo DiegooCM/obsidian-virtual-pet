@@ -1,11 +1,6 @@
-import { memo, RefObject, useContext, useEffect, useRef } from "react";
-import { AssetsContext } from "src/contexts/AssetsContext";
-import {
-  PetAnimation,
-  UserItems,
-  AssetsContextI,
-  AnimationsHandlerI,
-} from "src/types";
+import { memo, RefObject, useEffect, useRef } from "react";
+import { useAssets } from "src/contexts/AssetsContext";
+import { PetAnimation, UserItems, AnimationsHandlerI } from "src/types";
 
 interface Props {
   isPluginActive: boolean;
@@ -22,7 +17,7 @@ export const Pet = memo(function Pet({
   userLevel,
   userItems,
   animationsHandler,
-  mainRef
+  mainRef,
 }: Props) {
   // Refs
   const petRef: RefObject<HTMLImageElement | null> = useRef(null);
@@ -40,7 +35,7 @@ export const Pet = memo(function Pet({
 
   const isOutside = useRef<boolean>(false);
 
-  const { getAsset } = useContext<AssetsContextI>(AssetsContext);
+  const { getAsset } = useAssets();
 
   const checkIsInside = (
     windowWidth: number,
@@ -113,7 +108,7 @@ export const Pet = memo(function Pet({
         // Touched left border
         if (actualLeft <= petOuterRelWidth) {
           petDirecction.current = 1;
-          // petRef.current.setCssProps({ transform: "scaleX(1)" }); 
+          // petRef.current.setCssProps({ transform: "scaleX(1)" });
           petRef.current.style.transform = "scaleX(1)";
           petAccessoryRef.current.style.transform = "scaleX(1)";
         }
@@ -155,7 +150,10 @@ export const Pet = memo(function Pet({
     getAsset("Spritesheets", "Pet")
       .then((asset) => {
         if (petRef.current) petRef.current.src = asset;
-      }).catch(() => console.error("Virtual Pet: An error ocurred while loading assets"));
+      })
+      .catch(() =>
+        console.error("Virtual Pet: An error ocurred while loading assets"),
+      );
   }, []);
 
   useEffect(() => {
@@ -163,22 +161,21 @@ export const Pet = memo(function Pet({
     // Add the user actual accessory
     if (userItems.equiped.Accessories) {
       petAccessoryRef.current.removeClass(petAccessoryHiddenClassName);
-      getAsset("Spritesheets", userItems.equiped.Accessories).then(
-        (asset) => {
+      getAsset("Spritesheets", userItems.equiped.Accessories)
+        .then((asset) => {
+          console.log(asset);
           if (petAccessoryRef.current) petAccessoryRef.current.src = asset;
-        }).catch(() => console.error("Virtual Pet: An error ocurred while loading assets"));
-    }
-    else {
+        })
+        .catch(() =>
+          console.error("Virtual Pet: An error ocurred while loading assets"),
+        );
+    } else {
       petAccessoryRef.current.addClass(petAccessoryHiddenClassName);
     }
   }, [userItems.equiped.Accessories]);
 
   return (
-    <div
-      className="vpet-pet"
-      ref={petContainerRef}
-      style={{ left: "30px" }}
-    >
+    <div className="vpet-pet" ref={petContainerRef} style={{ left: "30px" }}>
       <p className="vpet-pet__level">Level: {userLevel}</p>
       <img className="vpet-pet__pet-sprite" ref={petRef} alt="Pet sprite" />
       <img
