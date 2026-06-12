@@ -96,8 +96,6 @@ const ShopItem = ({
     else return "";
   };
 
-  console.log("shopitem");
-
   const itemState = checkItem(item.name, itemsCategory.category);
 
   useEffect(() => {
@@ -108,7 +106,7 @@ const ShopItem = ({
       .catch(() =>
         console.error("Virtual Pet: An error ocurred while loading assets"),
       );
-  }, []);
+  }, [getAsset, item.name, itemsCategory.category]);
 
   return (
     <div className="vpet-category-item">
