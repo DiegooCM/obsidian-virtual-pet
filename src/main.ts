@@ -5,14 +5,13 @@ import { SettingsTab } from "./components/config/SettingsTab";
 import StatsHandler from "./utils/statsHandler";
 
 export default class VirtualPet extends Plugin {
-  statsHandler: StatsHandler;
-  async onload() {
-    this.statsHandler = new StatsHandler(
-      this.app.vault,
-      this.app.workspace,
-      this,
-    );
+  private statsHandler: StatsHandler = new StatsHandler(
+    this.app.vault,
+    this.app.workspace,
+    this,
+  );
 
+  async onload() {
     this.registerView(
       VIEW_TYPE_VIRTUAL_PET,
       (leaf: WorkspaceLeaf) => new VirualPetView(leaf, this.statsHandler),
@@ -25,7 +24,6 @@ export default class VirtualPet extends Plugin {
     this.addSettingTab(new SettingsTab(this.app, this));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async onunload() {
     await this.statsHandler.saveUserData();
     this.app.workspace

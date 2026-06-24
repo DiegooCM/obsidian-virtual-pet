@@ -69,9 +69,6 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
     [changeAnimation, statsHandler],
   );
 
-  /*
-   * If changed, stores the user data, stats and items in the useStates variables
-   */
   const updateUserStats = useCallback(() => {
     const newUserStats = statsHandler.getUserStats();
 
@@ -87,9 +84,6 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
     }
   }, [levelUp, statsHandler, userStats]);
 
-  /*
-   * If changed, stores the user data, stats and items in the useStates variables
-   */
   const updateUserItems = useCallback(() => {
     const newUserItems = statsHandler.getUserItems();
 

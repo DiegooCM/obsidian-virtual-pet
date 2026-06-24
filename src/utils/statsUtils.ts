@@ -1,8 +1,6 @@
 export const countWords = (text: string): number => {
-  /* eslint-disable no-control-regex */
   const regex =
     /([^\u0000-\u0040\u005B-\u0060\u007B-\u00BF\u02B0-\u036F\u00D7\u00F7\u2000-\u2BFF])+/g;
-  /* eslint-enable no-control-regex */
 
   return (text.match(regex) || []).length;
 };
