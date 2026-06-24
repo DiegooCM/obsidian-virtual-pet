@@ -3,19 +3,21 @@ import animations from "src/jsons/animations.json";
 
 type PetButtonsType = {
   animation: PetAnimation;
-  animationsHandler: AnimationsHandlerI;
+  toDefaults: AnimationsHandlerI["toDefaults"];
+  changeAnimation: AnimationsHandlerI["changeAnimation"];
 };
 
 export default function PetButtons({
   animation,
-  animationsHandler,
+  toDefaults,
+  changeAnimation,
 }: PetButtonsType) {
   const activeClassName = "vpet-debug__animations-buttons_active";
   return (
     <div className="vpet-debug__animations-buttons">
       <button
         onClick={() => {
-          animationsHandler.toDefaults("next");
+          toDefaults("next");
         }}
         className={
           animation === animations.stand || animation === animations.walk
@@ -27,7 +29,7 @@ export default function PetButtons({
       </button>
       <button
         onClick={() => {
-          animationsHandler.changeAnimation(animations.celebrate);
+          changeAnimation(animations.celebrate);
         }}
         className={animation === animations.celebrate ? activeClassName : ""}
       >
@@ -35,7 +37,7 @@ export default function PetButtons({
       </button>
       <button
         onClick={() => {
-          animationsHandler.changeAnimation(animations.code);
+          changeAnimation(animations.code);
         }}
         className={animation === animations.code ? activeClassName : ""}
       >
@@ -43,7 +45,7 @@ export default function PetButtons({
       </button>
       <button
         onClick={() => {
-          animationsHandler.changeAnimation(animations.sleep);
+          changeAnimation(animations.sleep);
         }}
         className={animation === animations.sleep ? activeClassName : ""}
       >

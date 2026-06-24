@@ -1,13 +1,14 @@
 import { memo, RefObject, useCallback, useEffect, useRef } from "react";
 import { useAssets } from "src/contexts/AssetsContext";
-import { PetAnimation, UserItems, AnimationsHandlerI } from "src/types";
+import { AnimationsHandlerI, PetAnimation, UserItems } from "src/types";
 
 interface Props {
   isPluginActive: boolean;
   animation: PetAnimation;
   userLevel: number;
   userItems: UserItems;
-  animationsHandler: AnimationsHandlerI;
+  toDefaults: AnimationsHandlerI["toDefaults"];
+  triggerSleeping: AnimationsHandlerI["triggerSleeping"];
   mainRef: RefObject<HTMLDivElement | null>;
 }
 
@@ -16,7 +17,8 @@ export const Pet = memo(function Pet({
   animation,
   userLevel,
   userItems,
-  animationsHandler,
+  toDefaults,
+  triggerSleeping,
   mainRef,
 }: Props) {
   // Refs
@@ -54,15 +56,13 @@ export const Pet = memo(function Pet({
       if (isOutsideRef.current && !isOutsideTimeoutRef.current) {
         // Stops sleeping and starts walking
         isOutsideTimeoutRef.current = window.setTimeout(() => {
-          animationsHandler.toDefaults("walk");
-          animationsHandler.triggerSleeping(() =>
-            animationsHandler.toDefaults(),
-          );
+          toDefaults("walk");
+          triggerSleeping(() => toDefaults());
           isOutsideTimeoutRef.current = 0;
         }, 1000);
       }
     },
-    [animationsHandler],
+    [toDefaults, triggerSleeping],
   );
 
   // Main Loop

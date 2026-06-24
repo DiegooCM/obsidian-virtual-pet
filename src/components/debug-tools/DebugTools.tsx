@@ -7,7 +7,9 @@ import StatsHandler from "src/utils/statsHandler";
 interface DebugToolsI {
   userStats: UserStats;
   userItems: UserItems;
-  animationsHandler: AnimationsHandlerI;
+  animation: AnimationsHandlerI["animation"];
+  toDefaults: AnimationsHandlerI["toDefaults"];
+  changeAnimation: AnimationsHandlerI["changeAnimation"];
   statsHandler: StatsHandler;
   levelUp: (newUserStats: UserStats) => void;
   setUserStats: React.Dispatch<React.SetStateAction<UserStats>>;
@@ -16,7 +18,9 @@ interface DebugToolsI {
 export function DebugTools({
   userStats,
   userItems,
-  animationsHandler,
+  animation,
+  toDefaults,
+  changeAnimation,
   statsHandler,
   levelUp,
   setUserStats,
@@ -25,8 +29,9 @@ export function DebugTools({
     <div className="vpet-debug">
       <h1>Change Pet Animation</h1>
       <PetButtons
-        animation={animationsHandler.animation}
-        animationsHandler={animationsHandler}
+        animation={animation}
+        toDefaults={toDefaults}
+        changeAnimation={changeAnimation}
       />
       <ExpButtons
         petChangeExp={statsHandler.petChangeExp}
@@ -34,10 +39,7 @@ export function DebugTools({
         levelUp={levelUp}
         setUserStats={setUserStats}
       />
-      <UserInfo
-        userStats={userStats}
-        userItems={userItems}
-      />
+      <UserInfo userStats={userStats} userItems={userItems} />
     </div>
   );
 }

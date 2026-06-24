@@ -32,7 +32,8 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   const mainRef: RefObject<HTMLDivElement | null> = useRef(null);
   const { getAsset } = useAssets();
 
-  const animationsHandler = useAnimationsHandler();
+  const { animation, triggerSleeping, toDefaults, changeAnimation } =
+    useAnimationsHandler();
 
   // Checks if the plugin is open, and if is not it stops the animation
   const checkWidth = () => {
@@ -50,10 +51,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   const levelUp = useCallback(
     (newUserStats: UserStats) => {
       // Change the pet animation to celebrate
-      animationsHandler.changeAnimation(
-        animations.celebrate,
-        animationsTimes.levelUp,
-      );
+      changeAnimation(animations.celebrate, animationsTimes.levelUp);
 
       // Activate the "Level Up" text, waits 3s and desactivate it
       if (animationsTextRef.current)
@@ -68,7 +66,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
       const newExp = newUserStats.exp - newUserStats.expGoal;
       setUserStats(statsHandler.petLevelUp(newExp));
     },
-    [animationsHandler, statsHandler],
+    [changeAnimation, statsHandler],
   );
 
   /*
@@ -110,11 +108,8 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
             return;
           }
           if (action === "handle-sleep") {
-            animationsHandler.triggerSleeping(() => {
-              animationsHandler.changeAnimation(
-                animations.code,
-                animationsTimes.coding,
-              );
+            triggerSleeping(() => {
+              changeAnimation(animations.code, animationsTimes.coding);
             });
             return;
           }
@@ -136,8 +131,8 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         updateUserItems();
       })
       .catch(() => console.error("Virtual Pet: Error while getting user data"));
-    animationsHandler.toDefaults();
-    animationsHandler.triggerSleeping(() => animationsHandler.toDefaults());
+    toDefaults();
+    triggerSleeping(() => toDefaults());
   }, [statsHandler]);
 
   useEffect(() => {
@@ -163,11 +158,12 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         />
         <Pet
           isPluginActive={isPluginActive}
-          animation={animationsHandler.animation}
+          animation={animation}
           userLevel={userStats.level}
           userItems={userItems}
-          animationsHandler={animationsHandler}
           mainRef={mainRef}
+          toDefaults={toDefaults}
+          triggerSleeping={triggerSleeping}
         />
         <span
           className="vpet-main__level-up-text"
@@ -181,10 +177,12 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
       <DebugTools
         userStats={userStats}
         userItems={userItems}
-        animationsHandler={animationsHandler}
         statsHandler={statsHandler}
         levelUp={levelUp}
         setUserStats={setUserStats}
+        animation={animation}
+        toDefaults={toDefaults}
+        changeAnimation={changeAnimation}
       />
     </>
   );
