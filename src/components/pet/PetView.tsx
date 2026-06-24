@@ -1,6 +1,7 @@
 import {
   Ref,
   RefObject,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -10,12 +11,12 @@ import { App } from "obsidian";
 import StatsHandler from "src/utils/statsHandler";
 import { Pet } from "src/components/pet/Pet";
 import { PetViewRef, UserActions, UserStats } from "src/types";
-//import { DebugTools } from "src/components/debug-tools/DebugTools";
 import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
 import { useAssets } from "src/contexts/AssetsContext";
 import { PetTopBar } from "./PetTopBar";
 import animations from "src/jsons/animations.json";
 import animationsTimes from "src/jsons/animationsTimes.json";
+import { DebugTools } from "../debug-tools/DebugTools";
 
 interface PetViewI {
   statsHandler: StatsHandler;
@@ -46,31 +47,34 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
     if (actualWidth < 0 && isPluginActive) setIsPluginActive(false);
   };
 
-  const levelUp = (newUserStats: UserStats) => {
-    // Change the pet animation to celebrate
-    animationsHandler.changeAnimation(
-      animations.celebrate,
-      animationsTimes.levelUp,
-    );
+  const levelUp = useCallback(
+    (newUserStats: UserStats) => {
+      // Change the pet animation to celebrate
+      animationsHandler.changeAnimation(
+        animations.celebrate,
+        animationsTimes.levelUp,
+      );
 
-    // Activate the "Level Up" text, waits 3s and desactivate it
-    if (animationsTextRef.current)
-      //animationsTextRef.current.setCssProps({ display: "block" });
-      animationsTextRef.current.style.display = "block";
-
-    activeWindow.setTimeout(() => {
+      // Activate the "Level Up" text, waits 3s and desactivate it
       if (animationsTextRef.current)
-        animationsTextRef.current.style.display = "none";
-    }, 3000);
+        //animationsTextRef.current.setCssProps({ display: "block" });
+        animationsTextRef.current.style.display = "block";
 
-    const newExp = newUserStats.exp - newUserStats.expGoal;
-    setUserStats(statsHandler.petLevelUp(newExp));
-  };
+      activeWindow.setTimeout(() => {
+        if (animationsTextRef.current)
+          animationsTextRef.current.style.display = "none";
+      }, 3000);
+
+      const newExp = newUserStats.exp - newUserStats.expGoal;
+      setUserStats(statsHandler.petLevelUp(newExp));
+    },
+    [animationsHandler, statsHandler],
+  );
 
   /*
-   * If changed, stores the user data, stats and items in the useStates
+   * If changed, stores the user data, stats and items in the useStates variables
    */
-  const updateUserInfo = () => {
+  const updateUserInfo = useCallback(() => {
     const newUserStats = statsHandler.getUserStats();
     const newUserItems = statsHandler.getUserItems();
 
@@ -87,7 +91,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
     if (JSON.stringify(newUserItems) !== JSON.stringify(userItems)) {
       setUserItems(newUserItems);
     }
-  };
+  }, [levelUp, statsHandler, userItems, userStats]);
 
   // To expose the onUserAction function on the ref
   useImperativeHandle<PetViewRef, PetViewRef>(ref, () => {
@@ -116,6 +120,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
     };
   });
 
+  // Obtains the data from data.json and set to default the animations
   useEffect(() => {
     statsHandler
       .getUserDataFromJson()
@@ -125,7 +130,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
       .catch(() => console.error("Virtual Pet: Error while getting user data"));
     animationsHandler.toDefaults();
     animationsHandler.triggerSleeping(() => animationsHandler.toDefaults());
-  }, []);
+  }, [statsHandler]);
 
   useEffect(() => {
     // Add the user actual background or the default one to the mainRef
@@ -165,7 +170,6 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         </span>
       </div>
 
-      {/*
       <DebugTools
         userStats={userStats}
         userItems={userItems}
@@ -174,7 +178,6 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         levelUp={levelUp}
         setUserStats={setUserStats}
       />
-      */}
     </>
   );
 }
