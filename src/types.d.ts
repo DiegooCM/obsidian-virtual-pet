@@ -69,7 +69,7 @@ export type PetViewRef = {
   triggerChild: (actions: UserActions) => void;
 };
 
-export type UserActions = ("check-width" | "handle-sleep" | "update-info")[];
+export type UserActions = ("check-width" | "handle-sleep" | "update-stats")[];
 
 export type Filter = {
   category: string;

@@ -74,9 +74,8 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
   /*
    * If changed, stores the user data, stats and items in the useStates variables
    */
-  const updateUserInfo = useCallback(() => {
+  const updateUserStats = useCallback(() => {
     const newUserStats = statsHandler.getUserStats();
-    const newUserItems = statsHandler.getUserItems();
 
     if (JSON.stringify(newUserStats) !== JSON.stringify(userStats)) {
       // Level up
@@ -88,10 +87,18 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         setUserStats(newUserStats);
       }
     }
+  }, [levelUp, statsHandler, userStats]);
+
+  /*
+   * If changed, stores the user data, stats and items in the useStates variables
+   */
+  const updateUserItems = useCallback(() => {
+    const newUserItems = statsHandler.getUserItems();
+
     if (JSON.stringify(newUserItems) !== JSON.stringify(userItems)) {
       setUserItems(newUserItems);
     }
-  }, [levelUp, statsHandler, userItems, userStats]);
+  }, [statsHandler, userItems]);
 
   // To expose the onUserAction function on the ref
   useImperativeHandle<PetViewRef, PetViewRef>(ref, () => {
@@ -111,8 +118,8 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
             });
             return;
           }
-          if (action === "update-info") {
-            updateUserInfo();
+          if (action === "update-stats") {
+            updateUserStats();
             return;
           }
         });
@@ -125,7 +132,8 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
     statsHandler
       .getUserDataFromJson()
       .then(() => {
-        updateUserInfo();
+        updateUserStats();
+        updateUserItems();
       })
       .catch(() => console.error("Virtual Pet: Error while getting user data"));
     animationsHandler.toDefaults();

@@ -62,7 +62,7 @@ export default class VirualPetView extends ItemView {
         this.statsHandler.onFileOpen(tFile);
 
         // Sets data and stats in petview
-        this.petViewRef.current?.triggerChild(["update-info"]);
+        this.petViewRef.current?.triggerChild(["update-stats"]);
       }),
     );
 
@@ -74,7 +74,7 @@ export default class VirualPetView extends ItemView {
         if (this.isPasted) this.isPasted = false;
         else this.statsHandler.updateUserDataNStats(fileText);
 
-        this.petViewRef.current?.triggerChild(["handle-sleep", "update-info"]);
+        this.petViewRef.current?.triggerChild(["handle-sleep", "update-stats"]);
       }),
     );
 
