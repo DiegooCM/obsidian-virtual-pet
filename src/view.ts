@@ -17,7 +17,6 @@ export default class VirualPetView extends ItemView {
   constructor(leaf: WorkspaceLeaf, statsHandler: StatsHandler) {
     super(leaf);
 
-    // eslint-disable-next-line @eslint-react/no-create-ref
     this.petViewRef = createRef();
     this.statsHandler = statsHandler;
   }

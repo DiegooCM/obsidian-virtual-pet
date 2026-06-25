@@ -5,6 +5,7 @@ import { GetAssetT, UserItems, UserStats } from "src/types";
 import { ShopFilter } from "./ShopFilter";
 import { ShopItems } from "./ShopItems";
 import { filterItems } from "src/utils/shopUtils";
+import { ShopHeader } from "./ShopHeader";
 
 interface ShopI {
   userItems: UserItems;
@@ -20,14 +21,17 @@ export function Shop({ userItems, userStats, statsHandler, getAsset }: ShopI) {
 
   return (
     <>
-      <ShopFilter filters={filters} setFilters={setFilters} />
-      <ShopItems
-        userItems={userItems}
-        userStats={userStats}
-        statsHandler={statsHandler}
-        getAsset={getAsset}
-        items={itemsJsonFiltered}
-      />
+      <ShopHeader userStats={userStats} getAsset={getAsset} />
+      <div className="vpet-shop-content">
+        <ShopFilter filters={filters} setFilters={setFilters} />
+        <ShopItems
+          userItems={userItems}
+          userStats={userStats}
+          statsHandler={statsHandler}
+          getAsset={getAsset}
+          items={itemsJsonFiltered}
+        />
+      </div>
     </>
   );
 }

@@ -41,10 +41,10 @@ export default function ExpButtons({
   }, [changeExp]);
 
   useEffect(() => {
-    const btnTimeout = activeWindow.setTimeout(() => onButtonPress(), 100);
+    const btnTimeout = window.setTimeout(() => onButtonPress(), 100);
 
     return () => {
-      activeWindow.clearTimeout(btnTimeout);
+      window.clearTimeout(btnTimeout);
     };
   }, [userStats.exp, onButtonPress]);
 

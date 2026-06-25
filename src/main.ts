@@ -24,8 +24,9 @@ export default class VirtualPet extends Plugin {
     this.addSettingTab(new SettingsTab(this.app, this));
   }
 
-  async onunload() {
-    await this.statsHandler.saveUserData();
+  onunload() {
+    this.statsHandler.saveUserData();
+
     this.app.workspace
       .getLeavesOfType(VIEW_TYPE_VIRTUAL_PET)
       .forEach((leaf) => leaf.detach());
