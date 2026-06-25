@@ -16,7 +16,6 @@ import { useAssets } from "src/contexts/AssetsContext";
 import { PetTopBar } from "./PetTopBar";
 import animations from "src/jsons/animations.json";
 import animationsTimes from "src/jsons/animationsTimes.json";
-import { DebugTools } from "../debug-tools/DebugTools";
 
 interface PetViewI {
   statsHandler: StatsHandler;
@@ -168,6 +167,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         </span>
       </div>
 
+      {/*
       <DebugTools
         userStats={userStats}
         userItems={userItems}
@@ -178,6 +178,7 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         toDefaults={toDefaults}
         changeAnimation={changeAnimation}
       />
+*/}
     </>
   );
 }
