@@ -79,12 +79,13 @@ export default class VirualPetView extends ItemView {
     );
 
     this.registerEvent(
-      this.app.workspace.on("editor-paste", (clipboardEvent) => {
+      this.app.workspace.on("editor-paste", (evt) => {
+        if (evt.defaultPrevented) return;
+
+        evt.preventDefault();
+
         // Count the pasted words and add them to the userData
-        calcAndAddPastedText(
-          clipboardEvent,
-          this.statsHandler.addWordsToFileCount,
-        );
+        calcAndAddPastedText(evt, this.statsHandler.addWordsToFileCount);
         this.isPasted = true;
       }),
     );

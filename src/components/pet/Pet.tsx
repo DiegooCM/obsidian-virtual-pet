@@ -130,7 +130,7 @@ export const Pet = memo(function Pet({
       previousAnimationIdxRef.current = animationIdx;
 
       // Start new loop
-      animationFrameIdRef.current = requestAnimationFrame(animate);
+      animationFrameIdRef.current = window.requestAnimationFrame(animate);
     },
     [animation, checkIsInside, mainRef, userItems.equiped.Accessories],
   );
@@ -143,13 +143,13 @@ export const Pet = memo(function Pet({
       if (animationFrameIdRef.current)
         cancelAnimationFrame(animationFrameIdRef.current);
       // Start a new animation
-      animationFrameIdRef.current = requestAnimationFrame(animate);
+      animationFrameIdRef.current = window.requestAnimationFrame(animate);
     }
 
     cancelAnimationFrame(animationFrameIdRef.current);
 
     if (isPluginActive) {
-      animationFrameIdRef.current = requestAnimationFrame(animate);
+      animationFrameIdRef.current = window.requestAnimationFrame(animate);
     }
 
     return () => {

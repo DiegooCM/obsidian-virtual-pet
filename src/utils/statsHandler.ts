@@ -160,7 +160,9 @@ export default class StatsHandler {
   // Gets the userData from the data.json and save them in the state
   getUserDataFromJson = async (): Promise<void> => {
     try {
-      const data: UserDataJson = await this.plugin.loadData();
+      const dataJson = await this.plugin.loadData();
+      const data = dataJson as UserDataJson;
+
       if (Object.keys(data).length === 0) return;
 
       // Checks if the user has stats

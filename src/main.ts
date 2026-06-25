@@ -25,7 +25,9 @@ export default class VirtualPet extends Plugin {
   }
 
   onunload() {
-    this.statsHandler.saveUserData();
+    this.statsHandler.saveUserData().catch((error) => {
+      console.error("Virtual Pet: ", error);
+    });
 
     this.app.workspace
       .getLeavesOfType(VIEW_TYPE_VIRTUAL_PET)
