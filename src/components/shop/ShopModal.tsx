@@ -2,7 +2,6 @@ import { App, Modal } from "obsidian";
 import StatsHandler from "src/utils/statsHandler";
 import { GetAssetT, UserItems, UserStats } from "src/types";
 import { Root, createRoot } from "react-dom/client";
-import { createElement } from "react";
 import { Shop } from "./Shop";
 
 export class ShopModal extends Modal {
@@ -39,12 +38,12 @@ export class ShopModal extends Modal {
   createShop = () => {
     this.reactRoot = createRoot(this.contentEl);
     this.reactRoot.render(
-      createElement(Shop, {
-        userItems: this.userItems,
-        userStats: this.userStats,
-        statsHandler: this.statsHandler,
-        getAsset: this.getAsset,
-      }),
+      <Shop
+        userItems={this.userItems}
+        userStats={this.userStats}
+        statsHandler={this.statsHandler}
+        getAsset={this.getAsset}
+      />,
     );
   };
 }

@@ -1,6 +1,6 @@
 // https://docs.obsidian.md/Plugins/User+interface/Views
 import { ItemView, WorkspaceLeaf } from "obsidian";
-import { createElement, createRef, RefObject } from "react";
+import { createRef, RefObject } from "react";
 import { Root, createRoot } from "react-dom/client";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
 import StatsHandler from "./utils/statsHandler";
@@ -42,11 +42,11 @@ export default class VirualPetView extends ItemView {
 
     this.reactRoot = createRoot(reactContainer);
     this.reactRoot.render(
-      createElement(PetWrapper, {
-        statsHandler: this.statsHandler,
-        app: this.app,
-        ref: this.petViewRef,
-      }),
+      <PetWrapper
+        statsHandler={this.statsHandler}
+        app={this.app}
+        ref={this.petViewRef}
+      />,
     );
 
     this.registerEvent(
