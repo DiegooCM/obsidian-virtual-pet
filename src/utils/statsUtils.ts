@@ -9,10 +9,6 @@ export const calcAndAddPastedText = (
   clipboardEvent: ClipboardEvent,
   addWordsToFileCount: (words: number) => void,
 ) => {
-  if (clipboardEvent.defaultPrevented) return;
-
-  clipboardEvent.preventDefault();
-
   const pastedText = clipboardEvent.clipboardData?.getData("text");
 
   if (pastedText) {

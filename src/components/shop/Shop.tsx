@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { defaultFilters } from "src/constants";
+import { DEFAULT_FILTERS } from "src/constants";
 import StatsHandler from "src/utils/statsHandler";
 import { GetAssetT, UserItems, UserStats } from "src/types";
 import { ShopFilter } from "./ShopFilter";
 import { ShopItems } from "./ShopItems";
-import { filterItems } from "src/utils/shopUtils";
+import { filterItems } from "src/utils/itemsUtils";
 import { ShopHeader } from "./ShopHeader";
 
 interface ShopI {
@@ -15,7 +15,7 @@ interface ShopI {
 }
 
 export function Shop({ userItems, userStats, statsHandler, getAsset }: ShopI) {
-  const [filters, setFilters] = useState(defaultFilters);
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
 
   const itemsJsonFiltered = filterItems(filters, userItems);
 

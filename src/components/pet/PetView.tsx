@@ -115,18 +115,13 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
     };
   });
 
-  // Obtains the data from data.json and set to default the animations
+  // Updates de stats and items, and set to default the animations
   useEffect(() => {
-    statsHandler
-      .getUserDataFromJson()
-      .then(() => {
-        updateUserStats();
-        updateUserItems();
-      })
-      .catch(() => console.error("Virtual Pet: Error while getting user data"));
+    updateUserStats();
+    updateUserItems();
     toDefaults();
     triggerSleeping(() => toDefaults());
-  }, [statsHandler]);
+  }, []);
 
   useEffect(() => {
     // Add the user actual background or the default one to the mainRef

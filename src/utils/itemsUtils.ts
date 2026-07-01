@@ -1,15 +1,30 @@
 import Items from "src/jsons/items.json";
+import { ItemCategory } from "src/types";
 import { Filter, Filters, ItemsJson, UserItems } from "src/types";
 
-export function filterItems(filters: Filters, userItems: UserItems): ItemsJson {
-  let itemsJsonFiltered = JSON.parse(JSON.stringify(Items)) as ItemsJson;
+const accessoriesItems = Items.find(
+  (itemsCategory) => itemsCategory.category === "Accessories",
+)?.items.map((i) => i.name);
+const backgroundsItems = Items.find(
+  (itemsCategory) => itemsCategory.category === "Backgrounds",
+)?.items.map((i) => i.name);
 
-  const filterByCategory = ({ filter }: { filter: Filter }) => {
+export function isValidItem(category: ItemCategory, item: string): boolean {
+  if (category === "Accessories" && accessoriesItems)
+    return accessoriesItems.contains(item);
+  if (category === "Backgrounds" && backgroundsItems)
+    return backgroundsItems.contains(item);
+  return false;
+}
+
+export function filterItems(filters: Filters, userItems: UserItems): ItemsJson {
+  const filterByCategory = (filter: Filter) => {
     if (!Object.values(filter.options).contains(false)) return;
     // Gets the categories to filter (category: false), from the filter.
     const toFilter = Object.entries(filter.options)
       .filter(([, val]) => !val)
       .map((f) => f[0]);
+    console.log("toFilter: ", toFilter);
 
     // Filter the itemsJson with the toFilter.
     toFilter.map((filterCategory) => {
@@ -18,7 +33,7 @@ export function filterItems(filters: Filters, userItems: UserItems): ItemsJson {
       );
     });
   };
-  const filterByPurchaseStatus = ({ filter }: { filter: Filter }) => {
+  const filterByPurchaseStatus = (filter: Filter) => {
     if (!Object.values(filter.options).contains(false)) return;
 
     const toFilter = Object.entries(filter.options)
@@ -40,7 +55,7 @@ export function filterItems(filters: Filters, userItems: UserItems): ItemsJson {
     });
   };
 
-  const filterByEquipmentStatus = ({ filter }: { filter: Filter }) => {
+  const filterByEquipmentStatus = (filter: Filter) => {
     if (!Object.values(filter.options).contains(false)) return;
 
     const toFilter = Object.entries(filter.options)
@@ -61,9 +76,22 @@ export function filterItems(filters: Filters, userItems: UserItems): ItemsJson {
     });
   };
 
-  filterByCategory({ filter: filters[0] });
-  filterByPurchaseStatus({ filter: filters[1] });
-  filterByEquipmentStatus({ filter: filters[2] });
+  let itemsJsonFiltered = JSON.parse(JSON.stringify(Items)) as ItemsJson;
+
+  const [categoryFilter, purchaseFilter, equipmentFilter] = filters;
+
+  const isEmpty = filters.map((f) => {
+    if (Object.values(f.options).every((i) => i === false)) return true;
+    else {
+      return false;
+    }
+  });
+
+  if (isEmpty.contains(true)) return [];
+
+  filterByCategory(categoryFilter);
+  filterByPurchaseStatus(purchaseFilter);
+  filterByEquipmentStatus(equipmentFilter);
 
   return itemsJsonFiltered;
 }

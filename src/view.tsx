@@ -106,6 +106,9 @@ export default class VirualPetView extends ItemView {
   }
 
   onClose(): Promise<void> {
+    this.statsHandler.saveUserData().catch((error) => {
+      console.error("Failed saving user data: ", error);
+    });
     if (this.reactRoot) {
       this.reactRoot.unmount();
       this.reactRoot = null;

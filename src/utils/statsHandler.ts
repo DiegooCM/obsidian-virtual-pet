@@ -1,12 +1,15 @@
+import Items from "src/jsons/items.json";
 import { Plugin, TFile, Vault, Workspace } from "obsidian";
 import { countWords } from "../utils/statsUtils";
 import {
   ItemCategory,
+  ItemsJson,
   UserData,
   UserDataJson,
   UserItems,
   UserStats,
 } from "../types";
+import { DEFAULT_USER_ITEMS, DEFAULT_USER_STATS } from "src/constants";
 
 export default class StatsHandler {
   private vault: Vault;
@@ -20,7 +23,12 @@ export default class StatsHandler {
   private isDataLoaded: boolean = false;
   private prohibitedTagsList = ["excalidraw-plugin"];
 
-  constructor(vault: Vault, workspace: Workspace, plugin: Plugin) {
+  constructor(
+    vault: Vault,
+    workspace: Workspace,
+    plugin: Plugin,
+    rawData: unknown,
+  ) {
     this.vault = vault;
     this.workspace = workspace;
     this.plugin = plugin;
@@ -29,22 +37,118 @@ export default class StatsHandler {
       filesCount: -1,
       fileWordCount: -1,
     };
-    this.userStats = {
-      exp: 0,
-      expGoal: 100,
-      level: 1,
-      coins: 0,
-    };
-    this.userItems = {
-      equiped: {
-        Backgrounds: "Light Default",
-        Accessories: "",
-      },
-      obtained: {
-        Backgrounds: ["Light Default"],
-        Accessories: [""],
-      },
-    };
+
+    this.userStats = this.sanitizeUserStats(rawData);
+    this.userItems = this.sanitizeUserItems(rawData);
+    this.isDataLoaded = true;
+  }
+
+  // Muy mejorable, varias variables de estas se pueden guardar para no tener que iterar todo el rato
+  // Moverlo también de archivo la función esta
+  isValidItem(category: ItemCategory, item: string): boolean {
+    const itemsJson = JSON.parse(JSON.stringify(Items)) as ItemsJson;
+
+    const itemsOfCategory = itemsJson.find(
+      (i) => i.category === category,
+    )?.items;
+
+    if (!itemsOfCategory) return false;
+
+    const itemsNames = itemsOfCategory.map((i) => i.name);
+
+    return itemsNames.contains(item);
+  }
+
+  // Moverlo también de archivo la función esta
+  // Y la otra también
+  sanitizeUserStats(rawData: unknown): UserStats {
+    if (
+      !rawData ||
+      typeof rawData !== "object" ||
+      !("userStats" in rawData) ||
+      typeof rawData.userStats !== "object"
+    )
+      return DEFAULT_USER_STATS;
+
+    return Object.assign(DEFAULT_USER_STATS, rawData.userStats);
+  }
+
+  sanitizeUserItems(rawData: unknown): UserItems {
+    if (
+      !rawData ||
+      typeof rawData !== "object" ||
+      !("userItems" in rawData) ||
+      !rawData.userItems ||
+      typeof rawData.userItems !== "object"
+    )
+      return DEFAULT_USER_ITEMS;
+
+    const rawUserItems = rawData.userItems;
+    const sanitizedUserItems: UserItems = DEFAULT_USER_ITEMS;
+
+    // Hacer una función para que compruebe que los elementos que se le pasan existen
+
+    // Equiped
+    // Si hay un equiped correcto se pone lo del data
+    if (
+      "equiped" in rawUserItems &&
+      typeof rawUserItems.equiped === "object" &&
+      rawUserItems.equiped
+    ) {
+      if (
+        "Backgrounds" in rawUserItems.equiped &&
+        typeof rawUserItems.equiped.Backgrounds === "string" &&
+        this.isValidItem("Backgrounds", rawUserItems.equiped.Backgrounds)
+      ) {
+        sanitizedUserItems.equiped.Backgrounds =
+          rawUserItems.equiped.Backgrounds;
+      }
+      if (
+        "Accessories" in rawUserItems.equiped &&
+        typeof rawUserItems.equiped.Accessories === "string" &&
+        this.isValidItem("Accessories", rawUserItems.equiped.Accessories)
+      ) {
+        sanitizedUserItems.equiped.Accessories =
+          rawUserItems.equiped.Accessories;
+      }
+    }
+
+    if (
+      "obtained" in rawUserItems &&
+      typeof rawUserItems.obtained === "object" &&
+      rawUserItems.obtained
+    ) {
+      if (
+        "Backgrounds" in rawUserItems.obtained &&
+        Array.isArray(rawUserItems.obtained.Backgrounds)
+      ) {
+        for (const item of rawUserItems.obtained.Backgrounds) {
+          if (
+            typeof item === "string" &&
+            !sanitizedUserItems.obtained.Backgrounds.includes(item) &&
+            this.isValidItem("Backgrounds", item)
+          ) {
+            sanitizedUserItems.obtained.Backgrounds.push(item);
+          }
+        }
+      }
+      if (
+        "Accessories" in rawUserItems.obtained &&
+        Array.isArray(rawUserItems.obtained.Accessories)
+      ) {
+        for (const item of rawUserItems.obtained.Accessories) {
+          if (
+            typeof item === "string" &&
+            !sanitizedUserItems.obtained.Accessories.includes(item) &&
+            this.isValidItem("Accessories", item)
+          ) {
+            sanitizedUserItems.obtained.Accessories.push(item);
+          }
+        }
+      }
+    }
+
+    return sanitizedUserItems;
   }
 
   onFileOpen = (tFile: TFile | null) => {
@@ -155,28 +259,6 @@ export default class StatsHandler {
 
   getUserItems = (): UserItems => {
     return { ...this.userItems };
-  };
-
-  // Gets the userData from the data.json and save them in the state
-  getUserDataFromJson = async (): Promise<void> => {
-    try {
-      const dataJson = await this.plugin.loadData();
-      const data = dataJson as UserDataJson;
-
-      if (Object.keys(data).length === 0) return;
-
-      // Checks if the user has stats
-      if (data.userStats) {
-        this.userStats = { ...data.userStats };
-      }
-      if (data.userItems) {
-        this.userItems = { ...data.userItems };
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      this.isDataLoaded = true;
-    }
   };
 
   saveUserData = async (): Promise<void> => {

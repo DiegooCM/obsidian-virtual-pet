@@ -36,8 +36,6 @@ type UserItemsObtained = {
 type ItemJson = {
   name: string;
   price: number;
-  url: string;
-  urlShop?: string;
 };
 
 export type ItemsCategory = {

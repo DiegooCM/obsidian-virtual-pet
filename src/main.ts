@@ -5,16 +5,19 @@ import { SettingsTab } from "./components/config/SettingsTab";
 import StatsHandler from "./utils/statsHandler";
 
 export default class VirtualPet extends Plugin {
-  private statsHandler: StatsHandler = new StatsHandler(
-    this.app.vault,
-    this.app.workspace,
-    this,
-  );
-
   async onload() {
+    const rawData = await this.loadData();
+
+    const statsHandler: StatsHandler = new StatsHandler(
+      this.app.vault,
+      this.app.workspace,
+      this,
+      rawData,
+    );
+
     this.registerView(
       VIEW_TYPE_VIRTUAL_PET,
-      (leaf: WorkspaceLeaf) => new VirualPetView(leaf, this.statsHandler),
+      (leaf: WorkspaceLeaf) => new VirualPetView(leaf, statsHandler),
     );
 
     if (this.app.workspace.layoutReady) {
@@ -25,10 +28,6 @@ export default class VirtualPet extends Plugin {
   }
 
   onunload() {
-    this.statsHandler.saveUserData().catch((error) => {
-      console.error("Virtual Pet: ", error);
-    });
-
     this.app.workspace
       .getLeavesOfType(VIEW_TYPE_VIRTUAL_PET)
       .forEach((leaf) => leaf.detach());

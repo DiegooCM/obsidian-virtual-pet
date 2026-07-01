@@ -2,7 +2,7 @@ import { Filters } from "./types";
 
 export const VIEW_TYPE_VIRTUAL_PET = "virtual-pet";
 
-export const defaultFilters: Filters = [
+export const DEFAULT_FILTERS: Filters = [
   {
     category: "Category",
     options: {
@@ -28,3 +28,21 @@ export const defaultFilters: Filters = [
     isOpen: false,
   },
 ];
+
+export const DEFAULT_USER_STATS = {
+  exp: 0,
+  expGoal: 100,
+  level: 1,
+  coins: 0,
+};
+
+export const DEFAULT_USER_ITEMS = {
+  equiped: {
+    Backgrounds: "Light Default",
+    Accessories: "",
+  },
+  obtained: {
+    Backgrounds: ["Light Default"],
+    Accessories: [""],
+  },
+};
