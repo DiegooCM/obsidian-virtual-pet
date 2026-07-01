@@ -16,6 +16,6 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "./assetsToJson.js", "eslint.config.js"],
+  "include": ["**/*.ts", "**/*.tsx", "eslint.config.js"],
   "sourceMap": true
 }

@@ -1,6 +1,6 @@
 export const countWords = (text: string): number => {
   const regex =
-    /([^\x00-\x40\x5B-\x60\x7B-\xBF\u02B0-\u036F\u00D7\u00F7\u2000-\u2BFF])+/gu;
+    /([^\x20-\x40\x5B-\x60\x7B-\xBF\u02B0-\u036F\u00D7\u00F7\u2000-\u2BFF])+/gu;
 
   return (text.match(regex) || []).length;
 };

@@ -5,7 +5,6 @@ import {
   ItemCategory,
   ItemsJson,
   UserData,
-  UserDataJson,
   UserItems,
   UserStats,
 } from "../types";
@@ -43,8 +42,9 @@ export default class StatsHandler {
     this.isDataLoaded = true;
   }
 
-  // Muy mejorable, varias variables de estas se pueden guardar para no tener que iterar todo el rato
-  // Moverlo también de archivo la función esta
+  /**
+   * Checks if the given item exists in item.json
+   */
   isValidItem(category: ItemCategory, item: string): boolean {
     const itemsJson = JSON.parse(JSON.stringify(Items)) as ItemsJson;
 
@@ -59,20 +59,37 @@ export default class StatsHandler {
     return itemsNames.contains(item);
   }
 
-  // Moverlo también de archivo la función esta
-  // Y la otra también
+  /**
+   * Checks that userStats of the data.json are correct and if not the default values are given
+   */
   sanitizeUserStats(rawData: unknown): UserStats {
     if (
       !rawData ||
       typeof rawData !== "object" ||
       !("userStats" in rawData) ||
-      typeof rawData.userStats !== "object"
+      typeof rawData.userStats !== "object" ||
+      !rawData.userStats
     )
       return DEFAULT_USER_STATS;
 
-    return Object.assign(DEFAULT_USER_STATS, rawData.userStats);
+    const rawUserStats: object = rawData.userStats;
+    const sanitizedUserStats: UserStats = DEFAULT_USER_STATS;
+
+    if ("exp" in rawUserStats && typeof rawUserStats.exp === "number")
+      sanitizedUserStats.exp = rawUserStats.exp;
+    if ("expGoal" in rawUserStats && typeof rawUserStats.expGoal === "number")
+      sanitizedUserStats.expGoal = rawUserStats.expGoal;
+    if ("level" in rawUserStats && typeof rawUserStats.level === "number")
+      sanitizedUserStats.level = rawUserStats.level;
+    if ("coins" in rawUserStats && typeof rawUserStats.coins === "number")
+      sanitizedUserStats.coins = rawUserStats.coins;
+
+    return sanitizedUserStats;
   }
 
+  /**
+   * Checks that userItats of the data.json are correct and if not the default values are given
+   */
   sanitizeUserItems(rawData: unknown): UserItems {
     if (
       !rawData ||
@@ -86,10 +103,6 @@ export default class StatsHandler {
     const rawUserItems = rawData.userItems;
     const sanitizedUserItems: UserItems = DEFAULT_USER_ITEMS;
 
-    // Hacer una función para que compruebe que los elementos que se le pasan existen
-
-    // Equiped
-    // Si hay un equiped correcto se pone lo del data
     if (
       "equiped" in rawUserItems &&
       typeof rawUserItems.equiped === "object" &&

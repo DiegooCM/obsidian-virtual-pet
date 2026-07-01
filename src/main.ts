@@ -6,7 +6,7 @@ import StatsHandler from "./utils/statsHandler";
 
 export default class VirtualPet extends Plugin {
   async onload() {
-    const rawData = await this.loadData();
+    const rawData: unknown = await this.loadData();
 
     const statsHandler: StatsHandler = new StatsHandler(
       this.app.vault,
