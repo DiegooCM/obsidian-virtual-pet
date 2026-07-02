@@ -54,15 +54,6 @@ export interface PetAnimation {
   fps: number;
 }
 
-export type DefaultsNext = "walk" | "stand" | "next";
-
-export interface AnimationsHandlerI {
-  animation: PetAnimation;
-  triggerSleeping: (ifSleeping: () => void) => void;
-  toDefaults: (next?: DefaultsNext) => void;
-  changeAnimation: (newAnimation: PetAnimation, duration?: number) => void;
-}
-
 export type PetViewRef = {
   triggerChild: (actions: UserActions) => void;
 };

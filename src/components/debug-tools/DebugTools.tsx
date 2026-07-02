@@ -1,8 +1,9 @@
 import UserInfo from "src/components/debug-tools/UserInfo";
 import PetButtons from "src/components/debug-tools/PetButtons";
 import ExpButtons from "src/components/debug-tools/ExpButtons";
-import { AnimationsHandlerI, UserItems, UserStats } from "src/types";
+import { UserItems, UserStats } from "src/types";
 import StatsHandler from "src/utils/statsHandler";
+import { AnimationsHandlerI } from "src/hooks/useAnimationsHandler";
 
 interface DebugToolsI {
   userStats: UserStats;

@@ -1,5 +1,6 @@
-import type { AnimationsHandlerI, PetAnimation } from "src/types";
+import type { PetAnimation } from "src/types";
 import animations from "src/jsons/animations.json";
+import { AnimationsHandlerI } from "src/hooks/useAnimationsHandler";
 
 type PetButtonsType = {
   animation: PetAnimation;

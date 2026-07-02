@@ -46,3 +46,5 @@ export const DEFAULT_USER_ITEMS = {
     Accessories: [""],
   },
 };
+
+export const DEFAULT_ANIMATIONS = ["walk", "stand"] as const;

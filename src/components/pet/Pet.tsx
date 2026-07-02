@@ -1,6 +1,7 @@
 import { memo, RefObject, useCallback, useEffect, useRef } from "react";
 import { useAssets } from "src/contexts/AssetsContext";
-import { AnimationsHandlerI, PetAnimation, UserItems } from "src/types";
+import { AnimationsHandlerI } from "src/hooks/useAnimationsHandler";
+import { PetAnimation, UserItems } from "src/types";
 
 interface Props {
   isPluginActive: boolean;
