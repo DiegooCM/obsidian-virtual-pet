@@ -116,7 +116,7 @@ const ShopItem = ({
       />
 
       <div className="vpet-category-item__info">
-        <p className="vpet-category-item__name">{item.name}</p>
+        <h3 className="vpet-category-item__name">{item.name}</h3>
         <ItemButton
           itemState={itemState}
           userStats={userStats}

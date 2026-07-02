@@ -414,7 +414,8 @@
 
 .vpet-category-item__name {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.8rem;
+  font-weight: 400;
 }
 
 #vpet-category-item__button-equiped {
