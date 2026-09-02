@@ -23,9 +23,9 @@ export const Pet = memo(function Pet({
   mainRef,
 }: Props) {
   // Refs
-  const petRef: RefObject<HTMLImageElement | null> = useRef(null);
-  const petAccessoryRef: RefObject<HTMLImageElement | null> = useRef(null);
-  const petContainerRef: RefObject<HTMLDivElement | null> = useRef(null);
+  const petRef: RefObject<HTMLImageElement> | undefined = useRef(null);
+  const petAccessoryRef: RefObject<HTMLImageElement> | undefined = useRef(null);
+  const petContainerRef: RefObject<HTMLDivElement> | undefined = useRef(null);
   const petAccessoryHiddenClassName = "vpet-pet__accessory_hidden";
 
   const petScaleRef = useRef<number>(1.5);
@@ -33,7 +33,7 @@ export const Pet = memo(function Pet({
 
   const previousAnimationIdxRef = useRef<number>(0);
   const animationFrameIdRef = useRef<number>(0);
-  const actualAnimationRef = useRef<PetAnimation>(null);
+  const actualAnimationRef = useRef<PetAnimation>();
   const isOutsideTimeoutRef = useRef<number>(0);
 
   const isOutsideRef = useRef<boolean>(false);

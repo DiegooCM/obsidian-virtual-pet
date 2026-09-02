@@ -1,4 +1,4 @@
-import { createContext, ReactNode, use, useEffect } from "react";
+import { createContext, ReactNode, useContext, useEffect } from "react";
 import { AssetCategoriesT, AssetsT, AssetsContextI } from "src/types";
 import AssetsJson from "src/jsons/assets.json";
 
@@ -13,7 +13,7 @@ const assetsDefault: AssetsT = {
   Others: {},
 };
 
-const AssetsContext = createContext<AssetsContextI | undefined>(undefined);
+const AssetsContext = createContext<AssetsContextI | null>(null);
 
 export const AssetsProvider = ({ children }: AssetsProviderI) => {
   const assetsStored = assetsDefault;
@@ -78,13 +78,17 @@ export const AssetsProvider = ({ children }: AssetsProviderI) => {
     };
   }, [assetsStored]);
 
-  return <AssetsContext value={{ getAsset }}>{children}</AssetsContext>;
+  return (
+    <AssetsContext.Provider value={{ getAsset }}>
+      {children}
+    </AssetsContext.Provider>
+  );
 };
 
 export const useAssets = () => {
-  const context = use(AssetsContext);
-  if (context === undefined) {
-    throw new Error("useTab must be used within a TabProvider");
+  const context = useContext(AssetsContext);
+  if (context === null) {
+    throw new Error("useAssets must be used within a AssetsProvider");
   }
   return context;
 };

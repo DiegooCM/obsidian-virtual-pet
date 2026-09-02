@@ -5,19 +5,21 @@ import { Root, createRoot } from "react-dom/client";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
 import StatsHandler from "./utils/statsHandler";
 import { PetViewRef } from "./types";
-import { PetWrapper } from "./components/pet/PetWrapper";
 import { calcAndAddPastedText } from "./utils/statsUtils";
+import { PetView } from "./components/pet/PetView";
+import { AssetsProvider } from "./contexts/AssetsContext";
 
 export default class VirualPetView extends ItemView {
   private reactRoot: Root | null = null;
   public statsHandler: StatsHandler;
-  private petViewRef: RefObject<PetViewRef | null>;
+  private petViewRef: RefObject<PetViewRef>;
   private isPasted = false;
 
   constructor(leaf: WorkspaceLeaf, statsHandler: StatsHandler) {
     super(leaf);
 
-    this.petViewRef = createRef();
+    // eslint-disable-next-line @eslint-react/no-create-ref
+    this.petViewRef = createRef<PetViewRef>();
     this.statsHandler = statsHandler;
   }
 
@@ -42,11 +44,13 @@ export default class VirualPetView extends ItemView {
 
     this.reactRoot = createRoot(reactContainer);
     this.reactRoot.render(
-      <PetWrapper
-        statsHandler={this.statsHandler}
-        app={this.app}
-        ref={this.petViewRef}
-      />,
+      <AssetsProvider>
+        <PetView
+          statsHandler={this.statsHandler}
+          app={this.app}
+          ref={this.petViewRef}
+        />
+      </AssetsProvider>,
     );
 
     this.registerEvent(

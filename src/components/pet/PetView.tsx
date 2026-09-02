@@ -1,5 +1,6 @@
 import {
-  Ref,
+  forwardRef,
+  memo,
   RefObject,
   useCallback,
   useEffect,
@@ -20,149 +21,150 @@ import animationsTimes from "src/jsons/animationsTimes.json";
 interface PetViewI {
   statsHandler: StatsHandler;
   app: App;
-  ref: Ref<PetViewRef>;
 }
 
-export default function PetView({ statsHandler, app, ref }: PetViewI) {
-  const [isPluginActive, setIsPluginActive] = useState<boolean>(false);
-  const [userStats, setUserStats] = useState(statsHandler.getUserStats());
-  const [userItems, setUserItems] = useState(statsHandler.getUserItems());
-  const animationsTextRef = useRef<HTMLHeadingElement>(null);
-  const mainRef: RefObject<HTMLDivElement | null> = useRef(null);
-  const { getAsset } = useAssets();
+export const PetView = memo(
+  forwardRef<PetViewRef, PetViewI>(function PetView(props, ref) {
+    const { statsHandler, app } = { ...props };
 
-  const { animation, triggerSleeping, toDefaults, changeAnimation } =
-    useAnimationsHandler();
+    const [isPluginActive, setIsPluginActive] = useState<boolean>(false);
+    const [userStats, setUserStats] = useState(statsHandler.getUserStats());
+    const [userItems, setUserItems] = useState(statsHandler.getUserItems());
+    const animationsTextRef = useRef<HTMLHeadingElement>(null);
+    const mainRef: RefObject<HTMLDivElement> | null = useRef(null);
+    const { getAsset } = useAssets();
 
-  // Checks if the plugin is open, and if is not it stops the animation
-  const checkWidth = () => {
-    if (!mainRef.current) {
-      setIsPluginActive(false);
-      return;
-    }
+    const { animation, triggerSleeping, toDefaults, changeAnimation } =
+      useAnimationsHandler();
 
-    const actualWidth = mainRef.current.clientWidth;
-
-    if (actualWidth > 0 && !isPluginActive) setIsPluginActive(true);
-    if (actualWidth < 0 && isPluginActive) setIsPluginActive(false);
-  };
-
-  const levelUp = useCallback(
-    (newUserStats: UserStats) => {
-      // Change the pet animation to celebrate
-      changeAnimation(animations.celebrate, animationsTimes.levelUp);
-
-      // Activate the "Level Up" text, waits 3s and desactivate it
-      if (animationsTextRef.current)
-        //animationsTextRef.current.style.display = "block";
-        animationsTextRef.current.setCssProps({ display: "block" });
-
-      window.setTimeout(() => {
-        if (animationsTextRef.current)
-          animationsTextRef.current.setCssProps({ display: "none" });
-      }, 3000);
-
-      const newExp = newUserStats.exp - newUserStats.expGoal;
-      setUserStats(statsHandler.petLevelUp(newExp));
-    },
-    [changeAnimation, statsHandler],
-  );
-
-  const updateUserStats = useCallback(() => {
-    const newUserStats = statsHandler.getUserStats();
-
-    if (JSON.stringify(newUserStats) !== JSON.stringify(userStats)) {
-      // Level up
-      if (newUserStats.exp >= newUserStats.expGoal) {
-        levelUp(newUserStats);
+    // Checks if the plugin is open, and if is not it stops the animation
+    const checkWidth = () => {
+      if (!mainRef.current) {
+        setIsPluginActive(false);
+        return;
       }
-      // Not level up
-      else {
-        setUserStats(newUserStats);
-      }
-    }
-  }, [levelUp, statsHandler, userStats]);
 
-  const updateUserItems = useCallback(() => {
-    const newUserItems = statsHandler.getUserItems();
+      const actualWidth = mainRef.current.clientWidth;
 
-    if (JSON.stringify(newUserItems) !== JSON.stringify(userItems)) {
-      setUserItems(newUserItems);
-    }
-  }, [statsHandler, userItems]);
-
-  // To expose the onUserAction function on the ref
-  useImperativeHandle<PetViewRef, PetViewRef>(ref, () => {
-    return {
-      triggerChild(actions: UserActions) {
-        actions.forEach((action) => {
-          if (action === "check-width") {
-            checkWidth();
-            return;
-          }
-          if (action === "handle-sleep") {
-            triggerSleeping(() => {
-              changeAnimation(animations.code, animationsTimes.coding);
-            });
-            return;
-          }
-          if (action === "update-stats") {
-            updateUserStats();
-            return;
-          }
-        });
-      },
+      if (actualWidth > 0 && !isPluginActive) setIsPluginActive(true);
+      if (actualWidth < 0 && isPluginActive) setIsPluginActive(false);
     };
-  });
 
-  // Updates de stats and items, and set to default the animations
-  useEffect(() => {
-    updateUserStats();
-    updateUserItems();
-    toDefaults();
-    triggerSleeping(() => toDefaults());
-  }, []);
+    const levelUp = useCallback(
+      (newUserStats: UserStats) => {
+        // Change the pet animation to celebrate
+        changeAnimation(animations.celebrate, animationsTimes.levelUp);
 
-  useEffect(() => {
-    // Add the user actual background or the default one to the mainRef
-    getAsset("Backgrounds", userItems.equiped.Backgrounds || "Light Default")
-      .then((asset) => {
-        if (mainRef.current)
-          mainRef.current.style.backgroundImage = `url(${asset})`;
-      })
-      .catch(() =>
-        console.error("Virtual Pet: An error ocurred while loading assets"),
-      );
-  }, [getAsset, userItems.equiped.Backgrounds]);
+        // Activate the "Level Up" text, waits 3s and desactivate it
+        if (animationsTextRef.current)
+          //animationsTextRef.current.style.display = "block";
+          animationsTextRef.current.setCssProps({ display: "block" });
 
-  return (
-    <>
-      <div className="vpet-main" ref={mainRef}>
-        <PetTopBar
-          app={app}
-          statsHandler={statsHandler}
-          setUserItems={setUserItems}
-          userStats={userStats}
-        />
-        <Pet
-          isPluginActive={isPluginActive}
-          animation={animation}
-          userLevel={userStats.level}
-          userItems={userItems}
-          mainRef={mainRef}
-          toDefaults={toDefaults}
-          triggerSleeping={triggerSleeping}
-        />
-        <span
-          className="vpet-main__level-up-text"
-          ref={animationsTextRef}
-          style={{ display: "none" }}
-        >
-          LEVEL UP!
-        </span>
-      </div>
+        window.setTimeout(() => {
+          if (animationsTextRef.current)
+            animationsTextRef.current.setCssProps({ display: "none" });
+        }, 3000);
 
-      {/*
+        const newExp = newUserStats.exp - newUserStats.expGoal;
+        setUserStats(statsHandler.petLevelUp(newExp));
+      },
+      [changeAnimation, statsHandler],
+    );
+
+    const updateUserStats = useCallback(() => {
+      const newUserStats = statsHandler.getUserStats();
+
+      if (JSON.stringify(newUserStats) !== JSON.stringify(userStats)) {
+        // Level up
+        if (newUserStats.exp >= newUserStats.expGoal) {
+          levelUp(newUserStats);
+        }
+        // Not level up
+        else {
+          setUserStats(newUserStats);
+        }
+      }
+    }, [levelUp, statsHandler, userStats]);
+
+    const updateUserItems = useCallback(() => {
+      const newUserItems = statsHandler.getUserItems();
+
+      if (JSON.stringify(newUserItems) !== JSON.stringify(userItems)) {
+        setUserItems(newUserItems);
+      }
+    }, [statsHandler, userItems]);
+
+    // To expose the onUserAction function on the ref
+    useImperativeHandle<PetViewRef, PetViewRef>(ref, () => {
+      return {
+        triggerChild(actions: UserActions) {
+          actions.forEach((action) => {
+            if (action === "check-width") {
+              checkWidth();
+              return;
+            }
+            if (action === "handle-sleep") {
+              triggerSleeping(() => {
+                changeAnimation(animations.code, animationsTimes.coding);
+              });
+              return;
+            }
+            if (action === "update-stats") {
+              updateUserStats();
+              return;
+            }
+          });
+        },
+      };
+    });
+
+    // Updates de stats and items, and set to default the animations
+    useEffect(() => {
+      updateUserStats();
+      updateUserItems();
+      toDefaults();
+      triggerSleeping(() => toDefaults());
+    }, []);
+
+    useEffect(() => {
+      // Add the user actual background or the default one to the mainRef
+      getAsset("Backgrounds", userItems.equiped.Backgrounds || "Light Default")
+        .then((asset) => {
+          if (mainRef.current)
+            mainRef.current.style.backgroundImage = `url(${asset})`;
+        })
+        .catch(() =>
+          console.error("Virtual Pet: An error ocurred while loading assets"),
+        );
+    }, [getAsset, userItems.equiped.Backgrounds]);
+
+    return (
+      <>
+        <div className="vpet-main" ref={mainRef}>
+          <PetTopBar
+            app={app}
+            statsHandler={statsHandler}
+            setUserItems={setUserItems}
+            userStats={userStats}
+          />
+          <Pet
+            isPluginActive={isPluginActive}
+            animation={animation}
+            userLevel={userStats.level}
+            userItems={userItems}
+            mainRef={mainRef}
+            toDefaults={toDefaults}
+            triggerSleeping={triggerSleeping}
+          />
+          <span
+            className="vpet-main__level-up-text"
+            ref={animationsTextRef}
+            style={{ display: "none" }}
+          >
+            LEVEL UP!
+          </span>
+        </div>
+        {/*
       <DebugTools
         userStats={userStats}
         userItems={userItems}
@@ -172,8 +174,8 @@ export default function PetView({ statsHandler, app, ref }: PetViewI) {
         animation={animation}
         toDefaults={toDefaults}
         changeAnimation={changeAnimation}
-      />
-*/}
-    </>
-  );
-}
+      /> */}
+      </>
+    );
+  }),
+);
