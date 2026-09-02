@@ -86,14 +86,6 @@ export const PetView = memo(
       }
     }, [levelUp, statsHandler, userStats]);
 
-    const updateUserItems = useCallback(() => {
-      const newUserItems = statsHandler.getUserItems();
-
-      if (JSON.stringify(newUserItems) !== JSON.stringify(userItems)) {
-        setUserItems(newUserItems);
-      }
-    }, [statsHandler, userItems]);
-
     // To expose the onUserAction function on the ref
     useImperativeHandle<PetViewRef, PetViewRef>(ref, () => {
       return {
@@ -120,8 +112,6 @@ export const PetView = memo(
 
     // Updates de stats and items, and set to default the animations
     useEffect(() => {
-      updateUserStats();
-      updateUserItems();
       toDefaults();
       triggerSleeping(() => toDefaults());
     }, []);
