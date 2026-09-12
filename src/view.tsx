@@ -5,7 +5,6 @@ import { Root, createRoot } from "react-dom/client";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
 import StatsHandler from "./utils/statsHandler";
 import { PetViewRef } from "./types";
-import { calcAndAddPastedText } from "./utils/statsUtils";
 import { PetView } from "./components/pet/PetView";
 import { AssetsProvider } from "./contexts/AssetsContext";
 
@@ -13,7 +12,6 @@ export default class VirualPetView extends ItemView {
   private reactRoot: Root | null = null;
   public statsHandler: StatsHandler;
   private petViewRef: RefObject<PetViewRef>;
-  private isPasted = false;
 
   constructor(leaf: WorkspaceLeaf, statsHandler: StatsHandler) {
     super(leaf);
@@ -54,42 +52,9 @@ export default class VirualPetView extends ItemView {
     );
 
     this.registerEvent(
-      this.app.workspace.on("quit", async () => {
-        await this.statsHandler.saveUserData();
-      }),
-    );
-
-    this.registerEvent(
-      // When a file is open
-      this.app.workspace.on("file-open", (tFile) => {
-        // Update info
-        this.statsHandler.onFileOpen(tFile);
-
-        // Sets data and stats in petview
-        this.petViewRef.current?.triggerChild(["update-stats"]);
-      }),
-    );
-
-    this.registerEvent(
       // When the user types
-      this.app.workspace.on("editor-change", (editor) => {
-        // Update info
-        const fileText = editor.getValue();
-        if (this.isPasted) this.isPasted = false;
-        else this.statsHandler.updateUserDataNStats(fileText);
-
+      this.app.workspace.on("editor-change", () => {
         this.petViewRef.current?.triggerChild(["handle-sleep", "update-stats"]);
-      }),
-    );
-
-    this.registerEvent(
-      this.app.workspace.on("editor-paste", (evt) => {
-        if (evt.defaultPrevented) return;
-
-        // Count the pasted words and add them to the userData
-        calcAndAddPastedText(evt, this.statsHandler.addWordsToFileCount);
-        this.isPasted = true;
-        return true;
       }),
     );
 
@@ -98,24 +63,14 @@ export default class VirualPetView extends ItemView {
         this.petViewRef.current?.triggerChild(["check-width"]);
       }),
     );
-
-    this.registerEvent(
-      this.app.workspace.on("active-leaf-change", async () => {
-        await this.statsHandler.saveUserData();
-      }),
-    );
-
     return Promise.resolve();
   }
 
-  onClose(): Promise<void> {
-    this.statsHandler.saveUserData().catch((error) => {
-      console.error("Failed saving user data: ", error);
-    });
+  async onClose() {
+    this.statsHandler.saveUserData();
     if (this.reactRoot) {
       this.reactRoot.unmount();
       this.reactRoot = null;
     }
-    return Promise.resolve();
   }
 }

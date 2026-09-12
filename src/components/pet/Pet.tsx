@@ -1,32 +1,47 @@
-import { memo, RefObject, useCallback, useEffect, useRef } from "react";
+import {
+  RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useSyncExternalStore,
+} from "react";
 import { useAssets } from "src/contexts/AssetsContext";
-import { AnimationsHandlerI } from "src/hooks/useAnimationsHandler";
 import { PetAnimation, UserItems } from "src/types";
+import StatsHandler from "src/utils/statsHandler";
+import animations from "src/jsons/animations.json";
+import animationsTimes from "src/jsons/animationsTimes.json";
+import { DEFAULT_ANIMATIONS } from "src/constants";
+
+type DefaultAnimations = (typeof DEFAULT_ANIMATIONS)[number];
 
 interface Props {
   isPluginActive: boolean;
-  animation: PetAnimation;
-  userLevel: number;
   userItems: UserItems;
-  toDefaults: AnimationsHandlerI["toDefaults"];
-  triggerSleeping: AnimationsHandlerI["triggerSleeping"];
+  statsHandler: StatsHandler;
   mainRef: RefObject<HTMLDivElement | null>;
+  animation: PetAnimation;
+  triggerSleeping: (ifSleeping: () => void) => void;
+  toDefaults: (next?: DefaultAnimations | "next") => void;
+  changeAnimation: (newAnimation: PetAnimation, duration?: number) => void;
 }
 
-export const Pet = memo(function Pet({
+export function Pet({
   isPluginActive,
-  animation,
-  userLevel,
   userItems,
-  toDefaults,
-  triggerSleeping,
+  statsHandler,
   mainRef,
+  animation,
+  triggerSleeping,
+  toDefaults,
+  changeAnimation,
 }: Props) {
   // Refs
   const petRef: RefObject<HTMLImageElement> | undefined = useRef(null);
   const petAccessoryRef: RefObject<HTMLImageElement> | undefined = useRef(null);
   const petContainerRef: RefObject<HTMLDivElement> | undefined = useRef(null);
   const petAccessoryHiddenClassName = "vpet-pet__accessory_hidden";
+  const animationsTextRef = useRef<HTMLHeadingElement>(null);
+  const isLevelUpRef = useRef<boolean>(false);
 
   const petScaleRef = useRef<number>(1.5);
   const petDirecctionRef = useRef<number>(1); // 1 = right, -1 = left
@@ -37,6 +52,11 @@ export const Pet = memo(function Pet({
   const isOutsideTimeoutRef = useRef<number>(0);
 
   const isOutsideRef = useRef<boolean>(false);
+
+  const userLevel = useSyncExternalStore(
+    statsHandler.subscribeUserLevel,
+    statsHandler.getUserLevel,
+  );
 
   const { getAsset } = useAssets();
 
@@ -136,6 +156,26 @@ export const Pet = memo(function Pet({
     [animation, checkIsInside, mainRef, userItems.equiped.Accessories],
   );
 
+  const levelUp = () => {
+    changeAnimation(animations.celebrate, animationsTimes.levelUp);
+
+    // Activate the "Level Up" text, waits 3s and desactivate it
+    if (animationsTextRef.current)
+      //animationsTextRef.current.style.display = "block";
+      animationsTextRef.current.setCssProps({ display: "block" });
+
+    window.setTimeout(() => {
+      if (animationsTextRef.current)
+        animationsTextRef.current.setCssProps({ display: "none" });
+    }, 3000);
+  };
+
+  useEffect(() => {
+    // The first update of the level is not an level up.
+    if (isLevelUpRef.current) levelUp();
+    else isLevelUpRef.current = true;
+  }, [userLevel]);
+
   useEffect(() => {
     // Animation frame loop
     if (actualAnimationRef.current !== animation) {
@@ -186,14 +226,23 @@ export const Pet = memo(function Pet({
   }, [getAsset, userItems.equiped.Accessories]);
 
   return (
-    <div className="vpet-pet" ref={petContainerRef} style={{ left: "30px" }}>
-      <p className="vpet-pet__level">Level: {userLevel}</p>
-      <img className="vpet-pet__pet-sprite" ref={petRef} alt="Pet sprite" />
-      <img
-        className="vpet-pet__accessory"
-        ref={petAccessoryRef}
-        alt="Pet accessory sprites"
-      />
-    </div>
+    <>
+      <div className="vpet-pet" ref={petContainerRef} style={{ left: "30px" }}>
+        <p className="vpet-pet__level">Level: {userLevel}</p>
+        <img className="vpet-pet__pet-sprite" ref={petRef} alt="Pet sprite" />
+        <img
+          className="vpet-pet__accessory"
+          ref={petAccessoryRef}
+          alt="Pet accessory sprites"
+        />
+      </div>
+      <span
+        className="vpet-main__level-up-text"
+        ref={animationsTextRef}
+        style={{ display: "none" }}
+      >
+        LEVEL UP!
+      </span>
+    </>
   );
-});
+}

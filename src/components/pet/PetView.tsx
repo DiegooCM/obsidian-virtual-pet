@@ -1,8 +1,6 @@
 import {
   forwardRef,
-  memo,
   RefObject,
-  useCallback,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -11,7 +9,7 @@ import {
 import { App } from "obsidian";
 import StatsHandler from "src/utils/statsHandler";
 import { Pet } from "src/components/pet/Pet";
-import { PetViewRef, UserActions, UserStats } from "src/types";
+import { PetViewRef, UserActions } from "src/types";
 import { useAnimationsHandler } from "src/hooks/useAnimationsHandler";
 import { useAssets } from "src/contexts/AssetsContext";
 import { PetTopBar } from "./PetTopBar";
@@ -23,14 +21,12 @@ interface PetViewI {
   app: App;
 }
 
-export const PetView = memo(
-  forwardRef<PetViewRef, PetViewI>(function PetView(props, ref) {
+export const PetView = forwardRef<PetViewRef, PetViewI>(
+  function PetView(props, ref) {
     const { statsHandler, app } = { ...props };
 
     const [isPluginActive, setIsPluginActive] = useState<boolean>(false);
-    const [userStats, setUserStats] = useState(statsHandler.getUserStats());
     const [userItems, setUserItems] = useState(statsHandler.getUserItems());
-    const animationsTextRef = useRef<HTMLHeadingElement>(null);
     const mainRef: RefObject<HTMLDivElement> | null = useRef(null);
     const { getAsset } = useAssets();
 
@@ -50,42 +46,6 @@ export const PetView = memo(
       if (actualWidth < 0 && isPluginActive) setIsPluginActive(false);
     };
 
-    const levelUp = useCallback(
-      (newUserStats: UserStats) => {
-        // Change the pet animation to celebrate
-        changeAnimation(animations.celebrate, animationsTimes.levelUp);
-
-        // Activate the "Level Up" text, waits 3s and desactivate it
-        if (animationsTextRef.current)
-          //animationsTextRef.current.style.display = "block";
-          animationsTextRef.current.setCssProps({ display: "block" });
-
-        window.setTimeout(() => {
-          if (animationsTextRef.current)
-            animationsTextRef.current.setCssProps({ display: "none" });
-        }, 3000);
-
-        const newExp = newUserStats.exp - newUserStats.expGoal;
-        setUserStats(statsHandler.petLevelUp(newExp));
-      },
-      [changeAnimation, statsHandler],
-    );
-
-    const updateUserStats = useCallback(() => {
-      const newUserStats = statsHandler.getUserStats();
-
-      if (JSON.stringify(newUserStats) !== JSON.stringify(userStats)) {
-        // Level up
-        if (newUserStats.exp >= newUserStats.expGoal) {
-          levelUp(newUserStats);
-        }
-        // Not level up
-        else {
-          setUserStats(newUserStats);
-        }
-      }
-    }, [levelUp, statsHandler, userStats]);
-
     // To expose the onUserAction function on the ref
     useImperativeHandle<PetViewRef, PetViewRef>(ref, () => {
       return {
@@ -102,7 +62,6 @@ export const PetView = memo(
               return;
             }
             if (action === "update-stats") {
-              updateUserStats();
               return;
             }
           });
@@ -135,24 +94,17 @@ export const PetView = memo(
             app={app}
             statsHandler={statsHandler}
             setUserItems={setUserItems}
-            userStats={userStats}
           />
           <Pet
             isPluginActive={isPluginActive}
-            animation={animation}
-            userLevel={userStats.level}
             userItems={userItems}
             mainRef={mainRef}
+            statsHandler={statsHandler}
+            animation={animation}
             toDefaults={toDefaults}
             triggerSleeping={triggerSleeping}
+            changeAnimation={changeAnimation}
           />
-          <span
-            className="vpet-main__level-up-text"
-            ref={animationsTextRef}
-            style={{ display: "none" }}
-          >
-            LEVEL UP!
-          </span>
         </div>
         {/*
       <DebugTools
@@ -167,5 +119,5 @@ export const PetView = memo(
       /> */}
       </>
     );
-  }),
+  },
 );

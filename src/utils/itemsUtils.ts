@@ -24,7 +24,6 @@ export function filterItems(filters: Filters, userItems: UserItems): ItemsJson {
     const toFilter = Object.entries(filter.options)
       .filter(([, val]) => !val)
       .map((f) => f[0]);
-    console.log("toFilter: ", toFilter);
 
     // Filter the itemsJson with the toFilter.
     toFilter.map((filterCategory) => {
@@ -94,4 +93,19 @@ export function filterItems(filters: Filters, userItems: UserItems): ItemsJson {
   filterByEquipmentStatus(equipmentFilter);
 
   return itemsJsonFiltered;
+}
+
+/**
+ * Checks if the given item exists in item.json
+ */
+export function inItemsJson(category: ItemCategory, item: string): boolean {
+  const itemsJson = JSON.parse(JSON.stringify(Items)) as ItemsJson;
+
+  const itemsOfCategory = itemsJson.find((i) => i.category === category)?.items;
+
+  if (!itemsOfCategory) return false;
+
+  const itemsNames = itemsOfCategory.map((i) => i.name);
+
+  return itemsNames.contains(item);
 }

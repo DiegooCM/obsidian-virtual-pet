@@ -1,14 +1,12 @@
-import Items from "src/jsons/items.json";
 import { Plugin, TFile, Vault, Workspace } from "obsidian";
-import { countWords } from "../utils/statsUtils";
 import {
-  ItemCategory,
-  ItemsJson,
-  UserData,
-  UserItems,
-  UserStats,
-} from "../types";
-import { DEFAULT_USER_ITEMS, DEFAULT_USER_STATS } from "src/constants";
+  calcAndAddPastedText,
+  countWords,
+  sanitizeUserItems,
+  sanitizeUserLevel,
+  sanitizeUserStats,
+} from "../utils/statsUtils";
+import { ItemCategory, UserData, UserItems, UserStats } from "../types";
 
 export default class StatsHandler {
   private vault: Vault;
@@ -21,6 +19,10 @@ export default class StatsHandler {
   private isValid: boolean = false;
   private isDataLoaded: boolean = false;
   private prohibitedTagsList = ["excalidraw-plugin"];
+  private statsListeners = new Set<() => void>();
+  private levelListeners = new Set<() => void>();
+  private isPasted = false;
+  userLevel: number;
 
   constructor(
     vault: Vault,
@@ -37,131 +39,63 @@ export default class StatsHandler {
       fileWordCount: -1,
     };
 
-    this.userStats = this.sanitizeUserStats(rawData);
-    this.userItems = this.sanitizeUserItems(rawData);
+    this.userStats = sanitizeUserStats(rawData);
+    this.userLevel = sanitizeUserLevel(rawData);
+    this.userItems = sanitizeUserItems(rawData);
     this.isDataLoaded = true;
+
+    this.registerEvents();
   }
 
-  /**
-   * Checks if the given item exists in item.json
-   */
-  isValidItem(category: ItemCategory, item: string): boolean {
-    const itemsJson = JSON.parse(JSON.stringify(Items)) as ItemsJson;
+  registerEvents() {
+    this.plugin.registerEvent(
+      // When the user types
+      this.plugin.app.workspace.on("editor-change", (editor) => {
+        // Update info
+        const fileText = editor.getValue();
 
-    const itemsOfCategory = itemsJson.find(
-      (i) => i.category === category,
-    )?.items;
+        if (this.isPasted) this.isPasted = false;
+        else this.updateUserDataNStats(fileText);
 
-    if (!itemsOfCategory) return false;
+        this.updateUserDataNStats(fileText);
+      }),
+    );
 
-    const itemsNames = itemsOfCategory.map((i) => i.name);
+    this.plugin.registerEvent(
+      this.plugin.app.workspace.on("quit", async () => {
+        await this.saveUserData();
+      }),
+    );
 
-    return itemsNames.contains(item);
-  }
+    this.plugin.registerEvent(
+      // When a file is open
+      this.plugin.app.workspace.on("file-open", async (tFile) => {
+        if (!tFile) return;
+        // Update info
+        this.onFileOpen(tFile);
 
-  /**
-   * Checks that userStats of the data.json are correct and if not the default values are given
-   */
-  sanitizeUserStats(rawData: unknown): UserStats {
-    if (
-      !rawData ||
-      typeof rawData !== "object" ||
-      !("userStats" in rawData) ||
-      typeof rawData.userStats !== "object" ||
-      !rawData.userStats
-    )
-      return DEFAULT_USER_STATS;
+        const fileText = await this.vault.cachedRead(tFile);
+        // Sets data and stats in petview
+        this.updateUserDataNStats(fileText);
+      }),
+    );
 
-    const rawUserStats: object = rawData.userStats;
-    const sanitizedUserStats: UserStats = DEFAULT_USER_STATS;
+    this.plugin.registerEvent(
+      this.plugin.app.workspace.on("editor-paste", (evt) => {
+        if (evt.defaultPrevented) return;
 
-    if ("exp" in rawUserStats && typeof rawUserStats.exp === "number")
-      sanitizedUserStats.exp = rawUserStats.exp;
-    if ("expGoal" in rawUserStats && typeof rawUserStats.expGoal === "number")
-      sanitizedUserStats.expGoal = rawUserStats.expGoal;
-    if ("level" in rawUserStats && typeof rawUserStats.level === "number")
-      sanitizedUserStats.level = rawUserStats.level;
-    if ("coins" in rawUserStats && typeof rawUserStats.coins === "number")
-      sanitizedUserStats.coins = rawUserStats.coins;
+        // Count the pasted words and add them to the userData
+        calcAndAddPastedText(evt, this.addWordsToFileCount);
+        this.isPasted = true;
+        return true;
+      }),
+    );
 
-    return sanitizedUserStats;
-  }
-
-  /**
-   * Checks that userItats of the data.json are correct and if not the default values are given
-   */
-  sanitizeUserItems(rawData: unknown): UserItems {
-    if (
-      !rawData ||
-      typeof rawData !== "object" ||
-      !("userItems" in rawData) ||
-      !rawData.userItems ||
-      typeof rawData.userItems !== "object"
-    )
-      return DEFAULT_USER_ITEMS;
-
-    const rawUserItems = rawData.userItems;
-    const sanitizedUserItems: UserItems = DEFAULT_USER_ITEMS;
-
-    if (
-      "equiped" in rawUserItems &&
-      typeof rawUserItems.equiped === "object" &&
-      rawUserItems.equiped
-    ) {
-      if (
-        "Backgrounds" in rawUserItems.equiped &&
-        typeof rawUserItems.equiped.Backgrounds === "string" &&
-        this.isValidItem("Backgrounds", rawUserItems.equiped.Backgrounds)
-      ) {
-        sanitizedUserItems.equiped.Backgrounds =
-          rawUserItems.equiped.Backgrounds;
-      }
-      if (
-        "Accessories" in rawUserItems.equiped &&
-        typeof rawUserItems.equiped.Accessories === "string" &&
-        this.isValidItem("Accessories", rawUserItems.equiped.Accessories)
-      ) {
-        sanitizedUserItems.equiped.Accessories =
-          rawUserItems.equiped.Accessories;
-      }
-    }
-
-    if (
-      "obtained" in rawUserItems &&
-      typeof rawUserItems.obtained === "object" &&
-      rawUserItems.obtained
-    ) {
-      if (
-        "Backgrounds" in rawUserItems.obtained &&
-        Array.isArray(rawUserItems.obtained.Backgrounds)
-      ) {
-        for (const item of rawUserItems.obtained.Backgrounds) {
-          if (
-            typeof item === "string" &&
-            !sanitizedUserItems.obtained.Backgrounds.includes(item) &&
-            this.isValidItem("Backgrounds", item)
-          ) {
-            sanitizedUserItems.obtained.Backgrounds.push(item);
-          }
-        }
-      }
-      if (
-        "Accessories" in rawUserItems.obtained &&
-        Array.isArray(rawUserItems.obtained.Accessories)
-      ) {
-        for (const item of rawUserItems.obtained.Accessories) {
-          if (
-            typeof item === "string" &&
-            !sanitizedUserItems.obtained.Accessories.includes(item) &&
-            this.isValidItem("Accessories", item)
-          ) {
-            sanitizedUserItems.obtained.Accessories.push(item);
-          }
-        }
-      }
-    }
-
-    return sanitizedUserItems;
+    this.plugin.registerEvent(
+      this.plugin.app.workspace.on("active-leaf-change", async () => {
+        await this.saveUserData();
+      }),
+    );
   }
 
   onFileOpen = (tFile: TFile | null) => {
@@ -222,29 +156,42 @@ export default class StatsHandler {
   };
 
   /*
-   * Gets the difference of the word count of the current file and updates de exp
+   * Gets the difference of the word count of the current file and updates the exp
    */
   updateUserDataNStats = (text: string) => {
-    // Prevents strange bugs
+    // Check if the new word count is from the actual file
     if (this.workspace.getActiveFile() !== this.actualTFile) return;
 
     if (!this.isValid) return;
 
     const oldUserData = { ...this.userData };
-
     const newWordsCount = countWords(text);
     this.userData.fileWordCount = newWordsCount;
     const fileWordsDif = newWordsCount - oldUserData.fileWordCount;
 
+    // The word count of the file was not counted
+    // No sé si esto es necesario
+    if (oldUserData.fileWordCount === -1) return;
+
     // Stats Calculation
     const newExp = fileWordsDif + this.userStats.exp;
 
-    if (oldUserData.fileWordCount !== -1 && newExp !== this.userStats.exp) {
-      this.userStats = {
-        ...this.userStats,
-        exp: newExp > 0 ? newExp : 0,
-      };
+    // Level up
+    if (newExp >= this.userStats.expGoal) {
+      const expRemaining = newExp - this.userStats.expGoal;
+      this.levelUp(expRemaining);
     }
+    // Non level up
+    else {
+      // Prevention of negative exp and updates the exp
+      if (newExp !== this.userStats.exp) {
+        this.userStats = {
+          ...this.userStats,
+          exp: newExp > 0 ? newExp : 0,
+        };
+      }
+    }
+    this.statsListeners.forEach((l) => l());
   };
 
   /*
@@ -266,9 +213,19 @@ export default class StatsHandler {
     return { ...this.userData };
   };
 
-  getUserStats = (): UserStats => {
-    return { ...this.userStats };
+  subscribeUserStats = (listener: () => void) => {
+    this.statsListeners.add(listener);
+    return () => this.statsListeners.delete(listener);
   };
+
+  getUserStats = () => this.userStats;
+
+  subscribeUserLevel = (listener: () => void) => {
+    this.levelListeners.add(listener);
+    return () => this.levelListeners.delete(listener);
+  };
+
+  getUserLevel = () => this.userLevel;
 
   getUserItems = (): UserItems => {
     return { ...this.userItems };
@@ -277,23 +234,27 @@ export default class StatsHandler {
   saveUserData = async (): Promise<void> => {
     if (this.isDataLoaded) {
       await this.plugin.saveData({
-        userStats: this.userStats,
+        userStats: {
+          ...this.userStats,
+          level: this.userLevel,
+        },
         userItems: this.userItems,
       });
     }
   };
 
-  petLevelUp = (expRemaining: number): UserStats => {
+  levelUp = (expRemaining: number): UserStats => {
     this.userStats = {
       exp: expRemaining,
       expGoal: Math.round(
         this.userStats.expGoal + 30000 / this.userStats.expGoal,
       ),
-      level: this.userStats.level + 1,
       coins: this.userStats.coins + 50,
     };
+    this.userLevel += 1;
+    this.levelListeners.forEach((l) => l());
 
-    return { ...this.userStats };
+    return this.userStats;
   };
 
   petChangeExp = (newAddExp: number) => {

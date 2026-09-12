@@ -14,7 +14,6 @@ export interface UserData {
 export interface UserStats {
   exp: number;
   expGoal: number;
-  level: number;
   coins: number;
 }
 

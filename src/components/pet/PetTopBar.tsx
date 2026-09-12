@@ -1,5 +1,5 @@
 import { App } from "obsidian";
-import { RefObject, useEffect, useRef } from "react";
+import { RefObject, useEffect, useRef, useSyncExternalStore } from "react";
 import { useAssets } from "src/contexts/AssetsContext";
 import { UserItems, UserStats } from "src/types";
 import { ShopModal } from "../shop/ShopModal";
@@ -10,17 +10,15 @@ type PetTopBarT = {
   app: App;
   statsHandler: StatsHandler;
   setUserItems: React.Dispatch<React.SetStateAction<UserItems>>;
-  userStats: UserStats;
 };
 
-export function PetTopBar({
-  app,
-  statsHandler,
-  setUserItems,
-  userStats,
-}: PetTopBarT) {
-  const coinRef: RefObject<HTMLImageElement | null> = useRef(null);
+export function PetTopBar({ app, statsHandler, setUserItems }: PetTopBarT) {
+  const coinRef: RefObject<HTMLImageElement> | undefined = useRef(null);
   const { getAsset } = useAssets();
+  const userStats = useSyncExternalStore<UserStats>(
+    statsHandler.subscribeUserStats,
+    statsHandler.getUserStats,
+  );
 
   useEffect(() => {
     // Add the coin asset to the coinRef
