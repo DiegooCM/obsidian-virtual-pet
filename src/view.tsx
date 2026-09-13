@@ -16,7 +16,7 @@ export default class VirualPetView extends ItemView {
   constructor(leaf: WorkspaceLeaf, statsHandler: StatsHandler) {
     super(leaf);
 
-    // eslint-disable-next-line @eslint-react/no-create-ref
+    // eslint-disable-next-line @eslint-react/no-create-ref -- Can't use useRef() in a plain TS class method
     this.petViewRef = createRef<PetViewRef>();
     this.statsHandler = statsHandler;
   }
@@ -67,7 +67,7 @@ export default class VirualPetView extends ItemView {
   }
 
   async onClose() {
-    this.statsHandler.saveUserData();
+    await this.statsHandler.saveUserData();
     if (this.reactRoot) {
       this.reactRoot.unmount();
       this.reactRoot = null;

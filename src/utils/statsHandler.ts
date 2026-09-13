@@ -82,6 +82,7 @@ export default class StatsHandler {
 
     this.plugin.registerEvent(
       this.plugin.app.workspace.on("editor-paste", (evt) => {
+        // eslint-disable-next-line obsidianmd/editor-drop-paste -- Only observing the paste event to count words; intentionally not intercepting Obsidian's default paste behavior.
         if (evt.defaultPrevented) return;
 
         // Count the pasted words and add them to the userData

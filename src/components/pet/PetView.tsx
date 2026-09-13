@@ -15,7 +15,6 @@ import { useAssets } from "src/contexts/AssetsContext";
 import { PetTopBar } from "./PetTopBar";
 import animations from "src/jsons/animations.json";
 import animationsTimes from "src/jsons/animationsTimes.json";
-import { DebugTools } from "../debug-tools/DebugTools";
 
 interface PetViewI {
   statsHandler: StatsHandler;
@@ -107,6 +106,7 @@ export const PetView = forwardRef<PetViewRef, PetViewI>(
             changeAnimation={changeAnimation}
           />
         </div>
+        {/**
         <DebugTools
           userItems={userItems}
           statsHandler={statsHandler}
@@ -114,6 +114,7 @@ export const PetView = forwardRef<PetViewRef, PetViewI>(
           toDefaults={toDefaults}
           changeAnimation={changeAnimation}
         />
+         */}
       </>
     );
   },
