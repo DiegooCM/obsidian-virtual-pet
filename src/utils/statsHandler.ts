@@ -80,17 +80,14 @@ export default class StatsHandler {
       }),
     );
 
-    this.plugin.registerEvent(
-      this.plugin.app.workspace.on("editor-paste", (evt) => {
-        // eslint-disable-next-line obsidianmd/editor-drop-paste -- Only observing the paste event to count words; intentionally not intercepting Obsidian's default paste behavior.
-        if (evt.defaultPrevented) return;
+    this.plugin.registerDomEvent(document, "paste", (evt: ClipboardEvent) => {
+      if (evt.defaultPrevented) return;
 
-        // Count the pasted words and add them to the userData
-        calcAndAddPastedText(evt, this.addWordsToFileCount);
-        this.isPasted = true;
-        return true;
-      }),
-    );
+      // Count the pasted words and add them to the userData
+      calcAndAddPastedText(evt, this.addWordsToFileCount);
+      this.isPasted = true;
+      return true;
+    });
 
     this.plugin.registerEvent(
       this.plugin.app.workspace.on("active-leaf-change", async () => {
