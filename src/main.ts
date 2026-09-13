@@ -1,7 +1,6 @@
 import { Plugin, WorkspaceLeaf } from "obsidian";
 import VirualPetView from "src/view";
 import { VIEW_TYPE_VIRTUAL_PET } from "./constants";
-import { SettingsTab } from "./components/config/SettingsTab";
 import StatsHandler from "./utils/statsHandler";
 
 export default class VirtualPet extends Plugin {
@@ -23,8 +22,6 @@ export default class VirtualPet extends Plugin {
     if (this.app.workspace.layoutReady) {
       await this.activateView();
     }
-
-    this.addSettingTab(new SettingsTab(this.app, this));
   }
 
   onunload() {
