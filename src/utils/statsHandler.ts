@@ -155,26 +155,9 @@ export default class StatsHandler {
     return true;
   };
 
-  /*
-   * Gets the difference of the word count of the current file and updates the exp
-   */
-  updateUserDataNStats = (text: string) => {
-    // Check if the new word count is from the actual file
-    if (this.workspace.getActiveFile() !== this.actualTFile) return;
-
-    if (!this.isValid) return;
-
-    const oldUserData = { ...this.userData };
-    const newWordsCount = countWords(text);
-    this.userData.fileWordCount = newWordsCount;
-    const fileWordsDif = newWordsCount - oldUserData.fileWordCount;
-
-    // The word count of the file was not counted
-    // No sé si esto es necesario
-    if (oldUserData.fileWordCount === -1) return;
-
+  addUserExp(expToAdd: number) {
     // Stats Calculation
-    const newExp = fileWordsDif + this.userStats.exp;
+    const newExp = expToAdd + this.userStats.exp;
 
     // Level up
     if (newExp >= this.userStats.expGoal) {
@@ -192,6 +175,26 @@ export default class StatsHandler {
       }
     }
     this.statsListeners.forEach((l) => l());
+  }
+
+  /*
+   * Gets the difference of the word count of the current file and updates the exp
+   */
+  updateUserDataNStats = (text: string) => {
+    // Check if the new word count is from the actual file
+    if (this.workspace.getActiveFile() !== this.actualTFile) return;
+
+    if (!this.isValid) return;
+
+    const oldUserData = { ...this.userData };
+    const newWordsCount = countWords(text);
+    this.userData.fileWordCount = newWordsCount;
+    const fileWordsDif = newWordsCount - oldUserData.fileWordCount;
+
+    // The word count of the file was not counted
+    if (oldUserData.fileWordCount === -1) return;
+
+    this.addUserExp(fileWordsDif);
   };
 
   /*

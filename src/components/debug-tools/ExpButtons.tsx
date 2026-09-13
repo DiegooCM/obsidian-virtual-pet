@@ -1,19 +1,16 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
 import { UserStats } from "src/types";
+import StatsHandler from "src/utils/statsHandler";
 
 interface Props {
-  petChangeExp: (newAddExp: number) => UserStats;
-  userStats: UserStats;
-  levelUp: (newUserStats: UserStats) => void;
-  setUserStats: React.Dispatch<React.SetStateAction<UserStats>>;
+  statsHandler: StatsHandler;
 }
 
-export default function ExpButtons({
-  petChangeExp,
-  userStats,
-  levelUp,
-  setUserStats,
-}: Props) {
+export default function ExpButtons({ statsHandler }: Props) {
+  const userStats = useSyncExternalStore<UserStats>(
+    statsHandler.subscribeUserStats,
+    statsHandler.getUserStats,
+  );
   const quantityRef = useRef(0);
   const toSumRef = useRef(false);
   const isButtonDownRef = useRef(false);
@@ -23,17 +20,8 @@ export default function ExpButtons({
       ? quantityRef.current + 5
       : quantityRef.current - 5;
 
-    const newExp = userStats.exp + quantityRef.current;
-    // Level upgrade
-    if (newExp >= userStats.expGoal) {
-      levelUp({ ...userStats, exp: newExp });
-    }
-    // Not level upgrade
-    else {
-      const newUserStats = petChangeExp(newExp <= 0 ? 0 : newExp);
-      setUserStats(newUserStats);
-    }
-  }, [userStats, levelUp, petChangeExp, setUserStats]);
+    statsHandler.addUserExp(quantityRef.current);
+  }, [statsHandler]);
 
   const onButtonPress = useCallback(() => {
     if (!isButtonDownRef.current) return;
